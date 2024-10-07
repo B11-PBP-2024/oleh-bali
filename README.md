@@ -36,11 +36,23 @@ OlehBali memberikan manfaat nyata bagi dan pengrajin lokal Bali. Bagi wisatawan,
 </details>
 
 <details>
-<summary>Initial Dataset</summary>
+<summary>📊 Initial Dataset</summary>
+Dataset diambil dari berbagai website, yaitu:
+
+- [Oleh Bali](http://ezar-akhdan-olehbali.pbp.cs.ui.ac.id/ 'Oleh Bali Website')
+- [Wonderful Indonesia](https://www.indonesia.travel/)
+- [Travel Passionate](https://travelpassionate.com/)
+- [Balipedia](https://balipedia.com/)
+- [The Culture Trip](https://theculturetrip.com/)
+- [Autentic Indonesia](https://authentic-indonesia.com/blog/10-best-indonesia-souvenirs-gifts/)
+- [Laure Wanders](https://www.laurewanders.com/souvenirs-from-indonesia/)
+- [Living Nomads](https://livingnomads.com/2024/04/what-to-buy-in-indonesia/)
+- [Indonesia Tours](https://www.goindonesiatours.com/indonesia-souvenirs-top-10-souvenirs-buy-indonesia/)
+- Google (untuk mencari image)
 </details>
 
 <details>
-<summary>Role</summary>
+<summary>🧑‍💼 Role</summary>
 
 🧑‍💼💰 **Penjual**
 - Melihat _homepage_ yang berisi _product-product_ yang dijual.

@@ -33,6 +33,31 @@ OlehBali memberikan manfaat nyata bagi dan pengrajin lokal Bali. Bagi wisatawan,
 
 <details>
 <summary>Daftar Modul yang akan diimplementasikan</summary>
+Berikut daftar modul yang akan kami gunakan dalam website OlehBali:
+    - Penjual
+        Dikerjakan oleh **Yemima Clara Nainggolan**, modul ini berfokus pada role user yaitu penjual yang dapat menambahkan produk untuk tokonya, penjual bisa memilih bisa menambahkan produk yang sudah ada di dataset ataupun menambahkan produknya sendiri.
+
+        Modul ini juga menghandle halaman tersendiri yaitu halaman `My Products` yang dapat menampilkan produk-produk milik penjual. Di halaman ini penjual juga bisa mengedit harga serta menghapus produk yang tidak ingin ia jual lagi. Di halaman ini juga terdapat fitur `Add Product`, penjual bisa memilih antara button `Add New Product` dan button `Add Existing Product`. Jika button tersebut ditekan, akan menuju ke tampilan form yang berbeda. Setelah produk diadd, produk tersebut akan ditambahkan ke halaman `My Products`  dan otomatis memiliki "toko" tersebut di dalam attributenya.
+    
+    - User Profile + Profile Toko
+        Dikerjakan oleh **Nabilah Devina Mu'min**, modul ini berurusan dengan edit profile pengguna dan penjual. Pada modul ini memiliki halaman edit profile yang dapat mengubah foto profil, display name, dan kewarganegaraan untuk pembeli dan edit details seperti logo, nama toko, kecamatan, kelurahan, nama jalan, dan link Google Maps toko bagi penjual.
+
+        Pada modul ini juga terdapat halaman `lihat toko` untuk melihat pada satu toko menjual produk apasaja atau bisa dibilang profille suatu toko secara keseluruhan.
+
+    - Katalog Produk
+        Dikerjakan oleh **Ezar Akhdan Shada Surahman**, katalog produk akan menampilkan semua produk yang ada pada halaman katalog. Pada modul ini juga terdapat filter yang bisa menampilkan produk berdasarkan harga, kategori, dan like pada produk. Pengguna juga dapat mencari produk lewat `search bar` berdasarkan kata kunci.
+
+        Saat suatu produk diklik, halaman akan menampilkan product details yang menyajikan produk secara lebih detail seperti kategori, nama, deskkripsi serta toko-toko yang menjual produk tersebut.
+
+    - Wishlist + Katalog Toko
+        Dikerjakan oleh **Alya Rasheeda Yuvana**, modul ini berfungsi untuk menambahkan suatu produk yang disukai oleh pelanggan ke halaman `My Wishlist`. Di setiap produk akan ada tombol untuk menambahkan produk tersebut ke dalam wishlist. Di halaman wishlist, pengguna bisa melihat semua produk yang dia masukkan ke dalam wishlist, menghapus produk dari wishlist, dan melihat total harga semua produk yang ada dalam wishlistnya.
+
+        Katalog toko pada modul ini digunakan pembeli untuk melihat toko apa saja yang menjual satu produk. Misalnya, melihat toko apa saya yang menjual produk Pie Susu Bali.
+
+    - Review + Like
+        Dikerjakan oleh **Rogerio Geraldo Wibhowo**, modul ini bisa membuat pengguna mlakukan like kepada suatu produk, lalu total like pada produk tersebut akan ditampilkan pada card product. Like juga bisa dijadikan filter (sort) di dalam katalog produk.
+
+        Di setiap product details akan ada section review produk yang akan menampilkan review-review dari produk tersebut, dan pengguna juga bisa menambahkan review untk produk tersebut. Display name dan foto profil pengguna akan terlihat jika menambahkan review ke suatu produk.
 </details>
 
 <details>

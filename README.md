@@ -1,4 +1,4 @@
-# [Oleh Bali](http://ezar-akhdan-olehbali.pbp.cs.ui.ac.id/ 'Oleh Bali Website') 🎁
+# [Oleh Bali](http://ezar-akhdan-olehbali.pbp.cs.ui.ac.id/ 'Oleh Bali Website') 🎁🌴
 ## Bringing Indonesia’s Best to Bali’s Beaches 🏖️
 <details>
 <summary>👥 Anggota Kelompok B11</summary>
@@ -45,10 +45,12 @@ Selain itu, penjual juga bisa melihat, melakukan _search_ dan _filter_ produk-pr
 
 Pada modul ini juga terdapat halaman  untuk melihat pada satu toko menjual produk apa saja atau bisa dibilang profile suatu toko secara keseluruhan.
 
-### 🔍 Katalog Produk
+### 🔍 Katalog Produk + 📜 Artikel
 **Dikerjakan oleh Ezar Akhdan Shada Surahman**</br>Katalog produk akan menampilkan semua produk yang ada pada halaman katalog. Pada modul ini juga terdapat filter yang bisa menampilkan produk berdasarkan harga, kategori, dan _sort_ berdasarkan like pada produk. Pengguna juga dapat mencari produk lewat _search bar_ berdasarkan kata kunci.
 
 Saat suatu produk diklik, halaman akan menampilkan product details yang menyajikan produk secara lebih detail seperti kategori, nama, deskkripsi serta toko-toko yang menjual produk tersebut.
+
+User juga dapat melihat artikel orang lain, menambahkan, mengedit, ataupun menghapus artikel di halaman main.
 
 ### 💸 Wishlist + 🛒 Katalog Toko
 **Dikerjakan oleh Alya Rasheeda Yuvana**</br>Modul ini berfungsi untuk menambahkan suatu produk yang disukai oleh pelanggan ke daftar _Wishlist_. Di setiap produk akan ada tombol untuk menambahkan produk tersebut ke dalam wishlist. Di halaman wishlist, pengguna bisa melihat semua produk yang dia masukkan ke dalam wishlist, menghapus produk dari wishlist, dan melihat total harga semua produk yang ada dalam wishlistnya.

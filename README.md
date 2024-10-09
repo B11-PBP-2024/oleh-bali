@@ -20,7 +20,7 @@ Bali, khususnya Denpasar dan sekitarnya, selalu menjadi tujuan wisata favorit, b
 **OlehBali** adalah platform digital yang mempermudah wisatawan dalam menemukan dan membeli oleh-oleh khas Indonesia yang berada di Denpasar. Melalui fitur-fitur yang user-friendly, wisatawan dapat menelusuri berbagai pilihan souvenir yang dihasilkan langsung oleh pengrajin lokal. Dengan begitu, setiap produk yang ditawarkan bukan hanya barang, tapi juga mencerminkan nilai budaya dan tradisi Indonesia.
 
 Beberapa fitur utama dari **OlehBali** adalah:
-- Manajem Produk: Penjual bisa menambahkan produk ke tokonya, mengedit harga, dan mengelola profil toko. Halaman My Products memungkinkan penjual untuk melihat dan mengedit produk, serta menambah atau menghapus produk.
+- Manajemen Produk: Penjual bisa menambahkan produk ke tokonya, mengedit harga, dan mengelola profil toko. Halaman My Products memungkinkan penjual untuk melihat dan mengedit produk, serta menambah atau menghapus produk.
 - Profil dan Daftar Toko: Pembeli bisa mengedit profil (foto, nama, kewarganegaraan). Penjual bisa mengedit informasi toko (foto, nama, alamat, lokasi). Pembeli dapat mencari toko dan memfilter berdasarkan lokasi (kecamatan/kelurahan).
 - Katalog Produk : Pembeli bisa mencari dan memfilter produk berdasarkan harga, kategori, dan jumlah like. Setiap produk memiliki halaman detail dengan opsi like, wishlist, dan review. Pada fitur ini, calon pembeli bisa melihat daftar toko yang menjual suatu produk.
 - Wishlist: Pembeli bisa menambah produk ke wishlist, melihat total harga range dari item wishlist, dan menghapus item yang tidak diinginkan.

@@ -6,7 +6,7 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Register Buyer</h1>
+    <h1>Login Seller</h1>
     <form action="" method="POST">
         {% csrf_token %}
         <table>
@@ -14,5 +14,13 @@
         </table>
         <button type="submit">Submit</button>
     </form>
+    {% if messages %}
+        {% for message in messages %}
+        <p>{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+    <a href="{% url 'main:login_buyer' %}"><button>Login as a Buyer</button></a>
+    <a href="{% url 'main:register_seller' %}">Sign Up as a Seller</a>
+
 </body>
 </html>

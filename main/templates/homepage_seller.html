@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block meta %}
+<title>Seller Homepage</title>
+{% endblock meta %}
+{% block content %}
+{% include 'navbar_seller.html' %}
+<div class="pt-10">
+    <h1>Seller</h1>
+    <a href="{% url 'main:logout_user' %}"><button>Logout</button></a>
+</div>
+{% endblock content %}

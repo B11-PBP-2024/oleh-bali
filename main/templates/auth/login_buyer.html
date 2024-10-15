@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block meta %}
+<title>Login Buyer</title>
+{% endblock meta %}
+{% block content %}
+<h1>Login Buyer</h1>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <table>
+            {{ form.as_table }}
+        </table>
+        <button type="submit">Submit</button>
+    </form>
+    {% if messages %}
+        {% for message in messages %}
+        <p>{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+    <a class="btn" href="{% url 'main:login_seller' %}"><button>Login as a Seller</button></a>
+    <a href="{% url 'main:register_buyer' %}">Sign Up as a Buyer</a>
+{% endblock content %}

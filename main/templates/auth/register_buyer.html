@@ -1,0 +1,15 @@
+
+{% extends 'base.html' %}
+{% block meta %}
+<title>Buyer Register</title>
+{% endblock meta %}
+{% block content %}
+<h1>Register Buyer</h1>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <table>
+            {{ form.as_table }}
+        </table>
+        <button type="submit">Submit</button>
+    </form>
+{% endblock content %}

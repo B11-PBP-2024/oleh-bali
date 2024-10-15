@@ -1,12 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Login Buyer</h1>
+{% extends 'base.html' %}
+{% block meta %}
+<title>Login Buyer</title>
+{% endblock meta %}
+{% block content %}
+<h1>Login Buyer</h1>
     <form action="" method="POST">
         {% csrf_token %}
         <table>
@@ -19,8 +16,6 @@
         <p>{{ message }}</p>
         {% endfor %}
     {% endif %}
-    <a href="{% url 'main:login_seller' %}"><button>Login as a Seller</button></a>
+    <a class="btn" href="{% url 'main:login_seller' %}"><button>Login as a Seller</button></a>
     <a href="{% url 'main:register_buyer' %}">Sign Up as a Buyer</a>
-
-</body>
-</html>
+{% endblock content %}

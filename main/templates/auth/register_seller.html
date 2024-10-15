@@ -1,18 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Register Seller</h1>
-    <form action="" method="POST">
-        {% csrf_token %}
-        <table>
-            {{ form.as_table }}
-        </table>
-        <button type="submit">Submit</button>
-    </form>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block meta %}
+<title>Seller Register</title>
+{% endblock meta %}
+{% block content %}
+<h1>Register Seller</h1>
+<form action="" method="POST">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+    <button type="submit">Submit</button>
+</form>
+{% endblock content %}

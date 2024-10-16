@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block meta %}
+<title>Articles</title>
+{% endblock meta %}
+{% block content %}
+{% include 'navbar_buyer.html' %}
+<form class="pt-16" method="POST">
+    {% csrf_token %}
+    <table>
+        {{form.as_table}}
+        <tr>
+            <td>
+                <input type="submit" value="Edit Article" class="rounded border border-black">
+            </td>
+        </tr>
+    </table>
+</form>
+{% endblock content%}   

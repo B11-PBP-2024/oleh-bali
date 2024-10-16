@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'article.middleware.BuyerRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'oleh_bali.urls'

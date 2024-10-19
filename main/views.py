@@ -40,7 +40,8 @@ def register_buyer(request):
             user = form.save(commit=False)
             user.role = 0
             user.save()
-            return redirect("main:login_seller")
+            messages.success(request,message="Your account has been successfully created!")
+            return redirect("main:login_buyer")
     context = {'form':form}
     return render(request,"auth/register_buyer.html",context)
 
@@ -68,6 +69,7 @@ def register_seller(request):
             user = form.save(commit=False)
             user.role = 1
             user.save()
+            messages.success(request,message="Your account has been successfully created!")
             return redirect("main:login_seller")
     context = {'form':form,}
     return render(request,"auth/register_seller.html",context)

@@ -33,6 +33,10 @@ def json_all_article(request):
     articles = ArticleEntry.objects.all()
     return HttpResponse(serializers.serialize("json", articles), content_type="application/json")
 
+def json_user_article(request):
+    articles = ArticleEntry.objects.filter(user=request.user)
+    return HttpResponse(serializers.serialize("json", articles), content_type="application/json")
+
 
 def json_id_article(request,id):
     article = ArticleEntry.objects.filter(pk=id)

@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block meta %}
+<title>Articles</title>
+{% endblock meta %}
+{% block content %}
+{% include 'navbar_buyer.html' %}
+<div class="flex flex-col content-center items-center pt-20 w-full bg-gray-200 min-h-screen">
+    <!-- Judul Halaman -->
+    <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-8 text-center">Articles</h1>
+    
+    <!-- Tombol Add Article -->
+    <a href="{% url 'article:create_article' %}"
+        class="mb-6 px-6 py-2 rounded-full bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 transition-colors duration-200">
+        + Add New Article
+    </a>
+    
+    <!-- Tombol Explore dan My Articles -->
+    <div class="flex  gap-4 justify-center items-center w-full mb-6 ">
+        <!-- Explore Button -->
+        <button id="exploreBtn" class="px-4 py-2 text-lg sm:text-xl font-medium underline-offset-8 transition-all duration-200 hover:underline">
+            Explore
+        </button>
+        <!-- My Articles Button -->
+        <button id="myArticleBtn" class="px-4 py-2 text-lg sm:text-xl font-medium underline-offset-8 transition-all duration-200 hover:underline text-gray-500">
+            My Articles
+        </button>
+    </div>
+
+    <!-- Kontainer untuk Article Cards -->
+    <div id="article_entry_cards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-11/12 sm:w-10/12 lg:w-8/12 px-4">
+        <!-- Articles akan dimuat di sini secara dinamis melalui JavaScript -->
+    </div>
+</div>
+
+
+<script>
+    // Function to save the current tab state in Local Storage
+    function saveState(selectedTab) {
+        localStorage.setItem('selectedTab', selectedTab);
+    }
+
+    // Function to load the saved state from Local Storage
+    function loadState() {
+        return localStorage.getItem('selectedTab');
+    }
+
+    // Function to display the correct tab based on the selected state
+    function displayTab(selectedTab) {
+        const exploreBtn = document.getElementById('exploreBtn');
+        const myArticleBtn = document.getElementById('myArticleBtn');
+
+        if (selectedTab === 'myArticles') {
+            myArticleBtn.classList.add('underline');
+            exploreBtn.classList.remove('underline');
+            myArticleBtn.classList.remove('text-gray-500');
+            exploreBtn.classList.add('text-gray-500');
+            refreshMoodEntries()
+        } else {
+            exploreBtn.classList.add('underline');
+            myArticleBtn.classList.remove('underline');
+            exploreBtn.classList.remove('text-gray-500');
+            myArticleBtn.classList.add('text-gray-500');
+            // Load All Articles
+            refreshMoodEntries();  // You can define this function to load all articles
+        }
+    }
+
+    // On page load, set the tab state from Local Storage
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedState = loadState();
+        if (savedState) {
+            displayTab(savedState);
+        } else {
+            displayTab('explore');  // Default tab
+        }
+
+        // Add event listeners for both buttons
+        document.getElementById('exploreBtn').addEventListener('click', function() {
+            saveState('explore');
+            displayTab('explore');
+        });
+
+        document.getElementById('myArticleBtn').addEventListener('click', function() {
+            saveState('myArticles');
+            displayTab('myArticles');
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Select the buttons
+        const exploreBtn = document.getElementById('exploreBtn');
+        const myArticleBtn = document.getElementById('myArticleBtn');
+
+        // Initial state (underline Explore by default)
+    
+
+        // Add event listeners for both buttons
+        exploreBtn.addEventListener('click', function() {
+            exploreBtn.classList.add('underline');
+            myArticleBtn.classList.remove('underline');
+            myArticleBtn.classList.add('text-gray-500');
+            exploreBtn.classList.remove('text-gray-500');
+            refreshMoodEntries()
+        });
+
+        myArticleBtn.addEventListener('click', function() {
+            myArticleBtn.classList.add('underline');
+            exploreBtn.classList.remove('underline');
+            exploreBtn.classList.add('text-gray-500');
+            myArticleBtn.classList.remove('text-gray-500');
+            refreshMoodEntries()
+        });
+    });
+
+    async function getAllArticles(params) {
+        return fetch("{% url 'article:json_all_article' %}").then(((res) => res.json()))
+    }
+
+    async function getUserArticles(params) {
+        return fetch("{% url 'article:json_user_article' %}").then(((res) => res.json()))
+    }
+
+    async function refreshMoodEntries() {
+    
+        document.getElementById("article_entry_cards").innerHTML = "";
+    document.getElementById("article_entry_cards").className = "";
+    const myArticleBtn = document.getElementById('myArticleBtn');
+    let isUser = myArticleBtn.classList.contains('underline');
+    let articleEntries;
+    if(isUser) {
+        articleEntries = await getUserArticles()
+    } else {
+        articleEntries = await getAllArticles();
+    }
+    let htmlString = "";
+    let classNameString = "";
+
+    if (articleEntries.length === 0) {
+        classNameString = "flex flex-col items-center justify-center p-6";
+        htmlString = `
+            <img src="{% static 'image/not-found.webp' %}" alt="Not Found" class="w-32 h-32 mb-4"/>
+            <p class="text-center text-gray-600 mt-4">There are no articles yet. Why not
+                <a href="{% url 'article:create_article' %}" class="text-blue-500 hover:text-blue-700 hover:underline">create one now?</a>
+            </p>
+        `;
+    } else {
+        classNameString = "grid grid-cols-1 gap-6 w-1/2 mt-6 px-4"
+
+
+        articleEntries.forEach((article) => {
+            htmlString += `
+            <div class="flex flex-col justify-between p-6 rounded-lg bg-white shadow-md border border-gray-200 hover:shadow-xl transition-shadow duration-300 gap-4">
+                <!-- Header Card dengan Info User -->
+                <div class="flex flex-col md:flex-row items-center justify-between gap-5">
+                    <div class="flex flex-col md:flex-row items-center justify-start gap-5">
+                        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" class="h-9 rounded rounded-full">
+                        <p class="text-gray-700 font-semibold"> ${article.user.username}</p>
+                        <p class="text-sm text-gray-500">${article.time}</p>
+                    </div>`
+            if(isUser) {
+                htmlString+= `
+                <div class="flex flex-row justify-end gap-3">
+                    <a href="edit/${article.id}"
+                        class="px-4 py-2 rounded-md bg-blue-500 text-white text-sm font-semibold hover:bg-blue-600 transition-colors duration-200">
+                        Edit
+                    </a>
+                    <a href="delete/${article.id}"
+                        class="px-4 py-2 rounded-md bg-red-500 text-white text-sm font-semibold hover:bg-red-600 transition-colors duration-200">
+                        Delete
+                    </a>
+                </div>
+                `
+            }
+            htmlString+=`
+                </div>
+                
+                <!-- Konten Artikel -->
+                <div class="flex flex-col gap-3">
+                    <p class="font-bold text-lg text-gray-900 text-center">${article.title}</p>
+                    <p class="text-gray-800 break-words whitespace-pre-line text-justify">
+                        ${article.text}
+                    </p>
+                </div>
+            </div>
+            `;
+        });
+    }
+
+    document.getElementById("article_entry_cards").className = classNameString;
+    document.getElementById("article_entry_cards").innerHTML = htmlString;
+}
+refreshMoodEntries()
+</script>
+{% endblock content %}

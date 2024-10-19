@@ -34,6 +34,7 @@ def json_all_article(request):
         article_data = {
             'id': article.id,
             'title': article.title,
+            'img':article.img,
             'text': article.text,
             'time': article.time.strftime("%B %d, %Y %H:%M"),
             'user': {
@@ -50,6 +51,7 @@ def json_user_article(request):
         article_data = {
             'id': article.id,
             'title': article.title,
+            'img':article.img,
             'text': article.text,
             'time': article.time.strftime("%B %d, %Y %H:%M"),
             'user': {

@@ -2,16 +2,14 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from article.models import ArticleEntry
 from article.forms import ArticleEntryForm
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.core import serializers
 from django.urls import reverse
 
 # Create your views here.
 
 def show_articles(request):
-    articles = ArticleEntry.objects.all()
     context = {
-        'articles':articles,
         'user':request.user}
     return render(request,"article_page.html",context)
 
@@ -30,9 +28,36 @@ def create_article(request):
 
 
 def json_all_article(request):
-    articles = ArticleEntry.objects.all()
-    return HttpResponse(serializers.serialize("json", articles), content_type="application/json")
+    articles = ArticleEntry.objects.select_related('user').all()
+    article_list = []
+    for article in articles:
+        article_data = {
+            'id': article.id,
+            'title': article.title,
+            'text': article.text,
+            'time': article.time.strftime("%B %d, %Y %H:%M"),
+            'user': {
+                'username': article.user.username
+            }
+        }
+        article_list.append(article_data)
+    return JsonResponse(article_list, safe=False)
 
+def json_user_article(request):
+    articles = ArticleEntry.objects.filter(user=request.user)
+    article_list = []
+    for article in articles:
+        article_data = {
+            'id': article.id,
+            'title': article.title,
+            'text': article.text,
+            'time': article.time.strftime("%B %d, %Y %H:%M"),
+            'user': {
+                'username': article.user.username
+            }
+        }
+        article_list.append(article_data)
+    return JsonResponse(article_list, safe=False)
 
 def json_id_article(request,id):
     article = ArticleEntry.objects.filter(pk=id)

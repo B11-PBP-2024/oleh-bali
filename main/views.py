@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import login,authenticate, get_user_model,logout
 from django.contrib import messages
-from .forms import CustomUserCreationForm, CustomAuthenticationForm
+from .forms import CustomBuyerCreationForm, CustomSellerCreationForm, CustomAuthenticationForm
 User = get_user_model()
 # Create your views here.
 @login_required(login_url="login/buyer")
@@ -31,16 +31,16 @@ def login_buyer(request):
     return render(request,"auth/login_buyer.html",context)
 
 def register_buyer(request):
-    form = CustomUserCreationForm()
+    form = CustomBuyerCreationForm()
     debug = "no"
     if request.method == "POST":
-        form = CustomUserCreationForm(request.POST)
+        form = CustomBuyerCreationForm(request.POST)
         if form.is_valid():
             debug="yes"
             user = form.save(commit=False)
             user.role = 0
             user.save()
-            return redirect("main:show_main")
+            return redirect("main:login_seller")
     context = {'form':form}
     return render(request,"auth/register_buyer.html",context)
 
@@ -61,14 +61,14 @@ def login_seller(request):
     return render(request,"auth/login_seller.html",context)
 
 def register_seller(request):
-    form = CustomUserCreationForm()
+    form = CustomSellerCreationForm()
     if request.method == "POST":
-        form = CustomUserCreationForm(request.POST)
+        form = CustomSellerCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.role = 1
             user.save()
-            return redirect("main:show_main")
+            return redirect("main:login_seller")
     context = {'form':form,}
     return render(request,"auth/register_seller.html",context)
 

@@ -1,5 +1,5 @@
 from django.urls import path
-from main.views import show_main,login_buyer,login_seller, register_buyer, register_seller, logout_user
+from main.views import show_main,login_buyer,login_seller, register_buyer, register_seller, logout_user, show_wishlist
 app_name = 'main'
 
 urlpatterns = [
@@ -8,5 +8,6 @@ urlpatterns = [
     path("register/buyer",register_buyer,name="register_buyer"),
     path("login/seller",login_seller,name="login_seller"),
     path("register/seller",register_seller,name="register_seller"),
-    path("logout/",logout_user,name="logout_user")
+    path("logout/",logout_user,name="logout_user"),
+    path('', show_wishlist, name='show_wishlist'),
 ]

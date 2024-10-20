@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'main',
     'seller',
     'article',
-    'wishlist'
+    'wishlist',
+    'katalog',
 ]
 
 MIDDLEWARE = [

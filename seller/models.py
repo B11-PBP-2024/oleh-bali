@@ -17,7 +17,6 @@ categories_choices = [
 class ProductEntry(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     product_name = models.CharField(max_length=255)
-    price = models.IntegerField()  # Hapus auto_now_add=True
     description = models.TextField()
     product_image = models.TextField()
     product_category = models.CharField(choices=categories_choices, max_length=255)

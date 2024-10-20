@@ -6,10 +6,10 @@ class User(AbstractUser):
     role = models.IntegerField()
     base_role = 0
 
-    def save(self,*args,**kwargs):
-        if not self.pk:
+    def save(self, *args, **kwargs):
+        if not self.pk and self.role is None:
             self.role = self.base_role
-            return super().save(*args,**kwargs)
+        super().save(*args, **kwargs)
 
 class BuyerManager(BaseUserManager):
     def get_queryset(self,*args,**kwargs):

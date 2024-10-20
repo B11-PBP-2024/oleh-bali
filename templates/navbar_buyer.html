@@ -1,26 +1,34 @@
-<nav class="fixed flex w-screen border-b border-gray-300 bg-white shadow-lg z-10 p-3 justify-between items-center px-10">
+<nav class="fixed flex flex-col md:flex-row w-screen border-b border-gray-300 bg-white shadow-lg z-10 p-3 justify-between items-center px-10">
     <!-- Logo atau Nama Website -->
-    <p class="text-2xl font-bold text-red-700">
+    <p class="text-2xl font-bold text-red-700 OlehBali" id="OlehBali">
         OlehBali<span class="text-gray-700">.</span>
     </p>
     
-    <!-- Links Menu -->
-    <div class="flex items-center gap-8">
-        
+    <!-- Hamburger Icon (hidden on large screens) -->
+    <div class="lg:hidden">
+        <button id="navbar-toggle" class="text-gray-700 hover:text-red-700 focus:outline-none">
+            <!-- Hamburger SVG icon -->
+            <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Links Menu (hidden on small screens) -->
+    <div id="navbar-menu" class="hidden lg:flex items-center gap-8">
         <a href="{% url 'main:show_main' %}" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200">
             Home
         </a>
         
         <a href="{% url 'article:show_articles' %}" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200">
-    
             Articles
         </a>
         
-        <a href="" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200">
+        <a href="#" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200">
             Catalog
         </a>
         
-        <a href="" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200">
+        <a href="#" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200">
             See Stores
         </a>
         
@@ -28,7 +36,7 @@
             Wishlist
         </a>
         
-        <a href="" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200">
+        <a href="#" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200">
             Profile
         </a>
         
@@ -36,4 +44,46 @@
             Logout
         </a>
     </div>
+
+    <!-- Links Menu for Mobile (shown when hamburger is clicked) -->
+    <div id="mobile-menu" class="lg:hidden hidden flex-col items-center gap-10 w-full bg-white py-4">
+        <a href="{% url 'main:show_main' %}" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200 py-3">
+            Home
+        </a>
+        
+        <a href="{% url 'article:show_articles' %}" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200 py-3">
+            Articles
+        </a>
+        
+        <a href="#" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200 py-3">
+            Catalog
+        </a>
+        
+        <a href="#" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200 py-3">
+            See Stores
+        </a>
+        
+        <a href="#" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200 py-3">
+            Wishlist
+        </a>
+        
+        <a href="#" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200 py-3">
+            Profile
+        </a>
+        
+        <a href="{% url 'main:logout_user' %}" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200 py-3">
+            Logout
+        </a>
+    </div>
 </nav>
+
+<script>
+    // JavaScript to toggle the mobile menu
+    const navbarToggle = document.getElementById('navbar-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const OlehBali = document.getElementById('OlehBali')
+
+    navbarToggle.addEventListener('click', function() {
+        mobileMenu.classList.toggle('hidden');
+    });
+</script>

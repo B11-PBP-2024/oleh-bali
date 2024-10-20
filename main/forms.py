@@ -1,11 +1,16 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from main.models import User
+from main.models import User,Buyer,Seller
 
-class CustomUserCreationForm(UserCreationForm):
+class CustomBuyerCreationForm(UserCreationForm):
     class Meta:
-        model = User
+        model = Buyer
+        fields = ('username', 'password1', 'password2')
+
+class CustomSellerCreationForm(UserCreationForm):
+    class Meta:
+        model = Seller
         fields = ('username', 'password1', 'password2')
 
 class CustomAuthenticationForm(AuthenticationForm):

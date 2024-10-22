@@ -13,3 +13,12 @@ def show_catalog(request):
         'products':products,
         'user':request.user}
     return render(request,"catalog.html",context)
+
+def get_product_by_id(request,id):
+    product = ProductEntry.objects.get(pk=id)
+    return HttpResponse(serializers.serialize("json", product), content_type="application/json")
+
+def product_details(request, id):
+    product = ProductEntry.objects.get(pk=id)
+    context = {'product':product}
+    return render(request,"product_details.html",context)

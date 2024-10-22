@@ -1,6 +1,6 @@
 from django.db import models
 from main.models import Buyer
 
-
-
-# Create your models here.
+class ReviewEntry(models.Model):
+    user = models.ForeignKey(Buyer,on_delete=models.CASCADE)
+    product = models.

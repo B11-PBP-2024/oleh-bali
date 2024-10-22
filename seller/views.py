@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
-from .models import ProductEntry
-from .forms import ProductEntryForm
+from django.contrib.auth.decorators import login_required
+from .models import ProductEntry, ProductSeller
+from .forms import ProductEntryForm, ProductSellerForm
 
 def show_products(request):
-    products = ProductEntry.objects.all()  
-    return render(request, 'products.html', {'products': products})
+    products_entry = ProductEntry.objects.all()  
+    return render(request, 'show_products_entry.html', {'products': products_entry})
 
 def add_product(request):
     form = ProductEntryForm(request.POST)
@@ -13,4 +14,23 @@ def add_product(request):
         form.save()
         return redirect('seller:show_products')  
 
-    return render(request, 'create_product.html', {'form': form})
+    return render(request, 'create_product_entry.html', {'form': form})
+
+@login_required
+def add_product_seller(request):
+    form = ProductSellerForm(request.POST)
+    if request.method == 'POST'and form.is_valid() :
+            
+        product_seller = form.save(commit=False)
+        product_seller.seller=request.user
+        product_seller.save()
+        return redirect('seller:show_products')  
+
+    return render(request, 'create_product_seller.html', {'form': form})
+
+@login_required
+def show_product_seller(request):
+    products_seller = ProductSeller.objects.filter(seller=request.user)  
+    return render(request, 'show_products_seller.html', {'products_seller': products_seller})
+
+

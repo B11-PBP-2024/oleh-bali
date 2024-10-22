@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% block meta %}
-<title>Product List</title>
+<title>Product Seller List</title>
 {% endblock meta %}
 {% block content %}
-<h1 class="text-4xl font-bold">Product List</h1> 
+<h1 class="text-4xl font-bold">Product Seller List</h1> 
 
     <table border="1" cellpadding="10">
         <thead>
@@ -15,19 +15,19 @@
             </tr>
         </thead>
         <tbody>
-            {% if products %}  
-                {% for product in products %}
+            {% if products_seller %}  
+                {% for product_seller in products_seller %}
                 <tr>
-                    <td>{{ product.product_name|default:"No Name" }}</td>
+                    <td>{{ product_seller.product.product_name|default:"No Name" }}</td>
                     <td>
-                        {% if product.price is not None %}
-                            {{ product.price }}
+                        {% if product_seller.price is not None %}
+                            {{ product_seller.price }}
                         {% else %}
                             0
                         {% endif %}
                     </td>
-                    <td>{{ product.description|default:"No description available" }}</td>
-                    <td>{{ product.product_category|default:"No category" }}</td>
+                    <td>{{ product_seller.product.description|default:"No description available" }}</td>
+                    <td>{{ product_seller.product.product_category|default:"No category" }}</td>
                 </tr>
                 {% endfor %}
             {% else %}

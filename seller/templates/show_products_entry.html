@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block meta %}
+<title>Product List</title>
+{% endblock meta %}
+{% block content %}
+<h1 class="text-4xl font-bold">Product List</h1> 
+
+    <table border="1" cellpadding="10">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Description</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if products %}  
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.product_name|default:"No Name" }}</td>
+                    <td>
+                        {{product.min_price|default:0}} - {{product.max_price|default:0}}
+                    </td>
+                    <td>{{ product.description|default:"No description available" }}</td>
+                    <td>{{ product.product_category|default:"No category" }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4">No products available.</td> 
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+{% endblock content %}

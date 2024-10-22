@@ -10,7 +10,7 @@ from .decorators import user_is_seller, user_is_buyer
 def profile_buyer(request):
     profile_buyer, created = BuyerProfile.objects.get_or_create(user=request.user)
     
-    # Mengatur Nilai default, jika profile blm dibuat
+    # Mengatur nilai default, jika profile blm dibuat
     if created:
         profile_buyer.profile_picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
         profile_buyer.store_name = request.user.username 
@@ -51,7 +51,7 @@ def profile_buyer_edit(request):
 def profile_seller(request):
     profile_seller, created = SellerProfile.objects.get_or_create(user=request.user)
     
-    # Mengatur Nilai default, jika profile blm dibuat
+    # Mengatur nilai default nya, jika profile blm dibuat
     if created:
         profile_seller.profile_picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
         profile_seller.store_name = request.user.username 

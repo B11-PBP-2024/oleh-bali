@@ -4,5 +4,5 @@ from review.views import show_review
 app_name = "review"
 
 urlpatterns = [
-    path('', show_review, name='show_review')
+    path('<uuid:id>', show_review, name='show_review')
 ]

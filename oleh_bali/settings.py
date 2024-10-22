@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'main',
     'article',
+    'wishlist',
+    'katalog',
     'user_profile',
     'seller',
     'store',

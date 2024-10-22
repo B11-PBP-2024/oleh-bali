@@ -1,10 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser,BaseUserManager
-from main.models import User
+from main.models import User, Buyer, Seller
 
 # Create your models here.
 class BuyerProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(Buyer, on_delete=models.CASCADE)
     profile_picture = models.URLField(max_length=1000, blank=True, null=True)
     store_name = models.CharField(max_length=100)
     nationality = models.CharField(max_length=100)
@@ -13,7 +13,7 @@ class BuyerProfile(models.Model):
         return self.user.username
 
 class SellerProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(Seller, on_delete=models.CASCADE)
     profile_picture = models.URLField(max_length=1000, blank=True, null=True)
     store_name = models.CharField(max_length=100)
     city = models.CharField(max_length=100)

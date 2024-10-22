@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-*0n71a(2_o2+h)wm)ma+%k%x0%3+bq=2ayrezuko^k0hyr*enr
 
 # SECURITY WARNING: don't run with debug turned on in production!
 PRODUCTION = os.getenv("PRODUCTION", False)
-DEBUG = not PRODUCTION 
+DEBUG = not PRODUCTION
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1","ezar-akhdan-olehbali.pbp.cs.ui.ac.id"]
 
@@ -41,11 +41,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'main',
-    'seller',
     'article',
     'wishlist',
     'katalog',
+    'user_profile',
+    'seller',
+    'store',
 ]
 
 MIDDLEWARE = [

@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from main.views import show_main,login_buyer,login_seller, register_buyer, register_seller, logout_user, show_wishlist
 app_name = 'main'
 
@@ -10,4 +10,5 @@ urlpatterns = [
     path("register/seller",register_seller,name="register_seller"),
     path("logout/",logout_user,name="logout_user"),
     path('', show_wishlist, name='show_wishlist'),
+    path('products', include('seller.urls'))
 ]

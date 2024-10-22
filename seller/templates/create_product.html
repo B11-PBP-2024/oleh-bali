@@ -1,18 +1,80 @@
-{% extends 'base.html' %}
-{% block meta %}
-<title>Add Product</title>
-{% endblock meta %}
-{% block content %}
-<form action="" method="POST">
+<form method="POST">
     {% csrf_token %}
+    {{ form.use_existing }}
     <table>
-        {{form.as_table}}
+        <!-- Produk Dataset Dropdown -->
+        <tr id="row_product_dataset">
+            <td>{{ form.product_dataset.label }}</td>
+            <td>{{ form.product_dataset }}</td>
+        </tr>
+
+        <!-- Product Name -->
+        <tr id="row_product_name">
+            <td>{{ form.product_name.label }}</td>
+            <td>{{ form.product_name }}</td>
+        </tr>
+
+        <!-- Product Description -->
+        <tr id="row_description">
+            <td>{{ form.description.label }}</td>
+            <td>{{ form.description }}</td>
+        </tr>
+
+        <!-- Product Image -->
+        <tr id="row_product_image">
+            <td>{{ form.product_image.label }}</td>
+            <td>{{ form.product_image }}</td>
+        </tr>
+
+        <!-- Product Category -->
+        <tr id="row_product_category">
+            <td>{{ form.product_category.label }}</td>
+            <td>{{ form.product_category }}</td>
+        </tr>
+
+        <!-- Product Price -->
         <tr>
-            <td>
+            <td>{{ form.price.label }}</td>
+            <td>{{ form.price }}</td>
+        </tr>
+
+        <!-- Submit Button -->
+        <tr>
+            <td colspan="2">
                 <input type="submit" value="Submit">
             </td>
         </tr>
     </table>
-
 </form>
-{% endblock content %}
+
+<!-- Script untuk toggle fields -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const useExistingCheckbox = document.querySelector('input[name="use_existing"]');
+        const productFields = ['product_name', 'description', 'product_image', 'product_category'];
+
+        function toggleFields() {
+            const isChecked = useExistingCheckbox.checked;
+            productFields.forEach(field => {
+                const fieldRow = document.querySelector(`#row_${field}`);
+                if (isChecked) {
+                    fieldRow.style.display = 'none';  // Sembunyikan jika menggunakan produk dari dataset
+                } else {
+                    fieldRow.style.display = '';  // Tampilkan jika menambah produk baru
+                }
+            });
+
+            // Toggle visibility of the product_dataset field
+            const datasetRow = document.querySelector('#row_product_dataset');
+            if (isChecked) {
+                datasetRow.style.display = '';  // Tampilkan dropdown dataset jika menggunakan produk dari dataset
+            } else {
+                datasetRow.style.display = 'none';  // Sembunyikan jika menambah produk baru
+            }
+        }
+
+        // Event listener untuk checkbox
+        useExistingCheckbox.addEventListener('change', toggleFields);
+        toggleFields();  // Panggil saat halaman pertama kali dimuat
+    });
+</script>

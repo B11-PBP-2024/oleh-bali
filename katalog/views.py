@@ -18,6 +18,10 @@ def get_product_by_id(request,id):
     product = ProductEntry.objects.get(pk=id)
     return HttpResponse(serializers.serialize("json", product), content_type="application/json")
 
+def get_products(request):
+    products = ProductEntry.objects.all()
+    return HttpResponse(serializers.serialize("json", products), content_type="application/json")
+
 def product_details(request, id):
     product = ProductEntry.objects.get(pk=id)
     context = {'product':product}

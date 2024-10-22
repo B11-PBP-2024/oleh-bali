@@ -1,12 +1,9 @@
-<!DOCTYPE html> 
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product List</title>
-</head>
-<body>
-    <h1>Product List</h1>
+{% extends 'base.html' %}
+{% block meta %}
+<title>Product List</title>
+{% endblock meta %}
+{% block content %}
+<h1 class="text-4xl font-bold">Product List</h1> 
 
     <table border="1" cellpadding="10">
         <thead>
@@ -18,7 +15,7 @@
             </tr>
         </thead>
         <tbody>
-            {% if products %}  <!-- Mengganti pengecekan dari exists ke if products -->
+            {% if products %}  
                 {% for product in products %}
                 <tr>
                     <td>{{ product.product_name|default:"No Name" }}</td>
@@ -35,10 +32,9 @@
                 {% endfor %}
             {% else %}
                 <tr>
-                    <td colspan="4">No products available.</td> <!-- Pesan jika tidak ada produk -->
+                    <td colspan="4">No products available.</td> 
                 </tr>
             {% endif %}
         </tbody>
     </table>
-</body>
-</html>
+{% endblock content %}

@@ -34,7 +34,6 @@ class ProductEntry(models.Model):
     def __str__(self):
         return self.product_name if self.product_name else self.product.product_name
 
-# Model untuk menghubungkan penjual (Seller) dengan produk (ProductEntry)
 class ProductSeller(models.Model):
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
     product = models.ForeignKey(ProductEntry, on_delete=models.CASCADE)

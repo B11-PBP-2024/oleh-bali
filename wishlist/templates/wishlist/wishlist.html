@@ -43,11 +43,23 @@
             {% for item in wishlist_items %}
             <div class="border p-4 flex justify-between items-center rounded-md" id="wishlist-item-{{ item.id }}">
                 <div class="flex items-center">
-                    <img src="{{ item.image_url }}" alt="{{ item.name }}" class="rounded-md w-20 h-20 mr-4">
+                    <!-- Display Image URL -->
+                    <img src="{{ item.products.first.product_image }}" alt="{{ item.products.first.product_name }}" class="rounded-md w-20 h-20 mr-4">
                     <div>
-                        <h3 class="font-bold text-lg">{{ item.name }}</h3>
-                        <p class="text-sm text-gray-500">Rp{{ item.min_price }} - Rp{{ item.max_price }}</p>
-                        <p class="text-sm">{{ item.description }}</p>
+                        <h3 class="font-bold text-lg">{{ item.products.first.product_name }}</h3>
+
+                        <!-- Handle Price Display Logic -->
+                        <p class="text-sm text-gray-500">
+                            {% if item.min_price == 0 and item.max_price == 0 %}
+                                Price not available
+                            {% elif item.min_price == item.max_price %}
+                                Rp{{ item.min_price }}
+                            {% else %}
+                                Rp{{ item.min_price }} - Rp{{ item.max_price }}
+                            {% endif %}
+                        </p>
+                        
+                        <p class="text-sm">{{ item.products.first.description }}</p>
                     </div>
                 </div>
                 <div class="flex items-center">
@@ -67,7 +79,13 @@
 
         <!-- Total Price Button -->
         <button class="total-price-btn">
-            TOTAL: Rp{{ total_min }} - Rp{{ total_max }}
+            {% if total_min == 0 and total_max == 0 %}
+                TOTAL: Price not available
+            {% elif total_min == total_max %}
+                TOTAL: Rp{{ total_min }}
+            {% else %}
+                TOTAL: Rp{{ total_min }} - Rp{{ total_max }}
+            {% endif %}
         </button>
     </div>
 {% endblock %}

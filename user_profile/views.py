@@ -13,8 +13,8 @@ def profile_buyer(request):
     # Mengatur nilai default, jika profile blm dibuat
     if created:
         profile_buyer.profile_picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-        profile_buyer.store_name = request.user.username 
-        profile_buyer.nationality = "-"  
+        profile_buyer.store_name = "Not Set" 
+        profile_buyer.nationality = "Not Set"  
         profile_buyer.save()  
 
     if request.method == 'POST':
@@ -36,8 +36,6 @@ def profile_buyer_edit(request):
         form = BuyerProfileForm(request.POST, instance=profile_buyer)
         if form.is_valid():
             profile_buyer = form.save()
-            request.user.username = form.cleaned_data['store_name']
-            request.user.save() 
             return redirect('user_profile:profile_buyer')
     else:
         form = BuyerProfileForm(instance=profile_buyer)
@@ -54,7 +52,7 @@ def profile_seller(request):
     # Mengatur nilai default nya, jika profile blm dibuat
     if created:
         profile_seller.profile_picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-        profile_seller.store_name = request.user.username 
+        profile_seller.store_name = "Not Set"
         profile_seller.city = "Denpasar"  
         profile_seller.price = 10000
         profile_seller.subdistrict = "Denpasar Selatan"
@@ -82,8 +80,6 @@ def profile_seller_edit(request):
         form = SellerProfileForm(request.POST, instance=profile_seller)
         if form.is_valid():
             profile_seller = form.save()
-            request.user.username = form.cleaned_data['store_name']
-            request.user.save() 
             return redirect('user_profile:profile_seller')
     else:
         form = SellerProfileForm(instance=profile_seller)

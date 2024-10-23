@@ -82,3 +82,6 @@ def logout_user(request):
     else:
         return redirect("main:login_seller")
     
+def show_wishlist(request):
+    # Render the wishlist page (make sure the template exists)
+    return render(request, 'wishlist/wishlist.html')

@@ -6,15 +6,15 @@
     
     <!-- Links Menu -->
     <div class="flex items-center gap-8">
-        <a href="#" class="text-white hover:text-gray-300 transition-colors duration-200">
+        <a href="{% url 'main:show_main' %}" class="text-white hover:text-gray-300 transition-colors duration-200">
             Home
         </a>
         
-        <a href="#" class="text-white hover:text-gray-300 transition-colors duration-200">
+        <a href="{% url 'seller:show_products' %}" class="text-white hover:text-gray-300 transition-colors duration-200">
             My Products
         </a>
         
-        <a href="#" class="text-white hover:text-gray-300 transition-colors duration-200">
+        <a href="{% url 'user_profile:profile_seller' %}" class="text-white hover:text-gray-300 transition-colors duration-200">
             Profile
         </a>
         

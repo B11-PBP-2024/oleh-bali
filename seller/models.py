@@ -26,15 +26,14 @@ class ProductEntry(models.Model):
 
     @property
     def min_price(self):
-        return self.productseller_set.aggregate(models.Min("price"))["min_price"]
+        return self.productseller_set.aggregate(models.Min("price"))['price__min']
     @property
     def max_price(self):
-        return self.productseller_set.aggregate(models.Max("price"))["max_price"]
+        return self.productseller_set.aggregate(models.Max("price"))['price__max']
     
     def __str__(self):
         return self.product_name if self.product_name else self.product.product_name
 
-# Model untuk menghubungkan penjual (Seller) dengan produk (ProductEntry)
 class ProductSeller(models.Model):
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
     product = models.ForeignKey(ProductEntry, on_delete=models.CASCADE)

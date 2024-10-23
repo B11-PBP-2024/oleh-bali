@@ -5,9 +5,40 @@
 {% block content %}
 {% include 'navbar_buyer.html' %}
 <div class="overflow-x-hidden px-4 md:px-8 pb-8 pt-24 min-h-screen bg-gray-100 flex flex-col items-center py-0 bg-red-600">
-    <p class="self-start text-bold">Product Catalogs</p>
+    <div class="flex flex-col m-5 gap-2">
+
+        <!-- Search Bar dan Filter -->
+        <div class="flex w-full justify-between items-center mb-4">
+            <!-- Search Bar -->
+            <input id="search-bar" type="text" placeholder="Search for products..." class="w-1/2 border border-gray-400 p-2 rounded-md" onkeyup="searchProducts()">
+            
+            <!-- Filter Button -->
+            <button id="filter-btn" class="bg-white text-red-500 font-bold px-4 py-2 rounded-md" onclick="openFilterModal()">Filter</button>
+        </div>
     
-    <div id="product_entry_cards" class="">
+        <!-- Modal Filter -->
+        <div id="filter-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+            <div class="bg-white rounded-lg p-6 w-1/3">
+                <h3 class="text-2xl font-bold mb-4">Filter Products</h3>
+                <!-- Dropdown Filter by Category -->
+                <label for="category-filter" class="block text-sm font-medium text-gray-700">Category:</label>
+                <select id="category-filter" class="block w-full mt-1 border border-gray-400 rounded-md p-2">
+                    <option value="All Categories">All Categories</option>
+                    {% for category in categories %}
+                        <option value="{{category}}">{{category}}</option>
+                    {% endfor %}
+                </select>
+                
+                <!-- Apply Filter Button -->
+                <div class="flex justify-end mt-4">
+                    <button class="bg-gray-500 text-white px-4 py-2 rounded-md mr-2" onclick="closeFilterModal()">Cancel</button>
+                    <button class="bg-red-500 text-white px-4 py-2 rounded-md" onclick="applyFilter()">Apply</button>
+                </div>
+            </div>
+        </div>
+    
+        <div id="product_entry_cards" class="">
+        </div>
     </div>
 </div>
 
@@ -15,15 +46,18 @@
     async function getAllProducts() {
         return fetch("{% url 'katalog:get_products' %}").then((res) => res.json());
     }
-
-    async function refreshProductEntries() {
+    
+    async function refreshProductEntries(data) {
+    
     document.getElementById("product_entry_cards").innerHTML = "";
     document.getElementById("product_entry_cards").className = "";
     let htmlString = "";
     let classNameString = "";
-    let productEntries = await getAllProducts();
-    console.log(productEntries);
-
+    if(data === null) {
+        productEntries = await getAllProducts();
+    } else {
+        productEntries = data;
+    }
     if (productEntries.length === 0) {
         classNameString = "flex flex-col items-center justify-center p-6";
         htmlString = `
@@ -31,7 +65,7 @@
             <p class="text-center text-gray-600 mt-4">There are no products yet</p>
         `;
     } else {
-        classNameString = "columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 w-full px-4 h-full"
+        classNameString = "columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 w-full h-full"
 
         productEntries.forEach((product) => {
             htmlString += `
@@ -97,10 +131,34 @@
         });
     });
 }
+// JavaScript untuk menampilkan dan menutup filter modal
+function openFilterModal() {
+        document.getElementById('filter-modal').classList.remove('hidden');
+    }
 
+    function closeFilterModal() {
+        document.getElementById('filter-modal').classList.add('hidden');
+    }
+
+    // Fungsi untuk mencari produk berdasarkan keyword
+    async function searchProducts() {
+        const keyword = document.getElementById('search-bar').value;
+        const response = await fetch(`/catalog/json/search/${keyword}`);
+        const products = await response.json();
+        refreshProductEntries(products);
+    }
+
+    // Fungsi untuk menerapkan filter berdasarkan kategori
+    async function applyFilter() {
+        const category = document.getElementById('category-filter').value;
+        const response = await fetch(`/catalog/json/filter/${category}`);
+        const products = await response.json();
+        refreshProductEntries(products);
+        closeFilterModal();
+    }
 // JavaScript to handle Like and Star click events
 document.addEventListener('DOMContentLoaded', function() {
-    refreshProductEntries();
+    refreshProductEntries(null)
 });
 </script>
 {% endblock content %}

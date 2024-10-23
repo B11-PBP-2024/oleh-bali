@@ -22,6 +22,7 @@ class Buyer(User):
     class Meta:
         proxy = True
 
+
 class SellerManager(BaseUserManager):
     def get_queryset(self,*args,**kwargs):
         queryset = super().get_queryset(*args,**kwargs)

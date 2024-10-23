@@ -42,7 +42,7 @@ def filter_by_category(request, category):
 
 # Function untuk memfilter produk berdasarkan search keyword
 def filter_by_keyword(request,keyword):
-    if(keyword==""):
+    if(keyword=="" or keyword==None):
         filtered_products = ProductEntry.objects.all()
     else:
         filtered_products = ProductEntry.objects.filter(

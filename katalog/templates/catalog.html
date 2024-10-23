@@ -163,6 +163,7 @@ function openFilterModal() {
     // Fungsi untuk mencari produk berdasarkan keyword
     async function searchProducts() {
         const keyword = document.getElementById('search-bar').value;
+        console.log(keyword)
         const response = await fetch(`/catalog/json/search/${keyword}`);
         const products = await response.json();
         refreshProductEntries(products);

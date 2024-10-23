@@ -7,6 +7,7 @@ urlpatterns = [
     path("json/<uuid:id>",get_product_by_id,name="get_product_by_id"),
     path("json/filter/<str:category>",filter_by_category,name="filter_by_category"),
     path("json/search/<str:keyword>",filter_by_keyword,name="filter_by_keyword"),
+    path("json/search/",get_products,name="get_products"),
     path("json",get_products,name="get_products"),
     path("<uuid:id>",product_details,name="product_details"),
 

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+        nav {
+            top: 0;
+            margin: 0;
+        }
+
+        /* Style for the total price button */
+        .total-price-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #38a169;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        .total-price-btn:hover {
+            background-color: #2f855a;
+        }
+    </style>
+
+    <!-- Navbar -->
+    {% include 'navbar_buyer.html' %}
+
+    <!-- Main Content -->
+    <div class="container mx-auto mt-20 p-6">
+        <!-- Page Title -->
+        <h2 class="text-2xl font-bold mb-4">My Wishlist</h2>
+        
+        <!-- Wishlist Items -->
+        <div class="space-y-4">
+            {% for item in wishlist_items %}
+            <div class="border p-4 flex justify-between items-center rounded-md">
+                <div class="flex items-center">
+                    <img src="{{ item.image_url }}" alt="{{ item.name }}" class="rounded-md w-20 h-20 mr-4">
+                    <div>
+                        <h3 class="font-bold text-lg">{{ item.name }}</h3>
+                        <p class="text-sm text-gray-500">Rp{{ item.min_price }} - Rp{{ item.max_price }}</p>
+                        <p class="text-sm">{{ item.description }}</p>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <!-- Delete Button -->
+                    <button class="bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600 flex items-center" onclick="removeFromWishlist({{ item.id }})">
+                        <img src="https://img.icons8.com/ios-glyphs/30/FFFFFF/trash.png" alt="Delete" class="w-5 h-5">
+                    </button>
+                </div>
+            </div>
+            {% empty %}
+            <p>No items in your wishlist.</p>
+            {% endfor %}
+        </div>
+
+        <!-- Total Price Button -->
+        <button class="total-price-btn">
+            TOTAL: Rp{{ total_min }} - Rp{{ total_max }}
+        </button>
+    </div>
+
+    <!-- JavaScript for Wishlist Deletion -->
+    <script>
+        function removeFromWishlist(itemId) {
+            alert('Remove item with ID: ' + itemId); 
+        }
+    </script>
+{% endblock %}

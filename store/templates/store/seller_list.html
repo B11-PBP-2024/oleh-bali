@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block meta %}
+<title>Seller List</title>
+<style>
+    /* CSS for smooth transition */
+    #filterOptions {
+        transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+        max-height: 0; /* Collapsed state */
+        opacity: 0; /* Fully transparent */
+        overflow: hidden; /* Hide overflowing content */
+    }
+
+    /* Expanded state */
+    #filterOptions.show {
+        max-height: 200px; /* Adjust this value based on your content */
+        opacity: 1; /* Fully opaque */
+    }
+</style>
+{% endblock meta %}
+{% block content %}
+{% include 'navbar_buyer.html' %}
+
+<div class="bg-red-700 pt-20">
+    <!-- Search -->
+    <section id="search-bar" class="flex justify-center py-5">
+        <form method="GET" class="flex items-center bg-white p-4 rounded-full shadow-lg w-10/12 max-w-4xl">
+            <div class="relative w-full">
+                
+                <input type="text" name="search" placeholder="Search Seller Name" value="{{ search_query }}" 
+                    class="border border-gray-300 rounded-full p-3 pl-10 w-full focus:outline-none focus:ring-2 focus:ring-red-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 absolute top-3 left-3 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11a4 4 0 118 0 4 4 0 01-8 0zm12 4l-4-4"/>
+                </svg>
+            </div>
+
+            <button type="submit" class="ml-4 bg-red-700 text-white p-3 rounded-full shadow hover:bg-red-800 transition duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11a4 4 0 118 0 4 4 0 01-8 0zm12 4l-4-4"/>
+                </svg>
+            </button>
+
+            <button type="button" id="filterToggle" class="ml-4 bg-gray-200 p-3 rounded-full shadow hover:bg-gray-300 transition duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707l-5.328 5.328A4 4 0 0114 14.828V19a1 1 0 01-1.447.894l-2-1A1 1 0 0110 18v-3.172a4 4 0 01-1.379-1.025L3.293 6.707A1 1 0 013 6V4z"/>
+                </svg>
+            </button>
+        </form>
+    </section>
+
+    <section id="filterOptions" class="flex justify-center py-5">
+        <form method="GET" class="flex justify-between items-center bg-white p-4 rounded-lg shadow w-10/12 max-w-4xl">
+            <div class="flex gap-4 w-full">
+                <!-- Subdistrict Dropdown -->
+                <select name="subdistrict" class="border border-gray-300 rounded-lg p-2 w-1/2 focus:outline-none focus:ring-2 focus:ring-red-700">
+                    <option value="">-- Select Subdistrict --</option>
+                    {% for subdistrict, label in subdistrict_choices %}
+                        <option value="{{ subdistrict }}" {% if selected_subdistrict == subdistrict %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <!-- Village Dropdown -->
+                <select name="village" class="border border-gray-300 rounded-lg p-2 w-1/2 focus:outline-none focus:ring-2 focus:ring-red-700">
+                    <option value="">-- Select Village --</option>
+                    {% for village, label in village_choices %}
+                        <option value="{{ village }}" {% if selected_village == village %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="ml-4 bg-red-700 text-white p-3 rounded-full shadow hover:bg-red-800 transition duration-200">
+                Apply 
+            </button>
+        </form>
+    </section>
+
+    <!-- Seller List  -->
+    <section id="seller-list" class="flex flex-col items-center gap-5 py-8 bg-white rounded-t-lg">
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-5">
+            {% if search_query %}
+                Search Results for "{{ search_query }}" in Denpasar
+            {% else %}
+                Explore Sellers in Denpasar
+            {% endif %}
+        </h2>
+        
+        <div class="w-10/12 max-w-4xl space-y-4">
+            {% for store in sellers %}
+            <div class="bg-gray-100 p-4 rounded-lg flex items-center shadow-lg transition duration-200 hover:shadow-xl hover:transform hover:-translate-y-1">
+                <img src="{{ store.profile_picture }}" alt="Seller Image" class="w-24 h-24 rounded-lg object-cover"> <!-- Increased size -->
+                <div class="ml-4 flex-grow">
+                    <h3 class="text-lg font-semibold">{{ store.store_name }}</h3>
+                    <p class="text-gray-700 text-base">Rp.{{ store.price|intcomma }}</p>
+                    <p class="text-gray-600 text-sm">{{ store.address }}, {{ store.village }}, {{ store.subdistrict }}, {{ store.city }}</p>
+                </div>
+                <div class="ml-4 flex-shrink-0">
+                    <a href="{{ store.maps }}" target="_blank" class="text-red-700 hover:text-red-500 transition duration-200" aria-label="View on Google Maps">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2C8.134 2 5 5.134 5 9c0 7.5 7 13 7 13s7-5.5 7-13c0-3.866-3.134-7-7-7zm0 9a2 2 0 100-4 2 2 0 000 4z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+<script>
+    document.getElementById('filterToggle').addEventListener('click', function() {
+        var filterOptions = document.getElementById('filterOptions');
+        filterOptions.classList.toggle('show');
+    });
+</script>
+
+{% endblock content %}

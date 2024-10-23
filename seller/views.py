@@ -1,14 +1,18 @@
 from django.shortcuts import render, redirect
-from seller.forms import ProductEntryForm
-from seller.models import ProductEntry
+from .models import ProductEntry
+from .forms import ProductEntryForm
 
+# View untuk menampilkan daftar produk
 def show_products(request):
+    products = ProductEntry.objects.all()  # Mengambil semua produk dari ProductEntry
+    return render(request, 'products.html', {'products': products})
 
-    return render(request, "products.html")# Create your views here.
-
+# View untuk menambahkan produk
 def add_product(request):
-    form = ProductEntryForm(request.POST or None)
-    if form.is_valid() and request.method == "POST":
-        product = form.save()
-        return redirect("seller:show_products")
-    return render(request,"create_product.html",{'form':form})
+    form = ProductEntryForm(request.POST)
+    if request.method == 'POST'and form.is_valid() :
+            
+        form.save()
+        return redirect('seller:show_products')  
+
+    return render(request, 'create_product.html', {'form': form})

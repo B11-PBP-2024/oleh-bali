@@ -1,18 +1,12 @@
-{% extends 'base.html' %}
-{% block meta %}
-<title>Add Product</title>
-{% endblock meta %}
-{% block content %}
-<form action="" method="POST">
+<form method="POST">
     {% csrf_token %}
     <table>
         {{form.as_table}}
+        <!-- Submit Button -->
         <tr>
-            <td>
+            <td colspan="2">
                 <input type="submit" value="Submit">
             </td>
         </tr>
     </table>
-
 </form>
-{% endblock content %}

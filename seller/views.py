@@ -9,8 +9,7 @@ def show_products(request):
 
 def add_product(request):
     form = ProductEntryForm(request.POST)
-    if request.method == 'POST'and form.is_valid() :
-            
+    if request.method == 'POST' and form.is_valid():
         form.save()
         return redirect('seller:show_products')  
 
@@ -19,10 +18,9 @@ def add_product(request):
 @login_required
 def add_product_seller(request):
     form = ProductSellerForm(request.POST)
-    if request.method == 'POST'and form.is_valid() :
-            
+    if request.method == 'POST' and form.is_valid():
         product_seller = form.save(commit=False)
-        product_seller.seller=request.user
+        product_seller.seller = request.user
         product_seller.save()
         return redirect('seller:show_products')  
 
@@ -30,7 +28,29 @@ def add_product_seller(request):
 
 @login_required
 def show_product_seller(request):
-    products_seller = ProductSeller.objects.filter(seller=request.user)  
-    return render(request, 'show_products_seller.html', {'products_seller': products_seller})
+    search_query = request.GET.get('search', '')  
+    price_min = request.GET.get('price_min')      
+    price_max = request.GET.get('price_max')     
+    category = request.GET.get('category')        
 
+    products_seller = ProductSeller.objects.filter(seller=request.user)
 
+    if search_query:
+        products_seller = products_seller.filter(product__product_name__icontains=search_query)
+
+    if category:
+        products_seller = products_seller.filter(product__product_category__iexact=category)
+
+    if price_min:
+        products_seller = products_seller.filter(price__gte=price_min)
+
+    if price_max:
+        products_seller = products_seller.filter(price__lte=price_max)
+
+    return render(request, 'show_products_seller.html', {
+        'products_seller': products_seller,
+        'search_query': search_query,
+        'price_min': price_min,
+        'price_max': price_max,
+        'category': category,
+    })

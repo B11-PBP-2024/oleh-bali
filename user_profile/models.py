@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser,BaseUserManager
 from main.models import User, Buyer, Seller
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Create your models here.
 class BuyerProfile(models.Model):
@@ -262,3 +264,31 @@ class SellerProfile(models.Model):
     
     def __str__(self):
         return self.user.username
+
+# Sinyal untuk membuat profil setelah buyer dibuat
+@receiver(post_save, sender=Buyer)
+def create_buyer_profile(sender, instance, created, **kwargs):
+    profile_buyer, created = BuyerProfile.objects.get_or_create(user=instance)
+    
+    # Mengatur nilai default, jika profile blm dibuat
+    if created:
+        profile_buyer.profile_picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+        profile_buyer.store_name = instance.username 
+        profile_buyer.nationality = "Not Set"  
+        profile_buyer.save()
+
+@receiver(post_save, sender=Seller)
+def create_seller_profile(sender, instance, created, **kwargs):
+    profile_seller, created = SellerProfile.objects.get_or_create(user=instance)
+    
+    # Mengatur nilai default nya, jika profile blm dibuat
+    if created:
+        profile_seller.profile_picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+        profile_seller.store_name = instance.username
+        profile_seller.city = "Not Set"  
+        profile_seller.price = 10000
+        profile_seller.subdistrict = "Not Set"
+        profile_seller.village = "Not Set"
+        profile_seller.address = "Not Set"  
+        profile_seller.maps = "https://www.google.com/maps"  
+        profile_seller.save()

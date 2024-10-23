@@ -25,7 +25,7 @@ def get_product_by_id(request,id):
 
 def get_products(request):
     products = ProductEntry.objects.all()
-    return HttpResponse(serializers.serialize("json", products), content_type="application/json")
+    return JsonResponse(products_dictionary(products), safe=False)
 
 def product_details(request, id):
     product = ProductEntry.objects.get(pk=id)
@@ -33,19 +33,49 @@ def product_details(request, id):
     return render(request,"product_details.html",context)
 
 # Function untuk memfilter produk berdasarkan kategori
-def filter_by_category(request, category):
+def filter_by_category(category,data=ProductEntry.objects):
     if category == "All Categories":
-        filtered_products = ProductEntry.objects.all()
+        filtered_products = data.all()
     else:
-        filtered_products = ProductEntry.objects.filter(product_category=category)
-    return HttpResponse(serializers.serialize("json", filtered_products), content_type="application/json")
+        filtered_products = data.filter(product_category=category)
+    return filtered_products
 
 # Function untuk memfilter produk berdasarkan search keyword
-def filter_by_keyword(request,keyword):
-    if(keyword==""):
-        filtered_products = ProductEntry.objects.all()
+def filter_by_keyword(keyword,data=ProductEntry.objects):
+    if(keyword=="NoSearch" or keyword==None):
+        filtered_products = data.all()
     else:
-        filtered_products = ProductEntry.objects.filter(
+        filtered_products = data.filter(
             Q(product_name__icontains=keyword) | Q(description__icontains=keyword)
         )
-    return HttpResponse(serializers.serialize("json", filtered_products), content_type="application/json")
+    return filtered_products
+def search_and_filter(request,keyword,category):
+    products1 = filter_by_keyword(keyword)
+    products2 = filter_by_category(category,products1)
+    return JsonResponse(products_dictionary(products2), safe=False)
+
+def products_dictionary(products):
+    product_list = []
+    for product in products:
+        if product.min_price == 0 and product.max_price == 0 or product.min_price == None:
+            price = "Price not available"
+        elif product.min_price == product.max_price:
+            price = f"Rp{product.min_price}"
+        else:
+            price = f"Rp{product.min_price} - Rp{product.max_price}"
+        product_data = {
+            'pk': product.id,
+            'model': "seller.productentry",
+            'fields': {
+                'description': product.description,
+                'product_name' : product.product_name,
+                'product_image' : product.product_image,
+                'product_category' : product.product_category,
+                'price' : price
+            }
+        }
+        product_list.append(product_data)
+    return product_list
+        
+
+

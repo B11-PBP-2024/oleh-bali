@@ -43,8 +43,22 @@
 </div>
 
 <script>
+    let keyword = "NoSearch";
+    let category = "All Categories"
     async function getAllProducts() {
         return fetch("{% url 'katalog:get_products' %}").then((res) => res.json());
+    }
+
+    async function getFilteredProducts() {
+        return fetch(`json/key:${keyword}/cat:${category}`).then((res) => res.json());
+    }
+
+    async function applySearchAndFilter() {
+        if (keyword=="") {
+            keyword = "NoSearch"
+        }
+        data = await getFilteredProducts()
+        refreshProductEntries(data)
     }
     
     async function refreshProductEntries(data) {
@@ -80,7 +94,9 @@
                         </div>
                     </div>
 
-                    <div class="text-bold text-lg">Rp12000</div>
+                    <div class="text-bold text-lg">
+                        ${product.fields.price}
+                    </div>
                     
                     <div class="flex justify-between items-center mt-4">
                         <a href="${product.pk}" class="underline text-blue-500">
@@ -142,23 +158,20 @@ function openFilterModal() {
 
     // Fungsi untuk mencari produk berdasarkan keyword
     async function searchProducts() {
-        const keyword = document.getElementById('search-bar').value;
-        console.log(keyword)
-        const response = await fetch(`/catalog/json/search/${keyword}`);
-        const products = await response.json();
-        refreshProductEntries(products);
+        keyword = document.getElementById('search-bar').value;
+        applySearchAndFilter()
     }
 
     // Fungsi untuk menerapkan filter berdasarkan kategori
     async function applyFilter() {
-        const category = document.getElementById('category-filter').value;
-        const response = await fetch(`/catalog/json/filter/${category}`);
-        const products = await response.json();
-        refreshProductEntries(products);
+        category = document.getElementById('category-filter').value;
         closeFilterModal();
+        applySearchAndFilter()
     }
 // JavaScript to handle Like and Star click events
 document.addEventListener('DOMContentLoaded', function() {
+    let keyword = "NoSearch";
+    let category = "";
     refreshProductEntries(null)
 });
 </script>

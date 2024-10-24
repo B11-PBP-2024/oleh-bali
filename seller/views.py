@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from .models import ProductEntry, ProductSeller
 from .forms import ProductEntryForm, ProductSellerForm
@@ -22,35 +23,56 @@ def add_product_seller(request):
         product_seller = form.save(commit=False)
         product_seller.seller = request.user
         product_seller.save()
-        return redirect('seller:show_products')  
+        return redirect('seller:show_product_seller')  
 
     return render(request, 'create_product_seller.html', {'form': form})
 
 @login_required
 def show_product_seller(request):
-    search_query = request.GET.get('search', '')  
-    price_min = request.GET.get('price_min')      
-    price_max = request.GET.get('price_max')     
+    search_query = request.GET.get('search', '')      
     category = request.GET.get('category')        
+    sort_price = request.GET.get('sort_price')  # Menambahkan parameter untuk pengurutan harga
 
+    # Mendapatkan produk penjual berdasarkan pengguna yang sedang login
     products_seller = ProductSeller.objects.filter(seller=request.user)
 
+    # Mengimplementasikan filter berdasarkan query
     if search_query:
-        products_seller = products_seller.filter(product__product_name__icontains=search_query)
+        products_seller = products_seller.filter(Q(product__product_name__icontains=search_query))
 
     if category:
-        products_seller = products_seller.filter(product__product_category__iexact=category)
+        products_seller = products_seller.filter(Q(product__product_category=category))
 
-    if price_min:
-        products_seller = products_seller.filter(price__gte=price_min)
+    # Logika untuk mengurutkan berdasarkan harga
+    if sort_price == 'asc':
+        products_seller = products_seller.order_by('price')
+    elif sort_price == 'desc':
+        products_seller = products_seller.order_by('-price')
 
-    if price_max:
-        products_seller = products_seller.filter(price__lte=price_max)
+    categories=ProductEntry._meta.get_field('product_category').choices
 
+    # Render ke template dengan semua data yang diperlukan
     return render(request, 'show_products_seller.html', {
         'products_seller': products_seller,
+        'categories': categories,
         'search_query': search_query,
-        'price_min': price_min,
-        'price_max': price_max,
         'category': category,
+        'sort_price': sort_price,  # Mengirim status dropdown pengurutan ke template
     })
+
+def update_product_seller(request, id) :
+    product = get_object_or_404(ProductSeller, id=id)
+    if request.method=='POST':
+        form=ProductSellerForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('seller:show_product_seller')
+    else:
+        form=ProductSellerForm(instance=product)
+    return render(request, 'edit_product_seller.html', {'form':form})
+
+def delete_product_seller(request, id) :
+    product= get_object_or_404(ProductSeller, id=id)
+    if request.method=='POST':
+        product.delete()
+    return redirect('seller:show_product_seller')

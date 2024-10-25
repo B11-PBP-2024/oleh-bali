@@ -11,27 +11,28 @@
         <h1 class="text-4xl font-bold">Product Seller List</h1> 
 
         <div style="margin-bottom: 20px;">
-            <div class="flex gap-12 justify-strech px-6">
-                <div class="border-4 border-green-600 px-10 py-2 rounded-full flex gap-2 flex-1 items-center ">
-                <input class="flex-1" type="text" name="search" id="search" placeholder="Search products..." value="{{ search_query }}" oninput="search_product()">
-                <i class="fa-solid fa-magnifying-glass"></i>
+            <div class="flex gap-12 justify-stretch px-6">
+                <div class="border-4 border-green-600 px-10 py-2 rounded-full flex gap-2 flex-1 items-center">
+                    <input class="flex-1" type="text" name="search" id="search" placeholder="Search products..." value="{{ search_query }}" oninput="search_product()">
+                    <i class="fa-solid fa-magnifying-glass"></i>
                 </div>
+                
                 <!-- Dropdown for sorting prices -->
                 <select name="sort_price" id="sort_price" onchange="sort_price()">
                     <option value="" disabled {% if not sort_price %}selected{% endif %}>Sort by Price</option>
                     <option value="asc" {% if sort_price == 'asc' %}selected{% endif %}>Lowest to Highest</option>
                     <option value="desc" {% if sort_price == 'desc' %}selected{% endif %}>Highest to Lowest</option>
                 </select>
-                </div>
+            </div>
 
             <div class="flex overflow-x-auto gap-8 justify-center mt-8">
                 {% for category_key, category_value in categories %}
-                <a href="?{% if search_query %}search={{search_query}}&{% endif %}category={{category_key}}"> 
-                    <span class="{% if category == category_key%} text-red-400 {%endif%}">
-                        {{category_value}}
+                <a href="?{% if search_query %}search={{ search_query }}&{% endif %}category={{ category_key }}">
+                    <span class="{% if category == category_key %} text-red-400 {% endif %}">
+                        {{ category_value }}
                     </span>
                 </a>
-                {%endfor%}
+                {% endfor %}
             </div>
         </div>
 
@@ -47,100 +48,50 @@
         <div class="grid gap-6 p-6">
             {% for product_seller in products_seller %}
             <div class="flex gap-8 items-center">
-                <img src="{{product_seller.product.product_image}}" alt="gambar produk" class="aspect-square w-64">
+                <img src="{{ product_seller.product.product_image }}" alt="gambar produk" class="aspect-square w-64">
                 <div>
-                    <p>
-                        {{product_seller.product.product_name}}
-                    </p>
-                    <p>
-                        {{product_seller.price}}
-                    </p>
-                    <p>
-                        {{product_seller.product.product_category}}
-                    </p>
-                    <p>
-                        {{product_seller.product.description}}
-                    </p>
+                    <p>{{ product_seller.product.product_name }}</p>
+                    <p>{{ product_seller.price }}</p>
+                    <p>{{ product_seller.product.product_category }}</p>
+                    <p>{{ product_seller.product.description }}</p>
                 </div>
                 <div class="flex gap-6 flex-shrink-0 items-center">
-                    <a class="p-2 text-3xl" href="{% url 'seller:edit_product_seller' product_seller.id %}" > 
+                    <a class="p-2 text-3xl" href="{% url 'seller:edit_product_seller' product_seller.id %}"> 
                         <i class="fa-regular fa-pen-to-square text-blue-500"></i>
-                     </a>
-                     <form method='POST' action="{% url 'seller:delete_product_seller' product_seller.id %}">
-                         {% csrf_token %}
-                         <button type="submit" class="btn text-3xl"><i class="fa-regular fa-trash-can"></i></button>
-                     </form>
+                    </a>
+                    <form method="POST" action="{% url 'seller:delete_product_seller' product_seller.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn text-3xl">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
-            {%endfor%}
+            {% endfor %}
         </div>
-
-        <!-- <table border="1" cellpadding="10">
-            <thead>
-                <tr>
-                    <th>Product Name</th>
-                    <th>Price</th>
-                    <th>Description</th>
-                    <th>Category</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if products_seller %}
-                    {% for product_seller in products_seller %}
-                    <tr>
-                        <td>{{ product_seller.product.product_name|default:"No Name" }}</td>
-                        <td>
-                            {% if product_seller.price is not None %}
-                                {{ product_seller.price }}
-                            {% else %}
-                                0
-                            {% endif %}
-                        </td>
-                        <td>{{ product_seller.product.description|default:"No description available" }}</td>
-                        <td>{{ product_seller.product.product_category|default:"No category" }}</td>
-                        <td> 
-                            <a href="{% url 'seller:edit_product_seller' product_seller.id %}" > 
-                               edit 
-                            </a>
-                            <form method='POST' action="{% url 'seller:delete_product_seller' product_seller.id %}">
-                                {% csrf_token %}
-                                <button type="submit" class="btn">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                {% else %}
-                    <tr>
-                        <td colspan="4">No products available.</td>
-                    </tr>
-                {% endif %}
-            </tbody>
-        </table> -->
     </div>
+
     <script>
-        function search_product(){ 
-            let search_query=document.getElementById('search').value
-            let url=new URL(window.location.href)
-            if (search_query){
-                url.searchParams.set('search', search_query)
+        function search_product() { 
+            let search_query = document.getElementById('search').value;
+            let url = new URL(window.location.href);
+            if (search_query) {
+                url.searchParams.set('search', search_query);
+            } else { 
+                url.searchParams.delete('search');
             }
-            else { 
-                url.searchParams.delete('search')
-            }
-            window.location.href=url
+            window.location.href = url;
         }
 
-        function sort_price(){
-            let sort_price=document.getElementById('sort_price').value
-            let url=new URL(window.location.href)
-            if (sort_price){
-                url.searchParams.set('sort_price', sort_price)
+        function sort_price() {
+            let sort_price = document.getElementById('sort_price').value;
+            let url = new URL(window.location.href);
+            if (sort_price) {
+                url.searchParams.set('sort_price', sort_price);
+            } else { 
+                url.searchParams.delete('sort_price');
             }
-            else { 
-                url.searchParams.delete('sort_price')
-            }
-            window.location.href=url
+            window.location.href = url;
         }
     </script>
 {% endblock content %}

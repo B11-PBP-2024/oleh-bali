@@ -21,7 +21,7 @@ class ProductEntry(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     product_name = models.CharField(max_length=255, null=True, blank=True) 
     description = models.TextField(null=True, blank=True)
-    product_image = models.TextField(null=True, blank=True)
+    product_image = models.URLField(null=True, blank=True)
     product_category = models.CharField(choices=categories_choices, max_length=255)
 
     @property

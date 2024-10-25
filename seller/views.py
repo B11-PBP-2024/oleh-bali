@@ -8,11 +8,22 @@ def show_products(request):
     products_entry = ProductEntry.objects.all()  
     return render(request, 'show_products_entry.html', {'products': products_entry})
 
+@login_required
 def add_product(request):
-    form = ProductEntryForm(request.POST)
-    if request.method == 'POST' and form.is_valid():
-        form.save()
-        return redirect('seller:show_products')  
+    if request.method == 'POST':
+        form = ProductEntryForm(request.POST)
+        if form.is_valid():
+            new_product = form.save()  
+
+            ProductSeller.objects.create(
+                product=new_product,
+                seller=request.user,
+                price=0
+            )
+            return redirect('seller:show_product_seller')
+
+    else:
+        form = ProductEntryForm()
 
     return render(request, 'create_product_entry.html', {'form': form})
 
@@ -31,48 +42,46 @@ def add_product_seller(request):
 def show_product_seller(request):
     search_query = request.GET.get('search', '')      
     category = request.GET.get('category')        
-    sort_price = request.GET.get('sort_price')  # Menambahkan parameter untuk pengurutan harga
+    sort_price = request.GET.get('sort_price')  
 
-    # Mendapatkan produk penjual berdasarkan pengguna yang sedang login
     products_seller = ProductSeller.objects.filter(seller=request.user)
 
-    # Mengimplementasikan filter berdasarkan query
     if search_query:
         products_seller = products_seller.filter(Q(product__product_name__icontains=search_query))
 
     if category:
         products_seller = products_seller.filter(Q(product__product_category=category))
 
-    # Logika untuk mengurutkan berdasarkan harga
     if sort_price == 'asc':
         products_seller = products_seller.order_by('price')
     elif sort_price == 'desc':
         products_seller = products_seller.order_by('-price')
 
-    categories=ProductEntry._meta.get_field('product_category').choices
+    categories = ProductEntry._meta.get_field('product_category').choices  
 
-    # Render ke template dengan semua data yang diperlukan
     return render(request, 'show_products_seller.html', {
         'products_seller': products_seller,
-        'categories': categories,
+        'categories': categories,  
         'search_query': search_query,
         'category': category,
-        'sort_price': sort_price,  # Mengirim status dropdown pengurutan ke template
+        'sort_price': sort_price,
     })
 
-def update_product_seller(request, id) :
+@login_required
+def update_product_seller(request, id):
     product = get_object_or_404(ProductSeller, id=id)
-    if request.method=='POST':
-        form=ProductSellerForm(request.POST, instance=product)
+    if request.method == 'POST':
+        form = ProductSellerForm(request.POST, instance=product)
         if form.is_valid():
             form.save()
             return redirect('seller:show_product_seller')
     else:
-        form=ProductSellerForm(instance=product)
-    return render(request, 'edit_product_seller.html', {'form':form})
+        form = ProductSellerForm(instance=product)
+    return render(request, 'edit_product_seller.html', {'form': form})
 
-def delete_product_seller(request, id) :
-    product= get_object_or_404(ProductSeller, id=id)
-    if request.method=='POST':
+@login_required
+def delete_product_seller(request, id):
+    product = get_object_or_404(ProductSeller, id=id)
+    if request.method == 'POST':
         product.delete()
     return redirect('seller:show_product_seller')

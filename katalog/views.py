@@ -1,11 +1,10 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
-from seller.models import ProductEntry
+from seller.models import ProductEntry, ProductSeller, Seller
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.core import serializers
 from django.urls import reverse
 from django.db.models import Q 
-
 # Create your views here.
 
 def show_catalog(request):
@@ -77,5 +76,14 @@ def products_dictionary(products):
         product_list.append(product_data)
     return product_list
         
+def see_stores(request, product_id):
+    product = get_object_or_404(ProductEntry, id=product_id)
+    
+    product_sellers = ProductSeller.objects.filter(product=product)
+    sellers = Seller.objects.filter(productseller__in=product_sellers).distinct()
 
-
+    context = {
+        'product': product,
+        'sellers': sellers,
+    }
+    return render(request, 'katalog/see_stores.html', context)

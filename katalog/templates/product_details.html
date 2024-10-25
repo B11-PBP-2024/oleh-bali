@@ -26,8 +26,11 @@
                 <p class="w-content text-left text-1xl font-semibold">Description</p>
                 <p class="text-justify">{{product.description}}</p>
             </div>
-            <a href="#features"><button class="bg-red-500 text-white text-2xl font-medium px-4 py-2 rounded shadow w-full">See {{product.product_name}} Stores</button></a>
-            <a href="{% url 'review:show_review' product.pk %}"><button class="bg-white text-red-500 text-2xl font-medium border border-red-500 px-4 py-2 rounded shadow w-full">See {{product.product_name}} reviews</button></a>
+            <a href="{% url 'katalog:see_stores' product.id %}">
+                <button class="bg-red-500 text-white text-2xl font-medium px-4 py-2 rounded shadow w-full">
+                    See {{ product.product_name }} Stores
+                </button>
+            </a>            <a href="{% url 'review:show_review' product.pk %}"><button class="bg-white text-red-500 text-2xl font-medium border border-red-500 px-4 py-2 rounded shadow w-full">See {{product.product_name}} reviews</button></a>
         </div>
     </div>
 </div>

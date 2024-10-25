@@ -21,7 +21,7 @@ class ProductEntry(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     product_name = models.CharField(max_length=255, null=True, blank=True) 
     description = models.TextField(null=True, blank=True)
-    product_image = models.TextField(null=True, blank=True)
+    product_image = models.URLField(null=True, blank=True)
     product_category = models.CharField(choices=categories_choices, max_length=255)
 
     @property
@@ -35,6 +35,7 @@ class ProductEntry(models.Model):
         return self.product_name if self.product_name else self.product.product_name
 
 class ProductSeller(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
     product = models.ForeignKey(ProductEntry, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)  

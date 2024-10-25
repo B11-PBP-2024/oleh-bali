@@ -6,10 +6,6 @@ from django.dispatch import receiver
 
 # Create your models here.
 class BuyerProfile(models.Model):
-    user = models.OneToOneField(Buyer, on_delete=models.CASCADE)
-    profile_picture = models.URLField(max_length=1000, blank=True, null=True)
-    store_name = models.CharField(max_length=100)
-    nationality = models.CharField(max_length=100)
 
     NATIONALITY_CHOICES = [
         ('Afghan', 'Afghan'),
@@ -211,6 +207,13 @@ class BuyerProfile(models.Model):
         ('Zimbabwean', 'Zimbabwean'),
     ]  
 
+    user = models.OneToOneField(Buyer, on_delete=models.CASCADE)
+    profile_picture = models.URLField(max_length=1000, blank=True, null=True)
+    store_name = models.CharField(max_length=100)
+    nationality = models.CharField(max_length=100, choices=NATIONALITY_CHOICES)
+
+    
+
 
     def __str__(self):
         return self.user.username
@@ -220,7 +223,6 @@ class SellerProfile(models.Model):
     profile_picture = models.URLField(max_length=1000, blank=True, null=True)
     store_name = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
-    price = models.IntegerField(default=10000)
     
     SUBDISTRICT_CHOICES = [
         ('Denpasar Selatan', 'Denpasar Selatan'),

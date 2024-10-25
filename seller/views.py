@@ -13,19 +13,24 @@ def add_product(request):
     if request.method == 'POST':
         form = ProductEntryForm(request.POST)
         if form.is_valid():
-            new_product = form.save()  
+            # Simpan produk baru dan ambil instance-nya
+            new_product = form.save()
 
+            # Ambil harga dari form
+            price = form.cleaned_data['price']  # Ambil harga yang diinputkan pengguna
+
+            # Menyimpan ke ProductSeller
             ProductSeller.objects.create(
                 product=new_product,
                 seller=request.user,
-                price=0
+                price=price  # Simpan harga yang diinputkan
             )
-            return redirect('seller:show_product_seller')
+            return redirect('seller:show_product_seller')  # Redirect ke halaman daftar produk
 
     else:
-        form = ProductEntryForm()
+        form = ProductEntryForm()  # Jika GET, buat form baru
 
-    return render(request, 'create_product_entry.html', {'form': form})
+    return render(request, 'create_product_entry.html', {'form': form})  # Kembali ke form jika GET
 
 @login_required
 def add_product_seller(request):
@@ -57,7 +62,7 @@ def show_product_seller(request):
     elif sort_price == 'desc':
         products_seller = products_seller.order_by('-price')
 
-    categories = ProductEntry._meta.get_field('product_category').choices  
+    categories = dict(ProductEntry._meta.get_field('product_category').choices)  
 
     return render(request, 'show_products_seller.html', {
         'products_seller': products_seller,

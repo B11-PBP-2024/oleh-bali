@@ -26,7 +26,7 @@
             </div>
 
             <div class="flex overflow-x-auto gap-8 justify-center mt-8">
-                {% for category_key, category_value in categories %}
+                {% for category_key, category_value in categories.items %}  {# Menggunakan .items untuk unpacking #}
                 <a href="?{% if search_query %}search={{ search_query }}&{% endif %}category={{ category_key }}">
                     <span class="{% if category == category_key %} text-red-400 {% endif %}">
                         {{ category_value }}

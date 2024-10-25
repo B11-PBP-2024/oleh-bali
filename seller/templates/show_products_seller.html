@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block meta %}
+    <title>Product Seller List</title>
+{% endblock meta %}
+
+{% block content %}
+    <h1 class="text-4xl font-bold">Product Seller List</h1> 
+
+    <div style="margin-bottom: 20px;">
+        <h2>My Products</h2>
+        <form method="GET" action="">
+            <input type="text" name="search" placeholder="Search products..." value="{{ request.GET.search }}">
+
+            <input type="number" name="price_min" placeholder="Min Price" value="{{ request.GET.price_min }}">
+            <input type="number" name="price_max" placeholder="Max Price" value="{{ request.GET.price_max }}">
+
+            <input type="text" name="category" placeholder="Category" value="{{ request.GET.category }}">
+
+            <button type="submit" class="btn">Filter</button>
+        </form>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <form action="{% url 'seller:add_product' %}">
+            <button type="submit">Add New Product</button>
+        </form>
+        <form action="{% url 'seller:add_product_seller' %}">
+            <button type="submit">Add Existing Product</button>
+        </form>
+    </div>
+
+    <table border="1" cellpadding="10">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Description</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if products_seller %}
+                {% for product_seller in products_seller %}
+                <tr>
+                    <td>{{ product_seller.product.product_name|default:"No Name" }}</td>
+                    <td>
+                        {% if product_seller.price is not None %}
+                            {{ product_seller.price }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </td>
+                    <td>{{ product_seller.product.description|default:"No description available" }}</td>
+                    <td>{{ product_seller.product.product_category|default:"No category" }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4">No products available.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+{% endblock content %}

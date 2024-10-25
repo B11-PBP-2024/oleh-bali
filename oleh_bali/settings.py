@@ -44,12 +44,12 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'main',
     'article',
+    'review',
     'wishlist',
     'katalog',
     'user_profile',
     'seller',
     'store',
-    'review',
 ]
 
 MIDDLEWARE = [

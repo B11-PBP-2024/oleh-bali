@@ -1,5 +1,5 @@
 from django import forms
-from .models import ProductEntry
+from .models import ProductEntry, ProductSeller
 
 class ProductEntryForm(forms.ModelForm):
 
@@ -25,3 +25,26 @@ class ProductEntryForm(forms.ModelForm):
             self.add_error('product_image', "Please provide an image.")
         if not cleaned_data.get('product_category'):
             self.add_error('product_category', "Please select a product category.")
+
+class ProductSellerForm (forms.ModelForm):
+    class Meta:
+        model = ProductSeller
+        fields = ['product', 'price']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['product'].query = ProductEntry.objects.all()
+        self.fields['product'].required = False
+        self.fields['price'].required = False
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        if not cleaned_data.get('product'):
+            self.add_error('product', "Please enter a product name.")
+        if not cleaned_data.get('price'):
+            self.add_error('price', "Please enter a price.")
+
+        
+
+

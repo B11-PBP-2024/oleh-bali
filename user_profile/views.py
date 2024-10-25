@@ -13,7 +13,7 @@ def profile_buyer(request):
     # Mengatur nilai default, jika profile blm dibuat
     if created:
         profile_buyer.profile_picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-        profile_buyer.store_name = "Not Set" 
+        profile_buyer.store_name = request.user.username 
         profile_buyer.nationality = "Not Set"  
         profile_buyer.save()  
 
@@ -52,7 +52,7 @@ def profile_seller(request):
     # Mengatur nilai default nya, jika profile blm dibuat
     if created:
         profile_seller.profile_picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-        profile_seller.store_name = "Not Set"
+        profile_seller.store_name = request.user.username 
         profile_seller.city = "Denpasar"  
         profile_seller.price = 10000
         profile_seller.subdistrict = "Denpasar Selatan"

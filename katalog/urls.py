@@ -10,6 +10,5 @@ urlpatterns = [
     path("json/key:<str:keyword>/cat:<str:category>",search_and_filter,name="search_and_filter"),
     path("json",get_products,name="get_products"),
     path("<uuid:id>",product_details,name="product_details"),
-    path('catalog/<uuid:product_id>/stores/', views.see_stores, name='see_stores'),
 
 ]

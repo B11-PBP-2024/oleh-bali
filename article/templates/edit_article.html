@@ -1,18 +1,36 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block meta %}
 <title>Articles</title>
+<link rel="stylesheet" href="{% static 'css/form.css' %}">
 {% endblock meta %}
 {% block content %}
 {% include 'navbar_buyer.html' %}
-<form class="pt-16" method="POST">
-    {% csrf_token %}
-    <table>
-        {{form.as_table}}
-        <tr>
-            <td>
-                <input type="submit" value="Edit Article" class="rounded border border-black">
-            </td>
-        </tr>
-    </table>
-</form>
+{{article}}
+<div class="flex flex-col min-h-screen bg-red-700">
+    <div class="container mx-auto px-4 py-8 mt-16 max-w-xl">
+      <h1 class="text-3xl font-bold text-center mb-8 text-white">Edit Article</h1>
+      
+      <div class="bg-white shadow-md rounded-lg p-6 form-style">
+        <form method="POST" class="space-y-6">
+          <a href="{% url 'article:show_articles' %}" class="hover:underline">
+            Back
+          </a>
+          {% csrf_token %}
+          <label for="id_img" class="block text-lg font-medium text-red-700 font-semibold" >Image URL</label>
+          <input id="id_img" name="img" type="text" value="{{article.img}}" required class="appearance-none rounded-md block w-full px-3 py-2 border border-red-300 placeholder-gray-400 text-red-900 focus:outline-none focus:ring-red-500 focus:ring-2 focus:border-red-500 sm:text-lg" placeholder="Enter image URL">
+          <label for="id_title" class="block text-lg font-medium text-red-700 font-semibold ">Article Title</label>
+          <input id="id_title" name="title" type="text" value="{{article.title}}" required class="appearance-none rounded-md block w-full px-3 py-2 border border-red-300 placeholder-gray-400 text-red-900 focus:outline-none focus:ring-red-500 focus:ring-2 focus:border-red-500 sm:text-lg " placeholder="Enter article title">
+          <label for="id_text" class="block text-lg font-medium text-red-700 font-semibold ">Article Text</label>
+          <textarea id="id_text" name="text" type="text" value="" required class=" border border-2 border-gray-400 appearance-none rounded-md block w-full px-3 py-2 border placeholder-gray-400 text-red-900 focus:outline-none focus:ring-red-800 focus:ring-2 focus:border-red-800 sm:text-lg " placeholder="Enter article text">{{article.text}}</textarea>
+          <div class="flex justify-center mt-6">
+            <button type="submit" class="bg-red-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-red-700 transition duration-300 ease-in-out w-full">
+              Edit Article
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% include 'footer_buyer.html' %}
 {% endblock content%}   

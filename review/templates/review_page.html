@@ -26,11 +26,19 @@
                 <!-- Bagian kanan untuk informasi review -->
                 <div class="flex-1">
                     <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold text-red-600">{{ review.user.username }}</h2>
+                        <h2 class="text-lg font-semibold text-red-600">{{ review.user.username }} {{review.id}}</h2>
                         <span class="text-sm text-gray-500">{{ review.time|date:"F j, Y, g:i a" }}</span>
                     </div>
                     <p class="mt-1 text-sm text-gray-600">{{ review.user.buyerprofile.nationality }}</p>
                     <p class="mt-2 text-gray-700">{{ review.review_text }}</p>
+                    <!-- Button edit hanya muncul jika review dibuat oleh user yang sedang login -->
+                    {% if review.user == request.user %}
+                        <div class="mt-4 text-right">
+                            <a class="text-sm text-blue-600 hover:underline">
+                                Edit Review
+                            </a>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}

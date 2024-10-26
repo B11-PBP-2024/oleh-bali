@@ -69,3 +69,13 @@ def add_to_wishlist_from_details(request):
         return JsonResponse({'success': True})
 
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+def delete_wishlist_item_from_catalog(request):
+    if request.method == "POST":
+        product_id = request.POST.get('product_id')
+        if not product_id:
+            return JsonResponse({'success': False, 'error': 'No product ID provided'})
+        wishlist_item = get_object_or_404(WishlistItem, products=product_id, user=request.user.buyerprofile)
+        wishlist_item.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})

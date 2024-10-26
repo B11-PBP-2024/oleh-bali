@@ -14,13 +14,15 @@ def seller_list(request):
     subdistrict_filter = request.GET.get('subdistrict', '')
     village_filter = request.GET.get('village', '')
 
-    # Filter sellers based on search query, subdistrict, and village
+    # Filter berdasarkan pencarian nama seller
     if search_query:
         sellers = sellers.filter(store_name__icontains=search_query)
 
+    # Filter berdasarkan subdistrict
     if subdistrict_filter:
         sellers = sellers.filter(subdistrict=subdistrict_filter)
 
+    # Filter berdasarkan village
     if village_filter:
         sellers = sellers.filter(village=village_filter)
 
@@ -36,3 +38,4 @@ def seller_list(request):
         'village_choices': village_choices,
     }
     return render(request, 'store/seller_list.html', context)
+

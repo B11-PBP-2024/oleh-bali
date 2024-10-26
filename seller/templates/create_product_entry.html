@@ -1,11 +1,129 @@
-<form method="POST">
-    {% csrf_token %}
-    <table>
-        {{form.as_table}}
-        <tr>
-            <td colspan="2">
-                <input type="submit" value="Submit">
-            </td>
-        </tr>
-    </table>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Product Entry</title>
+    <style>
+        body {
+            background-image: url(https://wallpapers.com/images/hd/blue-green-beach-bali-island-mc92rqx7engs0kqe.jpg); /* Ganti dengan URL gambar Anda */
+            background-size: cover; 
+            background-position: center; 
+            display: flex;
+            justify-content: center; 
+            align-items: center;
+            height: 100vh; 
+            margin: 0;
+        }
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.9); 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 0 10px rgba(202, 12, 12, 0.2); 
+            width: 500px; 
+        }
+        h1 {
+            text-align: center; 
+            color: #3d74ed; 
+            margin-bottom: 20px; 
+        }
+        table {
+            width: 100%; 
+        }
+        label {
+            color: rgb(76, 145, 89); 
+            font-weight: bold; 
+        }
+        input[type="text"], input[type="url"], input[type="number"], textarea, select {
+            width: 100%; 
+            padding: 8px; 
+            margin: 8px 0; 
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+            font-size: 14px; 
+        }
+        textarea {
+            height: 60px; 
+            resize: none; 
+        }
+        input[type="submit"] {
+            background-color: #35a5d5; /* Warna tombol */
+            color: white; /* Warna teks tombol */
+            border: none; /* Menghilangkan border */
+            padding: 10px; /* Padding tombol */
+            cursor: pointer; /* Menunjukkan bahwa tombol bisa diklik */
+            border-radius: 5px; /* Sudut membulat pada tombol */
+            transition: background-color 0.3s; /* Transisi warna tombol saat hover */
+            font-size: 16px; /* Ukuran font tombol */
+            display: block; /* Mengubah tombol menjadi elemen blok */
+            margin: 20px auto; /* Memusatkan tombol dengan margin otomatis */
+            width: 80%; /* Lebar tombol */
+        }
+        input[type="submit"]:hover {
+            background-color: #0640be; /* Warna lebih gelap saat hover */
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h1>Add New Product Entry</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <td colspan="2"><label>Name:</label></td>
+            </tr>
+            <tr>
+                <td colspan="2"><input type="text" name="product_name" required></td>
+            </tr>
+            <tr>
+                <td colspan="2"><label>Description:</label></td>
+            </tr>
+            <tr>
+                <td colspan="2"><textarea name="description" required></textarea></td>
+            </tr>
+            <tr>
+                <td colspan="2"><label>Product Image:</label></td>
+            </tr>
+            <tr>
+                <td colspan="2"><input type="url" name="product_image" required></td>
+            </tr>
+            <tr>
+                <td colspan="2"><label>Product Category:</label></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <select name="product_category" required>
+                        <option value="">Select Category</option>
+                        <option value="Textile">Textile</option>
+                        <option value="Art">Art</option>
+                        <option value="Handicraft">Handicraft</option>
+                        <option value="Traditional Wear">Traditional Wear</option>
+                        <option value="Food">Food</option>
+                        <option value="Jewelry">Jewelry</option>
+                        <option value="Souvenir">Souvenir</option>
+                        <option value="Accessory">Accessory</option>
+                        <option value="Traditional Weapon">Traditional Weapon</option>
+                        <option value="Musical Instrument">Musical Instrument</option>
+                        <option value="Beverage">Beverage</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><label>Price:</label></td>
+            </tr>
+            <tr>
+                <td colspan="2"><input type="number" name="price" step="0.01" required></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center;">
+                    <input type="submit" value="Submit">
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+</body>
+</html>

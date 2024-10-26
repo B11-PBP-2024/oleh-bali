@@ -1,13 +1,12 @@
-from django import forms
+from django import forms 
 from .models import ProductEntry, ProductSeller
 
 class ProductEntryForm(forms.ModelForm):
-    # Menambahkan field harga untuk input (akan digunakan hanya di form ini, tidak disimpan di model)
-    price = forms.DecimalField(max_digits=10, decimal_places=2, required=True, label='Price')
+    price = forms.IntegerField(required=True, label='Price')
 
     class Meta:
         model = ProductEntry
-        fields = ['product_name', 'description', 'product_image', 'product_category']  # Tidak termasuk price di sini
+        fields = ['product_name', 'description', 'product_image', 'product_category']  
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -27,16 +26,18 @@ class ProductEntryForm(forms.ModelForm):
         if not cleaned_data.get('product_category'):
             self.add_error('product_category', "Please select a product category.")
 
+
 class ProductSellerForm(forms.ModelForm):
     class Meta:
         model = ProductSeller
-        fields = ['product', 'price']  # Harga akan disimpan di ProductSeller
+        fields = ['product', 'price']  
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Set field 'product' as readonly (disabled)
         self.fields['product'].queryset = ProductEntry.objects.all()
-        self.fields['product'].required = True  # Memastikan produk diperlukan
-        self.fields['price'].required = True  # Memastikan harga diperlukan
+        self.fields['product'].widget.attrs['readonly'] = True  # Membuat product readonly
+        self.fields['price'].required = True  
 
     def clean(self):
         cleaned_data = super().clean()

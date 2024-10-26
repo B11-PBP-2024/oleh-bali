@@ -2,7 +2,7 @@ from django import forms
 from .models import ProductEntry, ProductSeller
 
 class ProductEntryForm(forms.ModelForm):
-    price = forms.DecimalField(max_digits=10, decimal_places=2, required=True, label='Price')
+    price = forms.IntegerField(required=True, label='Price')
 
     class Meta:
         model = ProductEntry

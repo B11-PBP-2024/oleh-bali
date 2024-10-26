@@ -36,7 +36,7 @@ def add_product_seller(request):
         product_seller = form.save(commit=False)
         product_seller.seller = request.user
         product_seller.save()
-        return redirect('seller:show_products_entry')  
+        return redirect('seller:show_product_seller')
 
     return render(request, 'create_product_seller.html', {'form': form})
 

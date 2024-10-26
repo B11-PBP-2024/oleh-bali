@@ -34,7 +34,16 @@ def edit_review(request,id):
 
     if form.is_valid() and request.method == "POST":
         form.save()
-        return HttpResponseRedirect(reverse('review:show_review'))
+        return HttpResponseRedirect(reverse('review:show_review', args=[review.product.id]))
     
     context = {'form': form}
     return render(request, "edit_review.html", context)
+
+def delete_review(request,id):
+    review = ReviewEntry.objects.get(pk=id)
+    product_id = review.product.id
+    print(product_id)
+
+    review.delete()
+
+    return HttpResponseRedirect(reverse('review:show_review', args=[product_id]))

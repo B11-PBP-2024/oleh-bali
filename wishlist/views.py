@@ -13,8 +13,8 @@ def show_wishlist(request):
     buyer_profile = BuyerProfile.objects.get(user=request.user)
     wishlist_items = WishlistItem.objects.filter(user=buyer_profile)
 
-    total_min = min([item.min_price for item in wishlist_items if item.min_price is not None], default=0)
-    total_max = max([item.max_price for item in wishlist_items if item.max_price is not None], default=0)
+    total_min = sum([item.min_price for item in wishlist_items])
+    total_max = sum([item.max_price for item in wishlist_items])
 
     context = {
         'wishlist_items': wishlist_items,

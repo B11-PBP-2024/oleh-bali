@@ -3,19 +3,45 @@
 <title>Login Buyer</title>
 {% endblock meta %}
 {% block content %}
-<div class="flex justify-center items-center h-screen">
-    <div class="flex flex-col justify-center items-center h-max w-max p-5 border border-black rounded">
-        <h1>Login Buyer</h1>
-            <form action="" method="POST" class="flex flex-col justify-center items-center gap-2 my-2">
-                {% csrf_token %}
-                <table>
-                    {{ form.as_table }}
-                </table>
-                <button type="submit" class="w-max border border-black px-2 rounded hover:bg-gray-200">
-                    Login
-                </button>
-            </form>
-            {% for message in messages %}
+<div class="flex flex-col md:flex-row sm:flex-col items-center justify-center w-screen min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8">
+
+    <div>
+      <img class=""
+      src="" alt="" srcset="">
+    </div>
+
+    <div class="min-h-full flex items-center justify-center basis-1/2 w-full ">
+      <div class="max-w-md w-full space-y-8">
+        <div>
+          <h2 class="mt-6 text-center text-4xl font-extrabold text-red-700">
+            OlehBali<span class="text-black">.</span>
+          </h2>
+          <p class="text-center text-xl">Login to your account</p>
+        </div>
+        <form class=" space-y-6" method="POST" action="">
+          {% csrf_token %}
+          <input type="hidden" name="remember" value="true">
+          <div class="rounded-md shadow-sm space-y-4">
+            <div>
+              <label for="username" class="block text-lg font-medium text-red-800 ">Username</label>
+              <input id="username" name="username" type="text" required class="appearance-none rounded-md block w-full px-3 py-2 border border-red-300 placeholder-gray-400 text-red-900 focus:outline-none focus:ring-red-500 focus:ring-2 focus:border-red-500 sm:text-lg " placeholder="Username">
+            </div>
+            <div>
+              <label for="password" class="block text-lg font-medium text-red-800 ">Password</label>
+              <input id="password" name="password" type="password" required class="appearance-none rounded-md block w-full px-3 py-2 border border-red-300 placeholder-gray-400 text-red-900 focus:outline-none focus:ring-red-500 focus:border-red-500 focus:ring-2 sm:text-lg " placeholder="Password">
+            </div>
+          </div>
+    
+          <div>
+            <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-lg font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ">
+              Sign in
+            </button>
+          </div>
+        </form>
+    
+        {% if messages %}
+        <div class="mt-4">
+          {% for message in messages %}
             {% if message.tags == "error" %}
             <div class="px-4 py-3 rounded relative bg-red-100 border border-red-400 text-red-700" role="alert">
                 <span class="block sm:inline">{{ message }}</span>
@@ -29,15 +55,19 @@
                 <span class="block sm:inline">{{ message }}</span>
             </div>
             {% endif %}
-            {% endfor %}
-            <div>
-                Trying to get your shop listed? 
-                <a class="btn text-red-600 hover:text-red-800 hover:underline" href="{% url 'main:login_seller' %}">Login as a Seller</a>
-            </div>
-            <div>
-                Are you new?
-                <a href="{% url 'main:register_buyer' %}" class="hover:underline text-green-700 hover:text-green-800">Sign Up as a Buyer</a>
-            </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+    
+        <div class="text-center mt-4">
+            <p class="text-gray-600 text-sm">New to OlehBali? 
+                <a href="{% url 'main:register_buyer' %}" class="text-red-600 font-semibold hover:underline">Create an Account</a>
+            </p>
+            <p class="text-gray-600 text-sm mt-2">Are you a seller? 
+                <a href="{% url 'main:login_seller' %}" class="text-blue-600 font-semibold hover:underline">Sign in here</a>
+            </p>
+        </div>
+      </div>
     </div>
 </div>
 {% endblock content %}

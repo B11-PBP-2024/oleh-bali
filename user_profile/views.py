@@ -54,7 +54,6 @@ def profile_seller(request):
         profile_seller.profile_picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
         profile_seller.store_name = request.user.username 
         profile_seller.city = "Denpasar"  
-        profile_seller.price = 10000
         profile_seller.subdistrict = "Denpasar Selatan"
         profile_seller.village = "Panjer"
         profile_seller.address = "Not Set"  

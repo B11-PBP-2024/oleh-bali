@@ -8,6 +8,7 @@ from django.dispatch import receiver
 class BuyerProfile(models.Model):
 
     NATIONALITY_CHOICES = [
+        ('Not Set', 'Not Set'),
         ('Afghan', 'Afghan'),
         ('Albanian', 'Albanian'),
         ('Algerian', 'Algerian'),
@@ -288,9 +289,8 @@ def create_seller_profile(sender, instance, created, **kwargs):
         profile_seller.profile_picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
         profile_seller.store_name = instance.username
         profile_seller.city = "Not Set"  
-        profile_seller.price = 10000
-        profile_seller.subdistrict = "Not Set"
-        profile_seller.village = "Not Set"
+        profile_seller.subdistrict = "Denpasar Selatan"
+        profile_seller.village = "Panjer"
         profile_seller.address = "Not Set"  
         profile_seller.maps = "https://www.google.com/maps"  
         profile_seller.save()

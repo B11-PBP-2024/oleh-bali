@@ -20,7 +20,11 @@
             
             <div class="hidden">
               {{ form.store_name }}
-              {{ form.nationality }}
+              <select name="nationality" id="id_nationality" class="border bg-white border-gray-300 p-2 rounded-md">
+                {% for value, display in form.nationality.field.choices %}
+                    <option value="{{ value }}"{% if profile.nationality == value %} selected{% endif %}>{{ display }}</option>
+                {% endfor %}
+            </select>
             </div>
           </form>
         </div>

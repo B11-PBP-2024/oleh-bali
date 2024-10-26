@@ -50,9 +50,9 @@ def delete_review(request,id):
 
     return HttpResponseRedirect(reverse('review:show_review', args=[product_id]))
 
-@csrf_exempt
-@require_POST
-def create_review_ajax(request):
-    review = request.POST.get("review")
-    user = request.user
+# @csrf_exempt
+# @require_POST
+# def create_review_ajax(request):
+#     review = request.POST.get("review")
+#     user = request.user
 

@@ -11,8 +11,8 @@
     </section>
 
     <!-- Seller List -->
-    <section class="flex flex-col items-center gap-5 py-8 bg-white rounded-t-lg">
-        <div class="w-10/12 max-w-4xl space-y-4">
+    <section class="flex flex-col items-center gap-5 py-8 bg-white rounded-t-lg min-h-screen">
+        <div class="w-10/12 max-w-4xl space-y-4 flex-grow">
             {% for item in sellers_with_prices %}
             <div class="bg-gray-100 p-6 rounded-lg flex items-start shadow-lg transition duration-200 hover:shadow-xl hover:-translate-y-1">
                 <!-- Seller Image -->
@@ -46,4 +46,7 @@
         </div>
     </section>
 </div>
-{% endblock content %}
+
+<!-- Footer -->
+{% include 'footer_buyer.html' %}
+{% endblock %}

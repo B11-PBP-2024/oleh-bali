@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'user_profile',
     'seller',
     'store',
+    'like',
     'see_stores',
 ]
 

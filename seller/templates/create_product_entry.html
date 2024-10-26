@@ -1,16 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Product Entry</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-
-<body class="bg-cover bg-center h-screen flex items-center justify-center"
+{% extends 'base.html' %}
+{% block meta %}
+<title>
+    Add New Product
+</title>
+{% endblock meta %}
+{% block content %}
+<div class="bg-cover bg-center h-screen flex items-center justify-center"
     style="background-image: url('https://wallpapers.com/images/hd/blue-green-beach-bali-island-mc92rqx7engs0kqe.jpg');">
-    <div
+<div 
         class="bg-white bg-opacity-90 p-6 rounded-lg shadow-lg w-full max-w-lg"> 
         <h1 class="text-3xl font-bold text-center text-blue-600 mb-4">Add New Product Entry</h1>
         <form method="POST">
@@ -59,6 +56,5 @@
             </div>
         </form>
     </div>
-</body>
-
-</html>
+</div>
+{% endblock content %}

@@ -17,6 +17,9 @@
 
     <!-- Container untuk review -->
     <div class="max-w-3xl mx-auto bg-white shadow-lg p-6 rounded-lg">
+        {% if not reviews %}
+            <p class="text-center"> There is no reviews yet.</p>
+        {% else %}
         {% for review in reviews %}
             <div class="border-b border-gray-300 py-6 flex space-x-4">
                 <!-- Bagian kiri untuk avatar -->
@@ -49,6 +52,7 @@
                 </div>
             </div>
         {% endfor %}
+        {% endif %}
     </div>
 </div>
 

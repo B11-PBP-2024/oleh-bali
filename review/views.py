@@ -3,6 +3,8 @@ from django.http import HttpResponseRedirect
 from review.models import ReviewEntry
 from seller.models import ProductEntry
 from review.forms import ReviewEntryForm
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 def show_review(request,id):
     product = ProductEntry.objects.get(pk=id)
@@ -47,3 +49,10 @@ def delete_review(request,id):
     review.delete()
 
     return HttpResponseRedirect(reverse('review:show_review', args=[product_id]))
+
+@csrf_exempt
+@require_POST
+def create_review_ajax(request):
+    review = request.POST.get("review")
+    user = request.user
+

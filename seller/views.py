@@ -59,7 +59,7 @@ def show_product_seller(request):
     elif sort_price == 'desc':
         products_seller = products_seller.order_by('-price')
 
-    categories = dict(ProductEntry._meta.get_field('product_category').choices)  
+    categories = dict(ProductEntry._meta.get_field('product_category').choices) 
 
     return render(request, 'show_products_seller.html', {
         'products_seller': products_seller,
@@ -73,13 +73,12 @@ def show_product_seller(request):
 def update_product_seller(request, id):
     product = get_object_or_404(ProductSeller, id=id)
     if request.method == 'POST':
-        form = ProductSellerForm(request.POST, instance=product)
-        if form.is_valid():
-            form.save()
-            return redirect('seller:show_product_seller')
-    else:
-        form = ProductSellerForm(instance=product)
-    return render(request, 'edit_product_seller.html', {'form': form})
+        price = request.POST.get('price')
+        # form = ProductSellerForm(request.POST, instance=product)
+        if price:
+            product.price=price
+            product.save()
+    return redirect('seller:show_product_seller')
 
 @login_required
 def delete_product_seller(request, id):

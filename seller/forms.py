@@ -34,9 +34,9 @@ class ProductSellerForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Set field 'product' as readonly (disabled)
+        
         self.fields['product'].queryset = ProductEntry.objects.all()
-        self.fields['product'].widget.attrs['readonly'] = True  # Membuat product readonly
+        self.fields['product'].widget.attrs['readonly'] = True  
         self.fields['price'].required = True  
 
     def clean(self):

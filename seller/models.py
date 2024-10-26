@@ -37,11 +37,11 @@ class ProductEntry(models.Model):
         max_price = self.max_price
         
         if min_price is None and max_price is None:
-            return None  # Tidak ada harga yang ditampilkan
+            return None  
         elif min_price == max_price:
-            return f"Rp{min_price:,}"  # Tampilkan satu harga jika sama, tanpa desimal
+            return f"Rp{min_price:,}"
         else:
-            return f"Rp{min_price:,} - Rp{max_price:,}"  # Tampilkan rentang harga tanpa desimal
+            return f"Rp{min_price:,} - Rp{max_price:,}"
 
     def __str__(self):
         return self.product_name if self.product_name else self.product.product_name

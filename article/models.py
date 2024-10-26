@@ -1,10 +1,10 @@
 from django.db import models
-from main.models import User
+from main.models import Buyer
 import uuid
 from django.utils import timezone
 
 class ArticleEntry(models.Model):
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    user = models.ForeignKey(Buyer,on_delete=models.CASCADE)
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     img = models.TextField()
     time = models.DateTimeField(default=timezone.now)

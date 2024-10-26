@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% block meta %}
-<title>Review</title>
+<title>Edit Review</title>
 {% endblock meta %}
 
 {% block content %}
 {% include 'navbar_buyer.html' %}
 
 <div class="py-20 bg-white">
-    <h1 class="text-3xl font-bold text-red-600 text-center mb-8">Add Your Review</h1>
+    <h1 class="text-3xl font-bold text-red-600 text-center mb-8">Edit Your Review</h1>
 
     <div class="max-w-2xl mx-auto bg-gray-50 p-8 rounded-lg shadow-lg">
         <form method="POST" class="space-y-6">
@@ -21,8 +21,9 @@
                 <!-- Label -->
                 <label for="id_review_text" class="block text-sm font-medium text-gray-700">Your Review:</label>
                 <div class="mt-1">
-                    <textarea name="review_text" id="id_review_text" class="custom-input w-full h-40" placeholder="Write your review here..."></textarea>
-
+                    <!-- Display the existing review text inside the textarea -->
+                    {{ form.review_text }}
+                    
                     <!-- Error Message -->
                     {% if form.review_text.errors %}
                         <p class="text-red-500 text-sm mt-2">{{ form.review_text.errors }}</p>
@@ -33,7 +34,7 @@
             <!-- Submit Button -->
             <div class="mt-6 text-center">
                 <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-500 transition duration-300">
-                    Submit Review
+                    Update Review
                 </button>
             </div>
         </form>

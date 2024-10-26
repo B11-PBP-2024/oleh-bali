@@ -14,7 +14,6 @@ categories_choices = [
     ('Traditional Weapon', 'Traditional Weapon'),
     ('Musical Instrument', 'Musical Instrument'),
     ('Beverage', 'Beverage'),
-    ('Art', 'Art'),
 ]
 
 class ProductEntry(models.Model):
@@ -27,10 +26,23 @@ class ProductEntry(models.Model):
     @property
     def min_price(self):
         return self.productseller_set.aggregate(models.Min("price"))['price__min']
+
     @property
     def max_price(self):
         return self.productseller_set.aggregate(models.Max("price"))['price__max']
     
+    @property
+    def price_display(self):
+        min_price = self.min_price
+        max_price = self.max_price
+        
+        if min_price is None and max_price is None:
+            return None  # Tidak ada harga yang ditampilkan
+        elif min_price == max_price:
+            return f"Rp{min_price:.2f}"  # Tampilkan satu harga jika sama
+        else:
+            return f"Rp{min_price:.2f} - Rp{max_price:.2f}"  # Tampilkan rentang harga
+
     def __str__(self):
         return self.product_name if self.product_name else self.product.product_name
 

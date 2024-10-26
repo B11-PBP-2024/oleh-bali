@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'user_profile',
     'seller',
     'store',
+    'see_stores',
 ]
 
 MIDDLEWARE = [

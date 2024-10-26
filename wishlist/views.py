@@ -8,18 +8,13 @@ from django.views.decorators.csrf import csrf_exempt
 from seller.models import ProductEntry
 from django.contrib.auth.decorators import login_required
 
+@login_required
 def show_wishlist(request):
     buyer_profile = BuyerProfile.objects.get(user=request.user)
     wishlist_items = WishlistItem.objects.filter(user=buyer_profile)
 
-    total_min = 0
-    total_max = 0
-    for item in wishlist_items:
-        item_min = item.products.aggregate(min_price=Min('productseller__price'))['min_price']
-        item_max = item.products.aggregate(max_price=Max('productseller__price'))['max_price']
-
-        total_min += item_min or 0
-        total_max += item_max or 0
+    total_min = min([item.min_price for item in wishlist_items if item.min_price is not None], default=0)
+    total_max = max([item.max_price for item in wishlist_items if item.max_price is not None], default=0)
 
     context = {
         'wishlist_items': wishlist_items,
@@ -28,12 +23,15 @@ def show_wishlist(request):
     }
     return render(request, 'wishlist/wishlist.html', context)
 
+@login_required
 def delete_wishlist_item(request, id):
-    wishlist_item = get_object_or_404(WishlistItem, pk=id, user=request.user.buyerprofile)
+    buyer_profile = get_object_or_404(BuyerProfile, user=request.user)
+    wishlist_item = get_object_or_404(WishlistItem, pk=id, user=buyer_profile)
     wishlist_item.delete()
     return redirect(reverse('wishlist:show_wishlist'))
 
 @csrf_exempt
+@login_required
 def add_to_wishlist(request):
     if request.method == "POST":
         product_id = request.POST.get('product_id')
@@ -52,8 +50,8 @@ def add_to_wishlist(request):
 
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
-@login_required
 @csrf_exempt
+@login_required
 def add_to_wishlist_from_details(request):
     if request.method == "POST":
         product_id = request.POST.get('product_id')
@@ -70,4 +68,14 @@ def add_to_wishlist_from_details(request):
 
         return JsonResponse({'success': True})
 
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+def delete_wishlist_item_from_catalog(request):
+    if request.method == "POST":
+        product_id = request.POST.get('product_id')
+        if not product_id:
+            return JsonResponse({'success': False, 'error': 'No product ID provided'})
+        wishlist_item = get_object_or_404(WishlistItem, products=product_id, user=request.user.buyerprofile)
+        wishlist_item.delete()
+        return JsonResponse({'success': True})
     return JsonResponse({'success': False, 'error': 'Invalid request method'})

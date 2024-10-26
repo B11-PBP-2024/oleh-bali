@@ -77,7 +77,7 @@
 
         <!-- Tidak menampilkan Product Name, hanya Price -->
         <label for="price">Price:</label>
-        <input type="number" name="price" id="price" step="0.01" value="{{ form.price.value }}" required>
+        <input type="text" inputmode="numeric" name="price" id="price" value="{{ product_seller.price }}" required>
 
         <input type="submit" value="Submit">
     </form>

@@ -1,10 +1,10 @@
 from django.urls import path
-from .views import add_product, add_product_seller, show_product_seller, update_product_seller, delete_product_seller
+from .views import add_product, add_product_seller, show_product_seller, update_product_seller, delete_product_seller, show_products
 
 app_name = 'seller'
 
 urlpatterns = [
-    path('', show_product_seller, name='show_products'),          
+    path('', show_products, name='show_products'),          
     path('create/', add_product, name='add_product'), 
     path('seller/create', add_product_seller, name='add_product_seller'), 
     path('seller/', show_product_seller , name='show_product_seller'),  

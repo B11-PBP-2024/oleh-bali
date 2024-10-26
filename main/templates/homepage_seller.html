@@ -12,10 +12,11 @@
 {% endblock meta %}
 {% block content %}
 {% include 'navbar_seller.html' %}
-<div class="bg-white pt-16">
+<div class="bg-white pt-28 md:pt-20">
     <section id="hero">
-        <div class="flex flex-wrap bg-red-700 rounded-lg mx-6">
-            <div class="sm:w-8/12">
+        <div class="flex flex-wrap rounded-lg mx-6 md:flex-row-reverse flex-col bg-red-700">
+            <img src="https://youngontop.com/wp-content/uploads/2024/10/We-Asked-Photographers-From-All-Over-The-World-To-Show-Their-Most-Stunning-Shots-Of-Women-30-Pics.jpeg" alt="Leafs" class="object-cover h-48 md:h-screen md:w-4/12 md:rounded-lg">
+            <div class="md:w-8/12 md:p-0 p-5">
                 <div class="container mx-auto h-full sm:p-10">
                     <nav class="flex px-4 justify-between items-center">
                         <div class="text-4xl font-bold text-white">
@@ -32,7 +33,7 @@
                     </header>
                 </div>
             </div>
-            <img src="https://youngontop.com/wp-content/uploads/2024/10/We-Asked-Photographers-From-All-Over-The-World-To-Show-Their-Most-Stunning-Shots-Of-Women-30-Pics.jpeg" alt="Leafs" class="w-full h-48 object-cover sm:h-screen sm:w-4/12 rounded-lg">
+            
         </div>
     </section>
     <section id="features">
@@ -47,7 +48,7 @@
                         <a href="{% url 'seller:show_product_seller'%}">
                             <h5 class="mb-2 text-2xl font-semibold tracking-tight text-white">My Products</h5>
                         </a>
-                        <p class="mb-3 font-normal text-white">Manage and add new products easily to your shop. Grow your business by showcasing authentic Balinese souvenirs to tourists from all over the world.</p>
+                        <p class="mb-3 font-normal text-white">Manage and add new products easily to your shop. Grow your business by showcasing authentic souvenirs to tourists from all over the world travelling to Denpasar.</p>
                         <a href="{% url 'seller:show_product_seller'%}" class="inline-flex font-medium items-center text-white hover:underline">
                             See your products
                             <svg class="w-3 h-3 ms-2.5 rtl:rotate-[270deg]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">

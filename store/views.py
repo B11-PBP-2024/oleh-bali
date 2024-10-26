@@ -1,11 +1,13 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from user_profile.models import SellerProfile
+from seller.models import ProductSeller
+from django.db.models import Q
 
 # Create your views here.
-
 @login_required
 def seller_list(request):
+    # Ambil semua profil seller
     sellers = SellerProfile.objects.all()
 
     search_query = request.GET.get('search', '')

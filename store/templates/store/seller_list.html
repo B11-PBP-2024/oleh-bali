@@ -5,16 +5,28 @@
 <style>
     /* CSS for smooth transition */
     #filterOptions {
-        transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
-        max-height: 0; /* Collapsed state */
-        opacity: 0; /* Fully transparent */
-        overflow: hidden; /* Hide overflowing content */
+        display: none;
     }
 
-    /* Expanded state */
-    #filterOptions.show {
-        max-height: 200px; /* Adjust this value based on your content */
-        opacity: 1; /* Fully opaque */
+    /* Align search and filter icons */
+    .icon-image {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+    }
+
+    .search-button {
+        padding: 0.75rem;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: white; /* Circle background color */
+        border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .search-button:hover {
+        background-color: rgba(0, 0, 0, 0.1);
     }
 </style>
 {% endblock meta %}
@@ -26,54 +38,15 @@
     <section id="search-bar" class="flex justify-center py-5">
         <form method="GET" class="flex items-center bg-white p-4 rounded-full shadow-lg w-10/12 max-w-4xl">
             <div class="relative w-full">
-                
-                <input type="text" name="search" placeholder="Search Seller Name" value="{{ search_query }}" 
+                <input type="text" name="search" placeholder="Search Store" value="{{ search_query }}" 
                     class="border border-gray-300 rounded-full p-3 pl-10 w-full focus:outline-none focus:ring-2 focus:ring-red-700">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 absolute top-3 left-3 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11a4 4 0 118 0 4 4 0 01-8 0zm12 4l-4-4"/>
-                </svg>
+                <img src="https://cdn3.iconfinder.com/data/icons/feather-5/24/search-512.png" 
+                     alt="Search Icon" class="icon-image absolute top-1/2 left-3 transform -translate-y-1/2">
             </div>
 
-            <button type="submit" class="ml-4 bg-red-700 text-white p-3 rounded-full shadow hover:bg-red-800 transition duration-200">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11a4 4 0 118 0 4 4 0 01-8 0zm12 4l-4-4"/>
-                </svg>
-            </button>
-
-            <button type="button" id="filterToggle" class="ml-4 bg-gray-200 p-3 rounded-full shadow hover:bg-gray-300 transition duration-200">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707l-5.328 5.328A4 4 0 0114 14.828V19a1 1 0 01-1.447.894l-2-1A1 1 0 0110 18v-3.172a4 4 0 01-1.379-1.025L3.293 6.707A1 1 0 013 6V4z"/>
-                </svg>
-            </button>
-        </form>
-    </section>
-
-    <section id="filterOptions" class="flex justify-center py-5">
-        <form method="GET" class="flex justify-between items-center bg-white p-4 rounded-lg shadow w-10/12 max-w-4xl">
-            <div class="flex gap-4 w-full">
-                <!-- Subdistrict Dropdown -->
-                <select name="subdistrict" class="border border-gray-300 rounded-lg p-2 w-1/2 focus:outline-none focus:ring-2 focus:ring-red-700">
-                    <option value="">-- Select Subdistrict --</option>
-                    {% for subdistrict, label in subdistrict_choices %}
-                        <option value="{{ subdistrict }}" {% if selected_subdistrict == subdistrict %}selected{% endif %}>
-                            {{ label }}
-                        </option>
-                    {% endfor %}
-                </select>
-
-                <!-- Village Dropdown -->
-                <select name="village" class="border border-gray-300 rounded-lg p-2 w-1/2 focus:outline-none focus:ring-2 focus:ring-red-700">
-                    <option value="">-- Select Village --</option>
-                    {% for village, label in village_choices %}
-                        <option value="{{ village }}" {% if selected_village == village %}selected{% endif %}>
-                            {{ label }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <button type="submit" class="ml-4 bg-red-700 text-white p-3 rounded-full shadow hover:bg-red-800 transition duration-200">
-                Apply 
+            <button type="submit" class="search-button ml-4 text-white shadow transition duration-200">
+                <img src="https://cdn3.iconfinder.com/data/icons/feather-5/24/search-512.png" 
+                     alt="Search Icon" class="icon-image">
             </button>
         </form>
     </section>
@@ -128,18 +101,9 @@
                     </a>
                 </div>
             </div>
-            
-            
             {% endfor %}
         </div>
     </section>
 </div>
-
-<script>
-    document.getElementById('filterToggle').addEventListener('click', function() {
-        var filterOptions = document.getElementById('filterOptions');
-        filterOptions.classList.toggle('show');
-    });
-</script>
-
-{% endblock content %}
+{% include 'footer_buyer.html' %}
+{% endblock %}

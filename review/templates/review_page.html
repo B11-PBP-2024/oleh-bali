@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block meta %}
+<title>Reviews</title>
 {% endblock meta %}
 
 {% block content %}
@@ -30,6 +31,15 @@
                     </div>
                     <p class="mt-1 text-sm text-gray-600">{{ review.user.buyerprofile.nationality }}</p>
                     <p class="mt-2 text-gray-700">{{ review.review_text }}</p>
+
+                    <!-- Button edit hanya muncul jika review dibuat oleh user yang sedang login -->
+                    {% if review.user == request.user %}
+                        <div class="mt-4 text-right">
+                            <a href="{% url 'review:edit_review' review.pk %}" class="text-sm text-blue-600 hover:underline">
+                                Edit Review
+                            </a>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}

@@ -1,9 +1,8 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect, reverse
+from django.http import HttpResponseRedirect
 from review.models import ReviewEntry
 from seller.models import ProductEntry
 from review.forms import ReviewEntryForm
-
-# Create your views here
 
 def show_review(request,id):
     product = ProductEntry.objects.get(pk=id)
@@ -28,3 +27,14 @@ def create_review(request,id):
     context = {'form': form}
     return render(request, "create_review.html", context)
 
+def edit_review(request,id):
+    review = ReviewEntry.objects.get(pk=id)
+
+    form = ReviewEntryForm(request.POST or None, instance=review)
+
+    if form.is_valid() and request.method == "POST":
+        form.save()
+        return HttpResponseRedirect(reverse('review:show_review'))
+    
+    context = {'form': form}
+    return render(request, "edit_review.html", context)

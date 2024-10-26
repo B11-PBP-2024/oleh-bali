@@ -129,7 +129,8 @@
                 </div>
             </div>
             
-            
+            {% empty %}
+            <p class="text-2xl font-bold text-center text-gray-800 mb-5">there are no store</p>
             {% endfor %}
         </div>
     </section>
@@ -139,6 +140,25 @@
     document.getElementById('filterToggle').addEventListener('click', function() {
         var filterOptions = document.getElementById('filterOptions');
         filterOptions.classList.toggle('show');
+    });
+
+    $(document).ready(function() {
+        $('#search-bar form').on('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'GET',
+                data: $(this).serialize(),
+                success: function(response) {
+                    // Replace the seller list with the new HTML
+                    $('#seller-list').html(response.html);
+                },
+                error: function(xhr) {
+                    console.error('Error:', xhr);
+                }
+            });
+        });
     });
 </script>
 

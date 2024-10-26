@@ -41,7 +41,7 @@
         
         <div class="flex items-center justify-end p-6 border-t border-gray-300">
           <button class="text-red-500 font-bold uppercase px-4 py-2 text-sm focus:outline-none mr-2" type="button" onclick="toggleModal('modal-id')">Cancel</button>
-          <button class="bg-green-600 text-white font-bold uppercase text-sm px-4 py-2 rounded shadow-lg hover:bg-green-700 transition duration-150" type="submit" form="modal-form">Save Changes</button>
+          <button class=".edit-btn bg-green-600 text-white font-bold uppercase text-sm px-4 py-2 rounded shadow-lg hover:bg-green-700 transition duration-150" form="modal-form">Save Changes</button>
         </div>
       </div>
     </div>
@@ -55,4 +55,22 @@
       document.getElementById(modalID).classList.toggle("hidden");
       document.getElementById(modalID + "-backdrop").classList.toggle("hidden");
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.edit-btn').forEach(function(button) {
+            button.addEventListener('click', function() {
+                fetch("{% url 'user_profile:profile_buyer_edit' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                })
+                .then(data => {
+                    alert('Restaurant deleted successfully!');
+                    window.location.href = "{% url 'user_profile:profile_buyer' %}";
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    });
   </script>

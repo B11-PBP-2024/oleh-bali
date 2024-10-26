@@ -1,0 +1,135 @@
+{% extends 'base.html' %} 
+{% load humanize %}  {# Import Django's humanize template tag for intcomma #}
+
+{% block meta %}
+    <title>Product Seller List</title>
+{% endblock meta %}
+
+{% block content %}
+    {% include 'navbar_seller.html' %}
+
+    <div class="bg-white pt-16 min-h-screen">
+        <!-- Tambahkan margin-bottom untuk memberikan jarak antara judul dan input search -->
+        <h1 class="text-4xl font-bold text-center justify-center mb-4">The Products You're Selling</h1> 
+
+        <div style="margin-bottom: 20px;">
+            <div class="flex gap-12 justify-stretch px-6">
+                <div class="border-4 border-red-500 px-10 py-2 rounded-full flex gap-2 flex-1 items-center">
+                    <input class="flex-1" type="text" name="search" id="search" placeholder="Search products..." value="{{ search_query }}" oninput="search_product()">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                
+                <!-- Dropdown styled like a button for sorting prices -->
+                <div class="relative">
+                    <button class="bg-red-500 text-white font-bold px-10 py-2 rounded-full focus:outline-none flex items-center justify-between" id="sort-button">
+                        Sort by Price
+                        <i class="ml-2 fa-solid fa-chevron-down"></i>
+                    </button>
+                    <ul id="sort-options" class="hidden absolute bg-white border border-red-600 rounded-lg mt-2">
+                        <li class="px-4 py-2 hover:bg-cyan-600 hover:text-white transition duration-200 cursor-pointer" onclick="sort_price('asc')">Lowest to Highest</li>
+                        <li class="px-4 py-2 hover:bg-cyan-600 hover:text-white transition duration-200 cursor-pointer" onclick="sort_price('desc')">Highest to Lowest</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="flex overflow-x-auto gap-8 justify-center mt-8">
+                {% for category_key, category_value in categories.items %}
+                <a href="?{% if search_query %}search={{ search_query }}&{% endif %}category={{ category_key }} ">
+                    <span class="{% if category == category_key %} text-purple-500 font-bold {% endif %}">
+                        {{ category_value }}
+                    </span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="flex items-center gap-6 justify-end px-6">
+            <!-- Button untuk Add New Product -->
+            <form action="{% url 'seller:add_product' %}">
+                <button class="bg-red-500 font-bold text-white px-10 py-2 rounded-full" type="submit">+ Add New Product</button>
+            </form>
+            <!-- Button untuk Add Existing Product -->
+            <form action="{% url 'seller:add_product_seller' %}">
+                <button class="bg-red-500 font-bold text-white px-10 py-2 rounded-full" type="submit">+ Add Existing Product</button>
+            </form>
+        </div>        
+
+        <!-- Produk Seller hanya menampilkan nama, gambar, dan harga -->
+        <div class="grid gap-6 p-6">
+            {% for product_seller in products_seller %}
+            <div class="flex gap-8 items-center bg-blue-200 p-4 rounded-2xl shadow-md border border-gray-300">
+                <img src="{{ product_seller.product.product_image }}" alt="gambar produk" class="aspect-square w-64 rounded-2xl">
+                <div class="flex-grow">
+                    <p class="font-bold text-2xl">{{ product_seller.product.product_name }}</p>
+                    <!-- Format harga dengan Rp dan intcomma untuk pemisah ribuan -->
+                    <p class="text-xl">Rp{{ product_seller.price|intcomma }}</p>  
+                </div>
+                <div class="flex gap-6 items-center justify-end pr-8">
+                    <a class="p-2 text-3xl" href="{% url 'seller:edit_product_seller' product_seller.id %}"> 
+                        <i class="fa-regular fa-pen-to-square text-purple-500"></i>
+                    </a>
+                    <form method="POST" action="{% url 'seller:delete_product_seller' product_seller.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn text-3xl">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="bg-red-800 text-white">
+        <div class="container mx-auto px-6 py-10 flex flex-wrap justify-between w-full">
+            <!-- Logo and Description -->
+            <div class="w-full md:w-1/3 mb-6">
+                <div class="flex items-center space-x-3">
+                    <!-- Company Name -->
+                    <h1 class="text-white text-2xl font-semibold">OlehBali</h1>
+                </div>
+                <p class="mt-4 text-white">Bringing Indonesia’s Best to Bali’s Beaches.</p>
+            </div>
+        </div>
+
+        <!-- Bottom Section -->
+        <div class="border-t border-white py-6">
+            <div class="container mx-auto flex justify-between items-center px-6">
+                <p class="text-sm text-white">&copy; 2024 OlehBali. PBP Kelompok B11.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function search_product() { 
+            let search_query = document.getElementById('search').value;
+            let url = new URL(window.location.href);
+            if (search_query) {
+                url.searchParams.set('search', search_query);
+            } else { 
+                url.searchParams.delete('search');
+            }
+            window.location.href = url;
+        }
+
+        function sort_price(order) {
+            let url = new URL(window.location.href);
+            url.searchParams.set('sort_price', order);
+            window.location.href = url;
+        }
+
+        // JavaScript to toggle the dropdown
+        document.getElementById('sort-button').addEventListener('click', function() {
+            document.getElementById('sort-options').classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', function(event) {
+            var sortButton = document.getElementById('sort-button');
+            var sortOptions = document.getElementById('sort-options');
+            if (!sortButton.contains(event.target)) {
+                sortOptions.classList.add('hidden');
+            }
+        });
+    </script>
+{% endblock content %}

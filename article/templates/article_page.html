@@ -5,9 +5,9 @@
 {% endblock meta %}
 {% block content %}
 {% include 'navbar_buyer.html' %}
-<div class="flex flex-col content-center items-center pt-20 w-full bg-gray-200 min-h-screen">
+<div class="flex flex-col content-center items-center w-full bg-gray-200 min-h-screen py-28 lg:py-20 bg-red-700">
     <!-- Judul Halaman -->
-    <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-8 text-center">Articles</h1>
+    <h1 class="text-3xl sm:text-4xl font-bold text-white mb-8 text-center">Articles</h1>
     
     <!-- Tombol Add Article -->
     <a href="{% url 'article:create_article' %}"
@@ -18,20 +18,21 @@
     <!-- Tombol Explore dan My Articles -->
     <div class="flex  gap-4 justify-center items-center w-full mb-6 ">
         <!-- Explore Button -->
-        <button id="exploreBtn" class="px-4 py-2 text-lg sm:text-xl font-medium underline-offset-8 transition-all duration-200 hover:underline">
+        <button id="exploreBtn" class="px-4 py-2 text-lg sm:text-xl font-medium underline-offset-8 transition-all duration-200 hover:underline text-white">
             Explore
         </button>
         <!-- My Articles Button -->
-        <button id="myArticleBtn" class="px-4 py-2 text-lg sm:text-xl font-medium underline-offset-8 transition-all duration-200 hover:underline text-gray-500">
+        <button id="myArticleBtn" class="px-4 py-2 text-lg sm:text-xl font-medium underline-offset-8 transition-all duration-200 hover:underline text-white">
             My Articles
         </button>
     </div>
 
     <!-- Kontainer untuk Article Cards -->
-    <div id="article_entry_cards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-11/12 sm:w-10/12 lg:w-8/12 px-4">
+    <div id="article_entry_cards" class="flex flex-col gap-3 justify-center align-center w-11/12 sm:w-10/12 lg:w-8/12 px-4">
         <!-- Articles akan dimuat di sini secara dinamis melalui JavaScript -->
     </div>
 </div>
+{% include 'footer_buyer.html' %}
 
 
 <script>
@@ -53,16 +54,12 @@
         if (selectedTab === 'myArticles') {
             myArticleBtn.classList.add('underline');
             exploreBtn.classList.remove('underline');
-            myArticleBtn.classList.remove('text-gray-500');
-            exploreBtn.classList.add('text-gray-500');
-            refreshMoodEntries()
+            refreshArticles()
         } else {
             exploreBtn.classList.add('underline');
             myArticleBtn.classList.remove('underline');
-            exploreBtn.classList.remove('text-gray-500');
-            myArticleBtn.classList.add('text-gray-500');
             // Load All Articles
-            refreshMoodEntries();  // You can define this function to load all articles
+            refreshArticles();  // You can define this function to load all articles
         }
     }
 
@@ -101,7 +98,7 @@
             myArticleBtn.classList.remove('underline');
             myArticleBtn.classList.add('text-gray-500');
             exploreBtn.classList.remove('text-gray-500');
-            refreshMoodEntries()
+            refreshArticles()
         });
 
         myArticleBtn.addEventListener('click', function() {
@@ -109,7 +106,7 @@
             exploreBtn.classList.remove('underline');
             exploreBtn.classList.add('text-gray-500');
             myArticleBtn.classList.remove('text-gray-500');
-            refreshMoodEntries()
+            refreshArticles()
         });
     });
 
@@ -121,9 +118,9 @@
         return fetch("{% url 'article:json_user_article' %}").then(((res) => res.json()))
     }
 
-    async function refreshMoodEntries() {
+    async function refreshArticles() {
     
-        document.getElementById("article_entry_cards").innerHTML = "";
+    document.getElementById("article_entry_cards").innerHTML = "";
     document.getElementById("article_entry_cards").className = "";
     const myArticleBtn = document.getElementById('myArticleBtn');
     let isUser = myArticleBtn.classList.contains('underline');
@@ -133,6 +130,7 @@
     } else {
         articleEntries = await getAllArticles();
     }
+    console.log(articleEntries)
     let htmlString = "";
     let classNameString = "";
 
@@ -140,24 +138,35 @@
         classNameString = "flex flex-col items-center justify-center p-6";
         htmlString = `
             <img src="{% static 'image/not-found.webp' %}" alt="Not Found" class="w-32 h-32 mb-4"/>
-            <p class="text-center text-gray-600 mt-4">There are no articles yet. Why not
-                <a href="{% url 'article:create_article' %}" class="text-blue-500 hover:text-blue-700 hover:underline">create one now?</a>
+            <p class="text-center text-white mt-4">There are no articles yet. Why not
+                <a href="{% url 'article:create_article' %}" class="text-blue-400 hover:text-blue-500 hover:underline">create one now?</a>
             </p>
         `;
     } else {
-        classNameString = "grid grid-cols-1 gap-6 w-1/2 mt-6 px-4"
+        classNameString = "flex flex-col justify-center items-center gap-6 w-10/12 mt-6 px-4"
 
 
         articleEntries.forEach((article) => {
             htmlString += `
-            <div class="flex flex-col justify-between p-6 rounded-lg bg-white shadow-md border border-gray-200 hover:shadow-xl transition-shadow duration-300 gap-4">
+            <div class="flex flex-col justify-between p-6 rounded-lg bg-white shadow-md border border-gray-200 hover:shadow-xl transition-shadow duration-300 gap-4 w-5/6">
                 <!-- Header Card dengan Info User -->
-                <div class="flex flex-col md:flex-row items-center justify-between gap-5">
-                    <div class="flex flex-col md:flex-row items-center justify-start gap-5">
-                        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" class="h-9 rounded rounded-full">
-                        <p class="text-gray-700 font-semibold"> ${article.user.username}</p>
-                        <p class="text-sm text-gray-500">${article.time}</p>
-                    </div>`
+                <div class="flex md:flex-row flex-col items-start md:items-center justify-start gap-5 w-full">
+                    
+                        <!-- Foto Profil -->
+                        <img src="${article.user.profilepicture}" alt="" class="h-9 w-9 rounded-full object-cover">
+                        
+                        <!-- Display Name dan Nationality -->
+                        <div class="flex flex-col">
+                            <!-- Display Name -->
+                            <p class="text-gray-700 font-semibold"> ${article.user.displayname}</p>
+                            <!-- Nationality -->
+                            <p class="text-sm text-gray-500">${article.user.nationality}</p>
+                        </div>
+                        
+                        <!-- Waktu Publikasi -->
+                        <p class="text-sm text-gray-500 md:ml-auto">${article.time}</p>
+                    
+`
             if(isUser) {
                 htmlString+= `
                 <div class="flex flex-row justify-end gap-3">
@@ -191,6 +200,6 @@
     document.getElementById("article_entry_cards").className = classNameString;
     document.getElementById("article_entry_cards").innerHTML = htmlString;
 }
-refreshMoodEntries()
+refreshArticles()
 </script>
 {% endblock content %}

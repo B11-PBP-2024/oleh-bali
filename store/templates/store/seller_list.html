@@ -89,22 +89,48 @@
         </h2>
         
         <div class="w-10/12 max-w-4xl space-y-4">
-            {% for store in sellers %}
-            <div class="bg-gray-100 p-4 rounded-lg flex items-center shadow-lg transition duration-200 hover:shadow-xl hover:transform hover:-translate-y-1">
-                <img src="{{ store.profile_picture }}" alt="Seller Image" class="w-24 h-24 rounded-lg object-cover"> <!-- Increased size -->
-                <div class="ml-4 flex-grow">
-                    <h3 class="text-lg font-semibold">{{ store.store_name }}</h3>
-                    <p class="text-gray-700 text-base">Rp.{{ store.price|intcomma }}</p>
-                    <p class="text-gray-600 text-sm">{{ store.address }}, {{ store.village }}, {{ store.subdistrict }}, {{ store.city }}</p>
+            {% for seller in sellers %}
+            <div class="bg-gray-100 p-6 rounded-lg flex items-start shadow-lg transition duration-200 hover:shadow-xl hover:-translate-y-1">
+                <!-- Seller Image -->
+                <img src="{{ seller.profile_picture }}" alt="Seller Image" class="w-28 h-28 rounded-lg object-cover shadow-lg border-2 border-gray-300 flex-shrink-0 transition-transform duration-200 hover:scale-105"> 
+            
+                <!-- Seller Details -->
+                <div class="ml-6 flex-grow">
+                    <!-- Store Name -->
+                    <h1 class="text-2xl font-semibold text-gray-800 mb-2">{{ seller.store_name }}</h1>
+                    
+                    <!-- Product List with Icon -->
+                    <ul class="space-y-1">
+                        {% for product_seller in seller.user.productseller_set.all %}
+                            <li class="border-t pt-2 flex items-center">
+                                <!-- Icon on the left of the product name -->
+                                <svg class="w-4 h-4 text-gray-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12l4 4L19 7" />
+                                </svg>
+                                <p class="text-sm font-medium text-gray-700">{{ product_seller.product.product_name }}</p>
+                                <!-- <p class="text-gray-500 text-sm ml-4">Rp.{{ product_seller.price }}</p> -->
+                            </li>
+                        {% empty %}
+                            <li class="text-gray-500 text-sm italic">No products available.</li>
+                        {% endfor %}
+                    </ul>
+            
+                    <!-- Seller Address -->
+                    <p class="text-gray-600 text-sm mt-4">{{ seller.address }}, {{ seller.village }}, {{ seller.subdistrict }}, {{ seller.city }}</p>
                 </div>
-                <div class="ml-4 flex-shrink-0">
-                    <a href="{{ store.maps }}" target="_blank" class="text-red-700 hover:text-red-500 transition duration-200" aria-label="View on Google Maps">
+            
+                <!-- Google Maps Link -->
+                <div class="ml-6">
+                    <a href="{{ seller.maps }}" target="_blank" class="text-red-600 hover:text-red-400 transition duration-200" aria-label="View on Google Maps">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2C8.134 2 5 5.134 5 9c0 7.5 7 13 7 13s7-5.5 7-13c0-3.866-3.134-7-7-7zm0 9a2 2 0 100-4 2 2 0 000 4z"/>
                         </svg>
                     </a>
                 </div>
             </div>
+            
+            {% empty %}
+            <p class="text-2xl font-bold text-center text-gray-800 mb-5">there are no store</p>
             {% endfor %}
         </div>
     </section>
@@ -114,6 +140,25 @@
     document.getElementById('filterToggle').addEventListener('click', function() {
         var filterOptions = document.getElementById('filterOptions');
         filterOptions.classList.toggle('show');
+    });
+
+    $(document).ready(function() {
+        $('#search-bar form').on('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'GET',
+                data: $(this).serialize(),
+                success: function(response) {
+                    // Replace the seller list with the new HTML
+                    $('#seller-list').html(response.html);
+                },
+                error: function(xhr) {
+                    console.error('Error:', xhr);
+                }
+            });
+        });
     });
 </script>
 

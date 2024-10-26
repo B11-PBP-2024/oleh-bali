@@ -16,7 +16,7 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background-color: #38a169;
+            background-color: #c00000;
             color: white;
             padding: 12px 24px;
             border-radius: 8px;
@@ -25,52 +25,102 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
         .total-price-btn:hover {
-            background-color: #2f855a;
+            background-color: #880303;
         }
+        .wishlist-title {
+    color: #c53030; 
+        }
+
+        .wishlist-item-card {
+            border-left: 6px solid #c53030;
+            padding: 1rem;
+            background-color: #fff;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .wishlist-item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .wishlist-delete-btn {
+            background-color: #c53030;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .wishlist-delete-btn:hover {
+            background-color: #a12828;
+        }
+
     </style>
 
-    <!-- Navbar -->
-    {% include 'navbar_buyer.html' %}
+<!-- Navbar -->
+{% include 'navbar_buyer.html' %}
 
-    <!-- Main Content -->
-    <div class="container mx-auto mt-20 p-6">
-        <!-- Page Title -->
-        <h2 class="text-2xl font-bold mb-4">My Wishlist</h2>
-        
-        <!-- Wishlist Items -->
-        <div class="space-y-4">
-            {% for item in wishlist_items %}
-            <div class="border p-4 flex justify-between items-center rounded-md">
-                <div class="flex items-center">
-                    <img src="{{ item.image_url }}" alt="{{ item.name }}" class="rounded-md w-20 h-20 mr-4">
-                    <div>
-                        <h3 class="font-bold text-lg">{{ item.name }}</h3>
-                        <p class="text-sm text-gray-500">Rp{{ item.min_price }} - Rp{{ item.max_price }}</p>
-                        <p class="text-sm">{{ item.description }}</p>
-                    </div>
-                </div>
-                <div class="flex items-center">
-                    <!-- Delete Button -->
-                    <button class="bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600 flex items-center" onclick="removeFromWishlist({{ item.id }})">
-                        <img src="https://img.icons8.com/ios-glyphs/30/FFFFFF/trash.png" alt="Delete" class="w-5 h-5">
-                    </button>
+<!-- Main Content -->
+<div class="container mx-auto mt-24 p-6 min-h-screen flex flex-col justify-between">
+    
+    <!-- Page Title -->
+    <div class="bg-red-600 text-white text-center py-4 rounded-t-md">
+        <h2 class="text-2xl font-bold">My Wishlist</h2>
+    </div>
+    
+    <!-- Wishlist Items -->
+    <div class="space-y-4 flex-grow">
+        {% for item in wishlist_items %}
+        <div class="border-l-4 border-red-600 p-4 flex justify-between items-center rounded-md shadow-lg transition duration-200 hover:shadow-xl hover:-translate-y-1" id="wishlist-item-{{ item.id }}">
+            <div class="flex items-center">
+                <!-- Display Image URL -->
+                <img src="{{ item.products.first.product_image }}" alt="{{ item.products.first.product_name }}" class="rounded-md w-20 h-20 mr-4 object-cover">
+                <div>
+                    <h3 class="font-bold text-lg">{{ item.products.first.product_name }}</h3>
+
+                    <!-- Price -->
+                    <p class="text-sm text-gray-500">
+                        {% if item.min_price == 0 and item.max_price == 0 %}
+                            Price not available
+                        {% elif item.min_price == item.max_price %}
+                            Rp{{ item.min_price }}
+                        {% else %}
+                            Rp{{ item.min_price }} - Rp{{ item.max_price }}
+                        {% endif %}
+                    </p>
+                    
+                    <p class="text-sm">{{ item.products.first.description }}</p>
                 </div>
             </div>
-            {% empty %}
-            <p>No items in your wishlist.</p>
-            {% endfor %}
+            <div class="flex items-center">
+                
+                <!-- Delete Button -->
+                <a href="{% url 'wishlist:delete_wishlist_item' item.id %}" class="bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition duration-300 shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+            </div>
         </div>
-
-        <!-- Total Price Button -->
-        <button class="total-price-btn">
-            TOTAL: Rp{{ total_min }} - Rp{{ total_max }}
-        </button>
+        {% empty %}
+        <p class="text-center text-gray-600">No items in your wishlist.</p>
+        {% endfor %}
     </div>
 
-    <!-- JavaScript for Wishlist Deletion -->
-    <script>
-        function removeFromWishlist(itemId) {
-            alert('Remove item with ID: ' + itemId); 
-        }
-    </script>
+    <!-- Total Price Button -->
+    <button class="total-price-btn bg-red-600 hover:bg-red-700 text-white rounded-lg px-6 py-2 font-semibold shadow transition duration-200 fixed bottom-4 right-4">
+        {% if total_min == 0 and total_max == 0 %}
+            TOTAL: Price not available
+        {% elif total_min == total_max %}
+            TOTAL: Rp{{ total_min }}
+        {% else %}
+            TOTAL: Rp{{ total_min }} - Rp{{ total_max }}
+        {% endif %}
+    </button>
+</div>
+
+<!-- Footer -->
+{% include 'footer_buyer.html' %}
 {% endblock %}

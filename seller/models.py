@@ -14,31 +14,43 @@ categories_choices = [
     ('Traditional Weapon', 'Traditional Weapon'),
     ('Musical Instrument', 'Musical Instrument'),
     ('Beverage', 'Beverage'),
-    ('Art', 'Art'),
 ]
 
 class ProductEntry(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     product_name = models.CharField(max_length=255, null=True, blank=True) 
     description = models.TextField(null=True, blank=True)
-    product_image = models.TextField(null=True, blank=True)
+    product_image = models.URLField(null=True, blank=True)
     product_category = models.CharField(choices=categories_choices, max_length=255)
 
     @property
     def min_price(self):
-        return self.productseller_set.aggregate(models.Min("price"))["min_price"]
+        return self.productseller_set.aggregate(models.Min("price"))['price__min']
+
     @property
     def max_price(self):
-        return self.productseller_set.aggregate(models.Max("price"))["max_price"]
+        return self.productseller_set.aggregate(models.Max("price"))['price__max']
     
+    @property
+    def price_display(self):
+        min_price = self.min_price
+        max_price = self.max_price
+        
+        if min_price is None and max_price is None:
+            return None  # Tidak ada harga yang ditampilkan
+        elif min_price == max_price:
+            return f"Rp{min_price:,}"  # Tampilkan satu harga jika sama, tanpa desimal
+        else:
+            return f"Rp{min_price:,} - Rp{max_price:,}"  # Tampilkan rentang harga tanpa desimal
+
     def __str__(self):
         return self.product_name if self.product_name else self.product.product_name
 
-# Model untuk menghubungkan penjual (Seller) dengan produk (ProductEntry)
 class ProductSeller(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
     product = models.ForeignKey(ProductEntry, on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)  
+    price = models.IntegerField()  
 
     def __str__(self):
         return f"{self.seller.username} sells {self.product.product_name} at {self.price}"

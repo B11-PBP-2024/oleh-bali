@@ -4,6 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import login,authenticate, get_user_model,logout
 from django.contrib import messages
 from .forms import CustomBuyerCreationForm, CustomSellerCreationForm, CustomAuthenticationForm
+from user_profile.models import BuyerProfile, SellerProfile
 User = get_user_model()
 # Create your views here.
 @login_required(login_url="login/buyer")
@@ -40,6 +41,13 @@ def register_buyer(request):
             user = form.save(commit=False)
             user.role = 0
             user.save()
+            profile_buyer, created = BuyerProfile.objects.get_or_create(user=user) 
+            # Mengatur nilai default jika profil belum dibuat
+            if created:
+                profile_buyer.profile_picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                profile_buyer.store_name = user.username 
+                profile_buyer.nationality = "Not Set"  
+                profile_buyer.save()  
             messages.success(request,message="Your account has been successfully created!")
             return redirect("main:login_buyer")
     context = {'form':form}
@@ -69,6 +77,17 @@ def register_seller(request):
             user = form.save(commit=False)
             user.role = 1
             user.save()
+            profile_seller, created = SellerProfile.objects.get_or_create(user=user) 
+            # Mengatur nilai default jika profil belum dibuat
+            if created:
+                profile_seller.profile_picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                profile_seller.store_name = user.username 
+                profile_seller.city = "Denpasar"  
+                profile_seller.subdistrict = "Denpasar Selatan"
+                profile_seller.village = "Panjer"
+                profile_seller.address = "Not Set"  
+                profile_seller.maps = "https://www.google.com/maps"  
+                profile_seller.save() 
             messages.success(request,message="Your account has been successfully created!")
             return redirect("main:login_seller")
     context = {'form':form,}

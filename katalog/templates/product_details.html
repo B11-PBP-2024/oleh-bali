@@ -4,7 +4,7 @@
 {% endblock meta %}
 {% block content %}
 {% include 'navbar_buyer.html' %}
-<div class="flex flex-col items-center px-20 gap-2 bg-red-700 h-max py-20">
+<div class="flex flex-col items-center px-20 gap-2 bg-red-700 h-max py-28 lg:py-20">
     <a href="{% url 'katalog:show_catalog' %}" class="underline self-start text-white">Back</a>
     <card class="flex flex-col justify-center items-center bg-white shadow-lg rounded-lg ">
         <div class="flex md:flex-row flex-col border rounded rounded-md w-full gap-5">
@@ -18,9 +18,15 @@
                         <svg class="w-9 h-9 text-blue-400 cursor-pointer like-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                             <path class="like-path" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11c.889-.086 1.416-.543 2.156-1.057a22.323 22.323 0 0 0 3.958-5.084 1.6 1.6 0 0 1 .582-.628 1.549 1.549 0 0 1 1.466-.087c.205.095.388.233.537.406a1.64 1.64 0 0 1 .384 1.279l-1.388 4.114M7 11H4v6.5A1.5 1.5 0 0 0 5.5 19v0A1.5 1.5 0 0 0 7 17.5V11Zm6.5-1h4.915c.286 0 .372.014.626.15.254.135.472.332.637.572a1.874 1.874 0 0 1 .215 1.673l-2.098 6.4C17.538 19.52 17.368 20 16.12 20c-2.303 0-4.79-.943-6.67-1.475"/>
                         </svg>
+                        {% if is_wishlist %}
+                        <svg class="w-9 h-9 text-yellow-500 cursor-pointer star-icon" fill="currentColor" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path class="star-path" stroke="currentColor" stroke-width="2" d="M11.083 5.104c.35-.8 1.485-.8 1.834 0l1.752 4.022a1 1 0 0 0 .84.597l4.463.342c.9.069 1.255 1.2.556 1.771l-3.33 2.723a1 1 0 0 0-.337 1.016l1.03 4.119c.214.858-.71 1.552-1.474 1.106l-3.913-2.281a1 1 0 0 0-1.008 0L7.583 20.8c-.764.446-1.688-.248-1.474-1.106l1.03-4.119A1 1 0 0 0 6.8 14.56l-3.33-2.723c-.698-.571-.342-1.702.557-1.771l4.462-.342a1 1 0 0 0 .84-.597l1.753-4.022Z"/>
+                        </svg>
+                        {% else %}
                         <svg class="w-9 h-9 text-yellow-500 cursor-pointer star-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                             <path class="star-path" stroke="currentColor" stroke-width="2" d="M11.083 5.104c.35-.8 1.485-.8 1.834 0l1.752 4.022a1 1 0 0 0 .84.597l4.463.342c.9.069 1.255 1.2.556 1.771l-3.33 2.723a1 1 0 0 0-.337 1.016l1.03 4.119c.214.858-.71 1.552-1.474 1.106l-3.913-2.281a1 1 0 0 0-1.008 0L7.583 20.8c-.764.446-1.688-.248-1.474-1.106l1.03-4.119A1 1 0 0 0 6.8 14.56l-3.33-2.723c-.698-.571-.342-1.702.557-1.771l4.462-.342a1 1 0 0 0 .84-.597l1.753-4.022Z"/>
                         </svg>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="flex flex-col gap-2">
@@ -43,12 +49,28 @@
             starIcon.addEventListener('click', function() {
                 const starPath = this.querySelector('.star-path');
                 const productId = "{{ product.pk }}";
-
-                if (starPath.getAttribute('fill') === 'none') {
+                if (starPath.getAttribute('fill') !== 'currentColor') {
                     starPath.setAttribute('fill', 'currentColor');
                     addToWishlist(productId);
                 } else {
-                    starPath.setAttribute('fill', 'none');
+                    fetch("{% url 'wishlist:delete_wishlist_item_from_catalog' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: new URLSearchParams({
+                        'product_id': productId
+                    })
+                }).then(response => response.json())
+                  .then(data => {
+                      if (data.success) {
+                          // Change to filled star on success
+                          starPath.setAttribute('fill', 'none');
+                      }
+                  }).catch(error => {
+                      console.error('Error:', error);
+                  });
                 }
             });
         });

@@ -3,28 +3,27 @@ from django.contrib.auth.decorators import login_required
 from user_profile.models import SellerProfile
 from seller.models import ProductSeller
 from django.db.models import Q
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 
-# Create your views here.
 @login_required
 def seller_list(request):
-    # Ambil semua profil seller
     sellers = SellerProfile.objects.all()
-
     search_query = request.GET.get('search', '')
     subdistrict_filter = request.GET.get('subdistrict', '')
     village_filter = request.GET.get('village', '')
 
-    # Filter berdasarkan pencarian nama seller
     if search_query:
         sellers = sellers.filter(store_name__icontains=search_query)
-
-    # Filter berdasarkan subdistrict
     if subdistrict_filter:
         sellers = sellers.filter(subdistrict=subdistrict_filter)
-
-    # Filter berdasarkan village
     if village_filter:
         sellers = sellers.filter(village=village_filter)
+
+    # AJAX request Handler
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        html = render_to_string('store/partials/seller_list_partial.html', {'sellers': sellers})
+        return JsonResponse({'html': html})
 
     subdistrict_choices = SellerProfile.SUBDISTRICT_CHOICES
     village_choices = SellerProfile.VILLAGE_CHOICES
@@ -38,4 +37,3 @@ def seller_list(request):
         'village_choices': village_choices,
     }
     return render(request, 'store/seller_list.html', context)
-

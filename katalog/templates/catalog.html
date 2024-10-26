@@ -1,128 +1,207 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block meta %}
 <title>Catalog</title>
 {% endblock meta %}
 {% block content %}
 {% include 'navbar_buyer.html' %}
-<div class="overflow-x-hidden px-4 md:px-8 pb-8 pt-24 min-h-screen bg-gray-100 flex flex-col items-center py-0 bg-red-600">
-    <p class="self-start text-bold">Product Catalogs</p>
+<div class="overflow-x-hidden px-4 md:px-8 pb-8 pt-24 min-h-screen bg-gray-100 flex flex-col items-center py-0 bg-red-700">
+    <div class="flex flex-col m-5 gap-2 w-10/12">
+
+        <!-- Search Bar dan Filter -->
+        <div class="flex w-full justify-between items-center mb-4">
+            <!-- Search Bar -->
+            <input id="search-bar" type="text" placeholder="Search for products..." class="w-1/2 border border-gray-400 p-2 rounded-md" onkeyup="searchProducts()">
+            
+            <!-- Filter Button -->
+            <button id="filter-btn" class="bg-white text-red-500 font-bold px-4 py-2 rounded-md" onclick="openFilterModal()">Filter</button>
+        </div>
     
-    <div id="product_entry_cards" class="">
+        <!-- Modal Filter -->
+        <div id="filter-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+            <div class="bg-white rounded-lg p-6 w-1/3">
+                <h3 class="text-2xl font-bold mb-4">Filter Products</h3>
+                <!-- Dropdown Filter by Category -->
+                <label for="category-filter" class="block text-sm font-medium text-gray-700">Category:</label>
+                <select id="category-filter" class="block w-full mt-1 border border-gray-400 rounded-md p-2">
+                    <option value="All Categories">All Categories</option>
+                    {% for category in categories %}
+                        <option value="{{category}}">{{category}}</option>
+                    {% endfor %}
+                </select>
+                
+                <!-- Apply Filter Button -->
+                <div class="flex justify-end mt-4">
+                    <button class="bg-gray-500 text-white px-4 py-2 rounded-md mr-2" onclick="closeFilterModal()">Cancel</button>
+                    <button class="bg-red-500 text-white px-4 py-2 rounded-md" onclick="applyFilter()">Apply</button>
+                </div>
+            </div>
+        </div>
+    
+        <div id="product_entry_cards" class="">
+        </div>
     </div>
 </div>
+{% include 'footer_buyer.html' %}
 
 <script>
-    
+    let keyword = "NoSearch";
+    let category = "All Categories"
     async function getAllProducts() {
-        return fetch("{% url 'katalog:get_products' %}").then(((res) => res.json()))
+        return fetch("{% url 'katalog:get_products' %}").then((res) => res.json());
+    }
+
+    async function getFilteredProducts() {
+        return fetch(`json/key:${keyword}/cat:${category}`).then((res) => res.json());
+    }
+
+    async function applySearchAndFilter() {
+        if (keyword=="") {
+            keyword = "NoSearch"
+        }
+        data = await getFilteredProducts()
+        refreshProductEntries(data)
     }
     
-    async function refreshProductEntries() {
+    async function refreshProductEntries(data) {
     
     document.getElementById("product_entry_cards").innerHTML = "";
     document.getElementById("product_entry_cards").className = "";
     let htmlString = "";
     let classNameString = "";
-    productEntries = await getAllProducts();
-    console.log(productEntries)
+    if(data === null) {
+        productEntries = await getAllProducts();
+    } else {
+        productEntries = data;
+    }
     if (productEntries.length === 0) {
         classNameString = "flex flex-col items-center justify-center p-6";
         htmlString = `
-            <img src="" alt="Not Found" class="w-32 h-32 mb-4"/>
-            <p class="text-center text-gray-600 mt-4">There are no products yet
-            </p>
+            <img src="{% static 'image/no-item-found.png' %}" alt="Not Found" class="w-32 h-32 mb-4"/>
+            <p class="text-center text-white mt-4">There are no products yet</p>
         `;
     } else {
-        classNameString = "columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 w-full px-4 h-full"
-
+        classNameString = "columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 w-full h-full"
 
         productEntries.forEach((product) => {
             htmlString += `
             <div class="max-w-sm rounded overflow-hidden shadow-lg bg-white border-gray-300 flex flex-col h-full">
-                    <img class="w-full h-48 object-cover" src="${product.fields.product_image}" alt="${ product.fields.product_name }">
-                    
-                    <!-- Konten Produk -->
-                    <div class="flex flex-col justify-between flex-grow px-6 py-4">
-                        <!-- Nama Produk dan Kategori -->
-                        <div>
-                            <div class="font-bold text-xl">${ product.fields.product_name }</div>
-                            <div class="text-lg text-red-800 font-semibold mb-2 border border-red-800 rounded-full px-2 w-max text-sm mb-4">
-                                ${ product.fields.product_category }
-                            </div>
-                        </div>
-
-                        <!-- See Details Button -->
-                        <div class="text-bold text-lg">Rp12000</div>
-                        
-                        <!-- Bagian Bawah Card dengan Harga dan Ikon -->
-                        <div class="flex justify-between items-center mt-4">
-                            <a href="${product.pk}" class="underline text-blue-500">
-                                See Details
-                            </a>
-                            <div class="flex items-center gap-2">
-                                <!-- Ikon Like dan Star -->
-                                <svg class="w-9 h-9 text-blue-400 cursor-pointer like-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path class="like-path" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11c.889-.086 1.416-.543 2.156-1.057a22.323 22.323 0 0 0 3.958-5.084 1.6 1.6 0 0 1 .582-.628 1.549 1.549 0 0 1 1.466-.087c.205.095.388.233.537.406a1.64 1.64 0 0 1 .384 1.279l-1.388 4.114M7 11H4v6.5A1.5 1.5 0 0 0 5.5 19v0A1.5 1.5 0 0 0 7 17.5V11Zm6.5-1h4.915c.286 0 .372.014.626.15.254.135.472.332.637.572a1.874 1.874 0 0 1 .215 1.673l-2.098 6.4C17.538 19.52 17.368 20 16.12 20c-2.303 0-4.79-.943-6.67-1.475"/>
-                                </svg>
-                                <svg class="w-9 h-9 text-yellow-500 cursor-pointer star-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path class="star-path" stroke="currentColor" stroke-width="2" d="M11.083 5.104c.35-.8 1.485-.8 1.834 0l1.752 4.022a1 1 0 0 0 .84.597l4.463.342c.9.069 1.255 1.2.556 1.771l-3.33 2.723a1 1 0 0 0-.337 1.016l1.03 4.119c.214.858-.71 1.552-1.474 1.106l-3.913-2.281a1 1 0 0 0-1.008 0L7.583 20.8c-.764.446-1.688-.248-1.474-1.106l1.03-4.119A1 1 0 0 0 6.8 14.56l-3.33-2.723c-.698-.571-.342-1.702.557-1.771l4.462-.342a1 1 0 0 0 .84-.597l1.753-4.022Z"/>
-                                </svg>
-                            </div>
+                <img class="w-full h-48 object-cover" src="${product.fields.product_image}" alt="${ product.fields.product_name }">
+                
+                <div class="flex flex-col justify-between flex-grow px-6 py-4">
+                    <div>
+                        <div class="font-bold text-xl">${ product.fields.product_name }</div>
+                        <div class="text-lg text-red-800 font-semibold mb-2 border border-red-800 rounded-full px-2 w-max text-sm mb-4 font-sm">
+                            ${ product.fields.product_category }
                         </div>
                     </div>
+
+                    <div class="text-bold text-lg">
+                        ${product.fields.price}
+                    </div>
+                    
+                    <div class="flex justify-between items-center mt-4">
+                        <a href="${product.pk}" class="underline text-blue-500">
+                            See Details
+                        </a>
+                        <div class="flex items-center gap-2">
+                            <svg class="w-9 h-9 text-blue-400 cursor-pointer like-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path class="like-path" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11c.889-.086 1.416-.543 2.156-1.057a22.323 22.323 0 0 0 3.958-5.084 1.6 1.6 0 0 1 .582-.628 1.549 1.549 0 0 1 1.466-.087c.205.095.388.233.537.406a1.64 1.64 0 0 1 .384 1.279l-1.388 4.114M7 11H4v6.5A1.5 1.5 0 0 0 5.5 19v0A1.5 1.5 0 0 0 7 17.5V11Zm6.5-1h4.915c.286 0 .372.014.626.15.254.135.472.332.637.572a1.874 1.874 0 0 1 .215 1.673l-2.098 6.4C17.538 19.52 17.368 20 16.12 20c-2.303 0-4.79-.943-6.67-1.475"/>
+                            </svg>
+                            <svg class="w-9 h-9 text-yellow-500 cursor-pointer star-icon" aria-hidden="true" data-product-id="${product.pk}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">`
+                                if(product.fields.is_wishlist) {
+                                htmlString += `<path fill="currentColor" class="star-path" stroke="currentColor" stroke-width="2" d="M11.083 5.104c.35-.8 1.485-.8 1.834 0l1.752 4.022a1 1 0 0 0 .84.597l4.463.342c.9.069 1.255 1.2.556 1.771l-3.33 2.723a1 1 0 0 0-.337 1.016l1.03 4.119c.214.858-.71 1.552-1.474 1.106l-3.913-2.281a1 1 0 0 0-1.008 0L7.583 20.8c-.764.446-1.688-.248-1.474-1.106l1.03-4.119A1 1 0 0 0 6.8 14.56l-3.33-2.723c-.698-.571-.342-1.702.557-1.771l4.462-.342a1 1 0 0 0 .84-.597l1.753-4.022Z"/>`
+                            } else {
+                                htmlString += `
+                                <path class="star-path" stroke="currentColor" stroke-width="2" d="M11.083 5.104c.35-.8 1.485-.8 1.834 0l1.752 4.022a1 1 0 0 0 .84.597l4.463.342c.9.069 1.255 1.2.556 1.771l-3.33 2.723a1 1 0 0 0-.337 1.016l1.03 4.119c.214.858-.71 1.552-1.474 1.106l-3.913-2.281a1 1 0 0 0-1.008 0L7.583 20.8c-.764.446-1.688-.248-1.474-1.106l1.03-4.119A1 1 0 0 0 6.8 14.56l-3.33-2.723c-.698-.571-.342-1.702.557-1.771l4.462-.342a1 1 0 0 0 .84-.597l1.753-4.022Z"/>`
+                            }
+                            htmlString += `
+                            </svg>
+                        </div>
+                    </div>
+                </div>
             </div>
             `;
-    });
-    // Mengambil semua ikon like dan star
-    
-}
-
-document.getElementById("product_entry_cards").className = classNameString;
-document.getElementById("product_entry_cards").innerHTML = htmlString;
-
-const likeIcons = document.querySelectorAll('.like-icon');
-    const starIcons = document.querySelectorAll('.star-icon');
-
-    // Event listener for each like icon
-    likeIcons.forEach((likeIcon) => {
-        likeIcon.addEventListener('click', function() {
-            const likePath = this.querySelector('.like-path');
-            if (likePath.getAttribute('d').includes('M7 11')) {
-                // Change to filled like
-                likePath.setAttribute('d', 'M15.03 9.684h3.965c.322 0 .64.08.925.232.286.153.532.374.717.645a2.109 2.109 0 0 1 .242 1.883l-2.36 7.201c-.288.814-.48 1.355-1.884 1.355-2.072 0-4.276-.677-6.157-1.256-.472-.145-.924-.284-1.348-.404h-.115V9.478a25.485 25.485 0 0 0 4.238-5.514 1.8 1.8 0 0 1 .901-.83 1.74 1.74 0 0 1 1.21-.048c.396.13.736.397.96.757.225.36.32.788.269 1.211l-1.562 4.63ZM4.177 10H7v8a2 2 0 1 1-4 0v-6.823C3 10.527 3.527 10 4.176 10Z');
-                likePath.setAttribute('fill', 'currentColor');
-                likePath.setAttribute('stroke', 'none');
-                likePath.setAttribute('clip-rule', 'evenodd');
-            } else {
-                // Change back to outline like
-                likePath.setAttribute('d', 'M7 11c.889-.086 1.416-.543 2.156-1.057a22.323 22.323 0 0 0 3.958-5.084 1.6 1.6 0 0 1 .582-.628 1.549 1.549 0 0 1 1.466-.087c.205.095.388.233.537.406a1.64 1.64 0 0 1 .384 1.279l-1.388 4.114M7 11H4v6.5A1.5 1.5 0 0 0 5.5 19v0A1.5 1.5 0 0 0 7 17.5V11Zm6.5-1h4.915c.286 0 .372.014.626.15.254.135.472.332.637.572a1.874 1.874 0 0 1 .215 1.673l-2.098 6.4C17.538 19.52 17.368 20 16.12 20c-2.303 0-4.79-.943-6.67-1.475');
-                likePath.setAttribute('fill', 'none');
-                likePath.setAttribute('clip-rule', 'none');
-                likePath.setAttribute('stroke', 'currentColor');
-            }
         });
-    });
+    }
 
-    // Event listener for each star icon
-    starIcons.forEach((starIcon) => {
+    document.getElementById("product_entry_cards").className = classNameString;
+    document.getElementById("product_entry_cards").innerHTML = htmlString;
+
+    // Attach event listeners to star icons
+    document.querySelectorAll('.star-icon').forEach(starIcon => {
         starIcon.addEventListener('click', function() {
+            const productId = this.getAttribute('data-product-id');
             const starPath = this.querySelector('.star-path');
-            if (starPath.getAttribute('fill') == null || starPath.getAttribute('fill').includes('none')) {
-                // Change to filled star
-                starPath.setAttribute('fill', 'currentColor');
+            const isFilled = starPath.getAttribute('fill')
+            if(isFilled === "currentColor") {
+                fetch("{% url 'wishlist:delete_wishlist_item_from_catalog' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: new URLSearchParams({
+                        'product_id': productId
+                    })
+                }).then(response => response.json())
+                  .then(data => {
+                      if (data.success) {
+                          // Change to filled star on success
+                          starPath.setAttribute('fill', 'none');
+                      }
+                  }).catch(error => {
+                      console.error('Error:', error);
+                  });
             } else {
-                // Change back to outline star
-                starPath.setAttribute('fill', 'none');
+                fetch("{% url 'wishlist:add_to_wishlist' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: new URLSearchParams({
+                        'product_id': productId
+                    })
+                }).then(response => response.json())
+                  .then(data => {
+                      if (data.success) {
+                          // Change to filled star on success
+                          starPath.setAttribute('fill', 'currentColor');
+                      }
+                  }).catch(error => {
+                      console.error('Error:', error);
+                  });
             }
         });
     });
 }
+// JavaScript untuk menampilkan dan menutup filter modal
+function openFilterModal() {
+        document.getElementById('filter-modal').classList.remove('hidden');
+    }
 
+    function closeFilterModal() {
+        document.getElementById('filter-modal').classList.add('hidden');
+    }
+
+    // Fungsi untuk mencari produk berdasarkan keyword
+    async function searchProducts() {
+        keyword = document.getElementById('search-bar').value;
+        applySearchAndFilter()
+    }
+
+    // Fungsi untuk menerapkan filter berdasarkan kategori
+    async function applyFilter() {
+        category = document.getElementById('category-filter').value;
+        closeFilterModal();
+        applySearchAndFilter()
+    }
 // JavaScript to handle Like and Star click events
 document.addEventListener('DOMContentLoaded', function() {
-    refreshProductEntries()
+    let keyword = "NoSearch";
+    let category = "";
+    refreshProductEntries(null)
 });
-
-
 </script>
 {% endblock content %}

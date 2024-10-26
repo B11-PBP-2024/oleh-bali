@@ -4,7 +4,7 @@
 {% endblock meta %}
 {% block content %}
 {% include 'navbar_buyer.html' %}
-<form class="pt-16" method="POST">
+<form class="pt-28 md:pt-20" method="POST">
     {% csrf_token %}
     <table>
         {{form.as_table}}

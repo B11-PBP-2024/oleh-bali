@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Product Seller</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-cover bg-center h-screen flex items-center justify-center"
+    style="background-image: url('https://wallpapers.com/images/hd/blue-green-beach-bali-island-mc92rqx7engs0kqe.jpg');">
+    <div
+        class="bg-white bg-opacity-90 p-6 rounded-lg shadow-lg w-full max-w-md mx-auto"> 
+        <h1 class="text-3xl font-bold text-center text-blue-600 mb-6">Add New Product Seller</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label class="block text-green-600 font-bold mb-2" for="product">Product Name:</label>
+                <select class="w-full px-3 py-2 border border-gray-400 rounded-lg focus:outline-none focus:border-blue-500"
+                        name="product" id="product" required>
+                    <option value="">Select Product</option>
+                    {% for product in form.fields.product.queryset %}
+                        <option value="{{ product.id }}">{{ product.product_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-4">
+                <label class="block text-green-600 font-bold mb-2" for="price">Price:</label>
+                <input class="w-full px-3 py-2 border border-gray-400 rounded-lg focus:outline-none focus:border-blue-500"
+                       type="text" inputmode="numeric" name="price" id="price" required>
+            </div>
+            <div class="text-center">
+                <input class="bg-blue-500 text-white font-bold px-6 py-3 rounded-full cursor-pointer hover:bg-blue-700 transition-all w-full max-w-xs"
+                       type="submit" value="Submit">
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

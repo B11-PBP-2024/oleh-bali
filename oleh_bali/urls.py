@@ -29,4 +29,6 @@ urlpatterns = [
     path("wishlist/",include("wishlist.urls")),
     path("profile/",include("user_profile.urls")),
     path('like/', include('like.urls')),
+    path('see_stores/', include('see_stores.urls', namespace='see_stores')),
+
 ]

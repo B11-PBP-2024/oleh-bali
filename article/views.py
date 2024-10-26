@@ -5,11 +5,14 @@ from article.forms import ArticleEntryForm
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.core import serializers
 from django.urls import reverse
+from user_profile.models import BuyerProfile
 
 # Create your views here.
 
 def show_articles(request):
+    profile = BuyerProfile.objects.get(user=request.user)
     context = {
+        'profile':profile,
         'user':request.user}
     return render(request,"article_page.html",context)
 
@@ -28,9 +31,10 @@ def create_article(request):
 
 
 def json_all_article(request):
-    articles = ArticleEntry.objects.select_related('user').all()
+    articles = ArticleEntry.objects.all()
     article_list = []
     for article in articles:
+        user = BuyerProfile.objects.get(user=article.user)
         article_data = {
             'id': article.id,
             'title': article.title,
@@ -38,7 +42,9 @@ def json_all_article(request):
             'text': article.text,
             'time': article.time.strftime("%B %d, %Y %H:%M"),
             'user': {
-                'username': article.user.username
+                'displayname':user.store_name,
+                'profilepicture' : user.profile_picture,
+                'nationality' : user.nationality
             }
         }
         article_list.append(article_data)
@@ -48,6 +54,7 @@ def json_user_article(request):
     articles = ArticleEntry.objects.filter(user=request.user)
     article_list = []
     for article in articles:
+        user = BuyerProfile.objects.get(user=article.user)
         article_data = {
             'id': article.id,
             'title': article.title,
@@ -55,7 +62,9 @@ def json_user_article(request):
             'text': article.text,
             'time': article.time.strftime("%B %d, %Y %H:%M"),
             'user': {
-                'username': article.user.username
+                'displayname':user.store_name,
+                'profilepicture' : user.profile_picture,
+                'nationality' : user.nationality
             }
         }
         article_list.append(article_data)
@@ -82,4 +91,4 @@ def edit_article(request,id):
     if form.is_valid() and request.method == "POST":
         form.save()
         return HttpResponseRedirect(reverse('article:show_articles'))
-    return render(request,"edit_article.html",{'form':form})
+    return render(request,"edit_article.html",{'form':form,'article':article})

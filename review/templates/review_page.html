@@ -6,7 +6,7 @@
 {% include 'navbar_buyer.html' %}
 
 <div class="py-20 bg-white">
-    <h1 class="text-4xl font-bold text-red-600 text-center mb-10">Review</h1>
+    <h1 class="text-4xl font-bold text-red-600 text-center mb-10 pt-28 md:pt-20">Review</h1>
 
     <div class="text-center mb-8">
         <a href="{% url 'review:create_review' product.pk %}" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-500 transition duration-300">
@@ -35,5 +35,5 @@
         {% endfor %}
     </div>
 </div>
-
+{% include 'footer_buyer.html' %}
 {% endblock content %}

@@ -1,5 +1,5 @@
 from django.db import models
-from main.models import Buyer
+from main.models import User,Buyer
 import uuid
 from django.utils import timezone
 

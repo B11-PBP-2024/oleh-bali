@@ -288,7 +288,7 @@ def create_seller_profile(sender, instance, created, **kwargs):
     if created:
         profile_seller.profile_picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
         profile_seller.store_name = instance.username
-        profile_seller.city = "Not Set"  
+        profile_seller.city = "Denpasar"  
         profile_seller.subdistrict = "Denpasar Selatan"
         profile_seller.village = "Panjer"
         profile_seller.address = "Not Set"  

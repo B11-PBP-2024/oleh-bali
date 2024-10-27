@@ -9,7 +9,7 @@ class SellerViewsTest(TestCase):
     def setUp(self):
         self.seller = Seller.objects.create(username="TestSeller", email="seller@example.com")
         self.client = Client()
-        self.client.force_login(self.seller)  # Simulate login
+        self.client.force_login(self.seller)  
 
         self.product_entry = ProductEntry.objects.create(
             product_name="Test Product",
@@ -51,14 +51,14 @@ class SellerViewsTest(TestCase):
     def test_add_product_invalid_post(self):
         """Test POST request to add_product with invalid data"""
         form_data = {
-            'product_name': '',  # Invalid, required field is missing
+            'product_name': '',  
             'description': '',
             'product_image': '',
             'product_category': '',
             'price': '',
         }
         response = self.client.post(reverse('seller:add_product'), data=form_data)
-        self.assertEqual(response.status_code, 200)  # Should not redirect, should render the form again
+        self.assertEqual(response.status_code, 200)  
         self.assertTemplateUsed(response, 'create_product_entry.html')
         self.assertFalse(response.context['form'].is_valid())
         self.assertIn('product_name', response.context['form'].errors)
@@ -81,11 +81,11 @@ class SellerViewsTest(TestCase):
     def test_add_product_seller_invalid_post(self):
         """Test POST request to add_product_seller with invalid data"""
         form_data = {
-            'product': '',  # Invalid, no product selected
+            'product': '',  
             'price': '',
         }
         response = self.client.post(reverse('seller:add_product_seller'), data=form_data)
-        self.assertEqual(response.status_code, 200)  # Should not redirect, should render the form again
+        self.assertEqual(response.status_code, 200)  
         self.assertTemplateUsed(response, 'create_product_seller.html')
         self.assertFalse(response.context['form'].is_valid())
         self.assertIn('product', response.context['form'].errors)

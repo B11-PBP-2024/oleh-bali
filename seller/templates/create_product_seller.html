@@ -69,7 +69,6 @@
 
             const statusMessage = document.getElementById('statusMessage');
             if (response.ok) {
-                // Redirect to show_products_seller.html after successful submission
                 window.location.href = "{% url 'seller:show_product_seller' %}";
             } else {
                 throw new Error('Failed to submit form');

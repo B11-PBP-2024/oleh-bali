@@ -7,6 +7,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST
 import json
+from django.core import serializers
+from user_profile.models import BuyerProfile
 
 def show_review(request,id):
     product = ProductEntry.objects.get(pk=id)
@@ -63,3 +65,24 @@ def delete_review(request,id):
     review.delete()
 
     return HttpResponseRedirect(reverse('review:show_review', args=[product_id]))
+
+def get_reviews(request):
+    this_user = BuyerProfile.objects.get(user=request.user)
+    reviews = ReviewEntry.objects.all()
+    review_list = []
+    for review in reviews:
+        user = BuyerProfile.objects.get(user=review.user)
+        review_data = {
+            'id': review.id,
+            'time': review.time.strftime("%B %d, %Y %H:%M"),
+            'review_text':review.review_text,
+            'user': {
+                'displayname':user.store_name,
+                'profilepicture' : user.profile_picture,
+                'nationality' : user.nationality
+            },
+            'thisUser' : this_user.store_name,
+        }
+        review_list.append(review_data)
+    return JsonResponse(review_list, safe=False)
+

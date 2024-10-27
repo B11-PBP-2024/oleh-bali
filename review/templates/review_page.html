@@ -16,40 +16,7 @@
     </div>
 
     <!-- Container untuk review -->
-    <div class="max-w-3xl mx-auto bg-white shadow-lg p-6 rounded-lg">
-        {% if not reviews %}
-            <p class="text-center"> There is no reviews yet.</p>
-        {% else %}
-        {% for review in reviews %}
-            <div class="border-b border-gray-300 py-6 flex space-x-4">
-                <div>
-                    <img class="w-12 h-12 rounded-full object-cover" src="{{ review.user.buyerprofile.profile_picture }}" alt="{{ review.user.username }}">
-                </div>
-                <div class="flex-1">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold text-red-600">{{ review.user.username }}</h2>
-                        <span class="text-sm text-gray-500">{{ review.time|date:"F j, Y, g:i a" }}</span>
-                    </div>
-                    <p class="mt-1 text-sm text-gray-600">{{ review.user.buyerprofile.nationality }}</p>
-                    <p class="mt-2 text-gray-700">{{ review.review_text }}</p>
-                    {% if review.user == request.user %}
-                        <div class="flex gap-2 justify-end">
-                            <div class="mt-4 text-right">
-                                <a href="{% url 'review:edit_review' review.id %}" class="text-sm text-blue-600 hover:underline">
-                                    Edit
-                                </a>
-                            </div>
-                            <div class="mt-4 text-right">
-                                <a href="{% url 'review:delete_review' review.id %}" class="text-sm text-red-600 hover:underline">
-                                    Delete
-                                </a>
-                            </div>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        {% endfor %}
-        {% endif %}
+    <div  id="review-container" class="max-w-3xl mx-auto bg-white shadow-lg p-6 rounded-lg">
     </div>
 </div>
 
@@ -99,22 +66,7 @@
             if (data.success) {
                 document.getElementById('review-modal').classList.add('hidden');
 
-                const reviewsContainer = document.querySelector('.max-w-3xl');
-                const newReview = `
-                    <div class="border-b border-gray-300 py-6 flex space-x-4">
-                        <div>
-                            <img class="w-12 h-12 rounded-full object-cover" src="${data.user_profile_picture}" alt="${data.username}">
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex justify-between items-center">
-                                <h2 class="text-lg font-semibold text-red-600">${data.username}</h2>
-                                <span class="text-sm text-gray-500">${data.time}</span>
-                            </div>
-                            <p class="mt-1 text-sm text-gray-600">${data.nationality}</p>
-                            <p class="mt-2 text-gray-700">${data.review_text}</p>
-                        </div>
-                    </div>
-                `;
+                refreshReview()
                 reviewsContainer.insertAdjacentHTML('afterbegin', newReview);
 
                 // Bersihkan form
@@ -125,6 +77,56 @@
         })
         .catch(error => console.error("Error:", error));
     });
+
+async function getReviews() {
+    return fetch("{% url 'review:get_reviews' %}").then((res) => res.json())
+}
+
+async function refreshReview() {
+    document.getElementById("review-container").innerHTML = "";
+    const reviews = await getReviews()
+    let htmlString="";
+    console.log(reviews)
+    if (reviews.length === 0) {
+        htmlString += `
+        <p class="text-center"> There is no reviews yet.</p>
+        `
+    } else {
+        reviews.forEach((review)=> {
+            htmlString += `
+                <div class="border-b border-gray-300 py-6 flex space-x-4">
+                <div>
+                    <img class="w-12 h-12 rounded-full object-cover" src="${review.user.profilepicture}">
+                </div>
+                <div class="flex-1">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-lg font-semibold text-red-600">${review.user.displayname}</h2>
+                        <span class="text-sm text-gray-500">${review.time}</span>
+                    </div>
+                    <p class="mt-1 text-sm text-gray-600">${review.user.nationality}</p>
+                    <p class="mt-2 text-gray-700">${review.review_text }</p>`
+                    if(review.thisUser == review.user.displayname)
+                        htmlString += `<div class="flex gap-2 justify-end">
+                            <div class="mt-4 text-right">
+                                <a href="edit-review/${review.id}" class="text-sm text-blue-600 hover:underline">
+                                    Edit
+                                </a>
+                            </div>
+                            <div class="mt-4 text-right">
+                                <a href="delete/${review.id}" class="text-sm text-red-600 hover:underline">
+                                    Delete
+                                </a>
+                            </div>
+                        </div>`
+                htmlString+=`</div>
+            </div>
+            `
+        })
+
+    }
+    document.getElementById("review-container").innerHTML = htmlString
+}
+refreshReview()
 
 </script>
 

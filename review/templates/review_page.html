@@ -84,7 +84,6 @@
         event.preventDefault();
         const reviewText = document.getElementById('id_review_text').value;
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        console.log(reviewText)
 
         fetch("{% url 'review:create_review' product.pk %}", {
             method: "POST",
@@ -96,17 +95,37 @@
         })
         .then(response => response.json())
         .then(data => {
+            console.log(data);  // Cek respons data yang diterima
             if (data.success) {
-                // Tutup modal dan reload daftar ulasan atau tambahkan ulasan baru
                 document.getElementById('review-modal').classList.add('hidden');
-                location.reload(); // atau tambahkan ulasan tanpa reload
+
+                const reviewsContainer = document.querySelector('.max-w-3xl');
+                const newReview = `
+                    <div class="border-b border-gray-300 py-6 flex space-x-4">
+                        <div>
+                            <img class="w-12 h-12 rounded-full object-cover" src="${data.user_profile_picture}" alt="${data.username}">
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-center">
+                                <h2 class="text-lg font-semibold text-red-600">${data.username}</h2>
+                                <span class="text-sm text-gray-500">${data.time}</span>
+                            </div>
+                            <p class="mt-1 text-sm text-gray-600">${data.nationality}</p>
+                            <p class="mt-2 text-gray-700">${data.review_text}</p>
+                        </div>
+                    </div>
+                `;
+                reviewsContainer.insertAdjacentHTML('afterbegin', newReview);
+
+                // Bersihkan form
+                document.getElementById('id_review_text').value = "";
             } else {
-                // Tampilkan pesan error jika ada
                 alert("Failed to add review");
             }
         })
         .catch(error => console.error("Error:", error));
     });
+
 </script>
 
 {% include 'footer_buyer.html' %}

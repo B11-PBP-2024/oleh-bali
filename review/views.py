@@ -1,11 +1,12 @@
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import get_object_or_404, render, redirect, reverse
 from django.http import HttpResponseRedirect
 from review.models import ReviewEntry
 from seller.models import ProductEntry
 from review.forms import ReviewEntryForm
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
-from django.utils.decorators import method_decorator
+from django.http import JsonResponse, HttpResponse
+from django.views.decorators.http import require_POST
+import json
 
 def show_review(request,id):
     product = ProductEntry.objects.get(pk=id)
@@ -16,38 +17,31 @@ def show_review(request,id):
     }
     return render(request, "review_page.html", context)
 
-# @csrf_exempt
+@csrf_exempt
+@require_POST
 def create_review(request, id):
-    if request.method == "POST":
-        form = ReviewEntryForm(request.POST or None)
+    try:
+        data = json.loads(request.body)
+        review_text = data.get("review_text", "").strip()
 
-        # Debug: Print the POST data
-        print("POST data:", request.POST)
-        
-        # Cek apakah form valid
-        if form.is_valid():
-            review = form.save(commit=False)
-            review.user = request.user
-            product = ProductEntry.objects.get(pk=id)
-            review.product = product
-            review.review_text = review.review_text.replace("\r", "\n")  # Format line break dengan benar
-            review.save()
+        if not review_text:
+            return JsonResponse({'success': False, 'errors': {'review_text': ['This field is required.']}}, status=400)
 
-            # Cek apakah request adalah AJAX
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({"success": True})
-            else:
-                return redirect('review:show_review', id=product.id)
-        else:
-            # Debug untuk error form jika form tidak valid
-            print("Form errors:", form.errors)
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({"success": False, "errors": form.errors})
+        product = get_object_or_404(ProductEntry, pk=id)  # Pastikan Anda memiliki model Product
+        user = request.user
 
-    # Render form jika GET atau permintaan POST tidak valid
-    form = ReviewEntryForm()
-    context = {'form': form}
-    return render(request, "create_review.html", context)
+        new_review = ReviewEntry(
+            review_text=review_text,
+            product=product,
+            user=user,
+        )
+        new_review.save()
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'errors': str(e)}, status=500)
+
+    # Berhasil dibuat
+    return HttpResponse(b"CREATED", status=201)
 
 def edit_review(request,id):
     review = ReviewEntry.objects.get(pk=id)

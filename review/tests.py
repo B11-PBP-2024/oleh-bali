@@ -31,7 +31,7 @@ class ReviewAppTests(TestCase):
         self.create_review_url = reverse("review:create_review", args=[self.product.id])
         self.edit_review_url = reverse("review:edit_review", args=[self.product.id])
         self.delete_review_url = reverse("review:delete_review", args=[self.product.id])
-        self.get_reviews_url = reverse("review:get_reviews")
+        self.get_reviews_url = reverse("review:get_reviews",args=[self.product.id])
 
         # Create a sample review
         self.review = ReviewEntry.objects.create(

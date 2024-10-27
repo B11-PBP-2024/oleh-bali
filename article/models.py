@@ -10,4 +10,3 @@ class ArticleEntry(models.Model):
     time = models.DateTimeField(default=timezone.now)
     title = models.CharField(max_length=255)
     text = models.TextField()
-# Create your models here.

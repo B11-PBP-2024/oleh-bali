@@ -7,6 +7,10 @@ from .forms import CustomBuyerCreationForm, CustomSellerCreationForm, CustomAuth
 from user_profile.models import BuyerProfile, SellerProfile
 User = get_user_model()
 # Create your views here.
+
+def view_404(request, exception=None):
+    return render(request, '404.html', status=404)
+
 @login_required(login_url="login/buyer")
 def show_main(request):
     if request.user.role == 1:

@@ -8,5 +8,5 @@ urlpatterns = [
     path('create/<uuid:id>', create_review, name='create_review'),
     path('edit-review/<uuid:id>', edit_review, name='edit_review'),
     path('delete/<uuid:id>', delete_review, name='delete_review'),
-    path('json/', get_reviews, name='get_reviews'),
+    path('json/<uuid:id>', get_reviews, name='get_reviews'),
 ]

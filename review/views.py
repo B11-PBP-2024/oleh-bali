@@ -66,9 +66,10 @@ def delete_review(request,id):
 
     return HttpResponseRedirect(reverse('review:show_review', args=[product_id]))
 
-def get_reviews(request):
+def get_reviews(request,id):
+    product = ProductEntry.objects.get(pk=id)
     this_user = BuyerProfile.objects.get(user=request.user)
-    reviews = ReviewEntry.objects.all()
+    reviews = ReviewEntry.objects.filter(product=product)
     review_list = []
     for review in reviews:
         user = BuyerProfile.objects.get(user=review.user)

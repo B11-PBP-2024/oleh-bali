@@ -79,7 +79,7 @@
     });
 
 async function getReviews() {
-    return fetch("{% url 'review:get_reviews' %}").then((res) => res.json())
+    return fetch("{% url 'review:get_reviews' product.pk  %}").then((res) => res.json())
 }
 
 async function refreshReview() {

@@ -89,5 +89,3 @@ def product_search(request):
     elif sort_price == 'desc':
         products_seller = products_seller.order_by('-price')
     return JsonResponse(list(products_seller), safe=False)
-
-

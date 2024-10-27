@@ -3,7 +3,7 @@ from django.utils.html import strip_tags
 from .models import ProductEntry, ProductSeller
 
 class ProductEntryForm(forms.ModelForm):
-    price = forms.IntegerField(required=True, label='Price')
+    price = forms.IntegerField(required=True, label='Price')  
 
     class Meta:
         model = ProductEntry
@@ -11,6 +11,7 @@ class ProductEntryForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        
         self.fields['product_name'].required = False
         self.fields['description'].required = False
         self.fields['product_image'].required = False
@@ -18,6 +19,7 @@ class ProductEntryForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+        
         cleaned_data['product_name'] = strip_tags(cleaned_data.get('product_name', ''))
         cleaned_data['description'] = strip_tags(cleaned_data.get('description', ''))
         cleaned_data['product_image'] = strip_tags(cleaned_data.get('product_image', ''))
@@ -45,7 +47,7 @@ class ProductSellerForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
-        self.fields['product'].queryset = ProductEntry.objects.all()
+        self.fields['product'].queryset = ProductEntry.objects.all()  
         self.fields['product'].widget.attrs['readonly'] = True  
         self.fields['price'].required = True  
 
@@ -56,8 +58,10 @@ class ProductSellerForm(forms.ModelForm):
 
         if not cleaned_data.get('product'):
             self.add_error('product', "Please select a product.")
+        
         if not cleaned_data.get('price'):
             self.add_error('price', "Please enter a price.")
+        
         if not isinstance(cleaned_data.get('price'), int):
             self.add_error('price', "Price must be a valid integer.")
 

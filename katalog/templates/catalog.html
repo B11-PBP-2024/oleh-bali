@@ -105,11 +105,18 @@
                             See Details
                         </a>
                         <div class="flex items-center gap-2">
-                            <svg class="w-9 h-9 text-blue-400 cursor-pointer like-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path class="like-path" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11c.889-.086 1.416-.543 2.156-1.057a22.323 22.323 0 0 0 3.958-5.084 1.6 1.6 0 0 1 .582-.628 1.549 1.549 0 0 1 1.466-.087c.205.095.388.233.537.406a1.64 1.64 0 0 1 .384 1.279l-1.388 4.114M7 11H4v6.5A1.5 1.5 0 0 0 5.5 19v0A1.5 1.5 0 0 0 7 17.5V11Zm6.5-1h4.915c.286 0 .372.014.626.15.254.135.472.332.637.572a1.874 1.874 0 0 1 .215 1.673l-2.098 6.4C17.538 19.52 17.368 20 16.12 20c-2.303 0-4.79-.943-6.67-1.475"/>
-                            </svg>
+                            <svg class="w-9 h-9 text-blue-400 cursor-pointer like-icon" aria-hidden="true" data-product-id="${product.pk}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">`
+                                if(product.fields.is_like) {
+                                    htmlString +=`
+                                    <path class="like-path" fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="0" d="M15.03 9.684h3.965c.322 0 .64.08.925.232.286.153.532.374.717.645a2.109 2.109 0 0 1 .242 1.883l-2.36 7.201c-.288.814-.48 1.355-1.884 1.355-2.072 0-4.276-.677-6.157-1.256-.472-.145-.924-.284-1.348-.404h-.115V9.478a25.485 25.485 0 0 0 4.238-5.514 1.8 1.8 0 0 1 .901-.83 1.74 1.74 0 0 1 1.21-.048c.396.13.736.397.96.757.225.36.32.788.269 1.211l-1.562 4.63ZM4.177 10H7v8a2 2 0 1 1-4 0v-6.823C3 10.527 3.527 10 4.176 10Z"/>`
+                                } else {
+                                    htmlString +=`
+                                    <path class="like-path" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11c.889-.086 1.416-.543 2.156-1.057a22.323 22.323 0 0 0 3.958-5.084 1.6 1.6 0 0 1 .582-.628 1.549 1.549 0 0 1 1.466-.087c.205.095.388.233.537.406a1.64 1.64 0 0 1 .384 1.279l-1.388 4.114M7 11H4v6.5A1.5 1.5 0 0 0 5.5 19v0A1.5 1.5 0 0 0 7 17.5V11Zm6.5-1h4.915c.286 0 .372.014.626.15.254.135.472.332.637.572a1.874 1.874 0 0 1 .215 1.673l-2.098 6.4C17.538 19.52 17.368 20 16.12 20c-2.303 0-4.79-.943-6.67-1.475"/>`
+                                }
+                            htmlString+=`</svg>
+                            <p class="like-count-${product.pk}">${product.fields.like_count}</p>
                             <svg class="w-9 h-9 text-yellow-500 cursor-pointer star-icon" aria-hidden="true" data-product-id="${product.pk}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">`
-                                if(product.fields.is_wishlist) {
+                            if(product.fields.is_wishlist) {
                                 htmlString += `<path fill="currentColor" class="star-path" stroke="currentColor" stroke-width="2" d="M11.083 5.104c.35-.8 1.485-.8 1.834 0l1.752 4.022a1 1 0 0 0 .84.597l4.463.342c.9.069 1.255 1.2.556 1.771l-3.33 2.723a1 1 0 0 0-.337 1.016l1.03 4.119c.214.858-.71 1.552-1.474 1.106l-3.913-2.281a1 1 0 0 0-1.008 0L7.583 20.8c-.764.446-1.688-.248-1.474-1.106l1.03-4.119A1 1 0 0 0 6.8 14.56l-3.33-2.723c-.698-.571-.342-1.702.557-1.771l4.462-.342a1 1 0 0 0 .84-.597l1.753-4.022Z"/>`
                             } else {
                                 htmlString += `
@@ -168,6 +175,62 @@
                       if (data.success) {
                           // Change to filled star on success
                           starPath.setAttribute('fill', 'currentColor');
+                      }
+                  }).catch(error => {
+                      console.error('Error:', error);
+                  });
+            }
+        });
+    });
+
+
+    document.querySelectorAll('.like-icon').forEach(likeIcon => {
+        likeIcon.addEventListener('click', function() {
+            const productId = this.getAttribute('data-product-id');
+            const likeCountElement = document.querySelector(`.like-count-${productId}`)
+            let likeCount = parseInt(likeCountElement.innerHTML)
+            const likePath = this.querySelector('.like-path');
+            const isFilled = likePath.getAttribute('fill')
+            if(isFilled === "currentColor") {
+                fetch("{% url 'like:delete_like_from_catalog' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: new URLSearchParams({
+                        'product_id': productId
+                    })
+                }).then(response => response.json())
+                  .then(data => {
+                      if (data.success) {
+                          // Change to filled star on success
+                          likePath.setAttribute('fill', 'none');
+                          likePath.setAttribute('stroke-width', '2');
+                          likePath.setAttribute('d', 'M7 11c.889-.086 1.416-.543 2.156-1.057a22.323 22.323 0 0 0 3.958-5.084 1.6 1.6 0 0 1 .582-.628 1.549 1.549 0 0 1 1.466-.087c.205.095.388.233.537.406a1.64 1.64 0 0 1 .384 1.279l-1.388 4.114M7 11H4v6.5A1.5 1.5 0 0 0 5.5 19v0A1.5 1.5 0 0 0 7 17.5V11Zm6.5-1h4.915c.286 0 .372.014.626.15.254.135.472.332.637.572a1.874 1.874 0 0 1 .215 1.673l-2.098 6.4C17.538 19.52 17.368 20 16.12 20c-2.303 0-4.79-.943-6.67-1.475');
+                          likeCountElement.innerHTML = --likeCount;
+                      }
+                  }).catch(error => {
+                      console.error('Error:', error);
+                  });
+            } else {
+                fetch("{% url 'like:add_like' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: new URLSearchParams({
+                        'product_id': productId
+                    })
+                }).then(response => response.json())
+                  .then(data => {
+                      if (data.success) {
+                          // Change to filled star on success
+                          likePath.setAttribute('fill', 'currentColor');
+                          likePath.setAttribute('stroke-width', '0');
+                          likePath.setAttribute('d', 'M15.03 9.684h3.965c.322 0 .64.08.925.232.286.153.532.374.717.645a2.109 2.109 0 0 1 .242 1.883l-2.36 7.201c-.288.814-.48 1.355-1.884 1.355-2.072 0-4.276-.677-6.157-1.256-.472-.145-.924-.284-1.348-.404h-.115V9.478a25.485 25.485 0 0 0 4.238-5.514 1.8 1.8 0 0 1 .901-.83 1.74 1.74 0 0 1 1.21-.048c.396.13.736.397.96.757.225.36.32.788.269 1.211l-1.562 4.63ZM4.177 10H7v8a2 2 0 1 1-4 0v-6.823C3 10.527 3.527 10 4.176 10Z');
+                          likeCountElement.innerHTML = ++likeCount;
                       }
                   }).catch(error => {
                       console.error('Error:', error);

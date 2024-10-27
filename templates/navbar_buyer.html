@@ -5,7 +5,7 @@
     </p>
     
     <!-- Hamburger Icon (hidden on large screens) -->
-    <div class="lg:hidden">
+    <div class="md:hidden">
         <button id="navbar-toggle" class="text-gray-700 hover:text-red-700 focus:outline-none">
             <!-- Hamburger SVG icon -->
             <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -15,7 +15,7 @@
     </div>
 
     <!-- Links Menu (hidden on small screens) -->
-    <div id="navbar-menu" class="hidden lg:flex items-center gap-8">
+    <div id="navbar-menu" class="hidden md:flex items-center gap-8">
         <a href="{% url 'main:show_main' %}" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200">
             Home
         </a>
@@ -56,19 +56,19 @@
             Articles
         </a>
         
-        <a href="#" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200 py-3">
+        <a href="{% url 'katalog:show_catalog' %}" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200 py-3">
             Catalog
         </a>
         
-        <a href="#" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200 py-3">
+        <a href="{% url 'store:seller_list' %}" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200 py-3">
             See Stores
         </a>
         
-        <a href="#" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200 py-3">
+        <a href="{% url 'wishlist:show_wishlist' %}" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200 py-3">
             Wishlist
         </a>
         
-        <a href="#" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200 py-3">
+        <a href="{% url 'user_profile:profile_buyer' %}" class="flex items-center text-gray-700 hover:text-red-700 transition-colors duration-200 py-3">
             Profile
         </a>
         

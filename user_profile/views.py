@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import BuyerProfileForm, SellerProfileForm
 from .models import BuyerProfile, SellerProfile
 from .decorators import user_is_seller, user_is_buyer
+from django.http import JsonResponse
 
 # Create your views here.
 @login_required
@@ -13,7 +14,7 @@ def profile_buyer(request):
     # Mengatur nilai default, jika profile blm dibuat
     if created:
         profile_buyer.profile_picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-        profile_buyer.store_name = "Not Set" 
+        profile_buyer.store_name = request.user.username 
         profile_buyer.nationality = "Not Set"  
         profile_buyer.save()  
 
@@ -34,9 +35,16 @@ def profile_buyer_edit(request):
     
     if request.method == 'POST':
         form = BuyerProfileForm(request.POST, instance=profile_buyer)
+        print("post")
         if form.is_valid():
-            profile_buyer = form.save()
+            form.save()
+            print("save")
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': True})
             return redirect('user_profile:profile_buyer')
+        else:
+            errors = form.errors.as_json()
+            return JsonResponse({'success': False, 'errors': errors})
     else:
         form = BuyerProfileForm(instance=profile_buyer)
     return render(request, 'profile/profile_buyer_edit.html', {'form': form, 'profile': profile_buyer})
@@ -52,9 +60,8 @@ def profile_seller(request):
     # Mengatur nilai default nya, jika profile blm dibuat
     if created:
         profile_seller.profile_picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-        profile_seller.store_name = "Not Set"
+        profile_seller.store_name = request.user.username 
         profile_seller.city = "Denpasar"  
-        profile_seller.price = 10000
         profile_seller.subdistrict = "Denpasar Selatan"
         profile_seller.village = "Panjer"
         profile_seller.address = "Not Set"  

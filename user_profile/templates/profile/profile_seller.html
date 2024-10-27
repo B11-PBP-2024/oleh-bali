@@ -3,7 +3,7 @@
 
 {% block content %}
 {% include 'navbar_seller.html' %}
-<div class="w-full min-h-screen bg-slate-100 pb-10">
+<div class="w-full min-h-screen bg-slate-100 pb-10 pt-28 md:pt-20">
     <div class="container mx-auto flex flex-col gap-3 pt-20">
         <h1 class="font-bold text-3xl text-black text-center">Store Profile</h1>
         <main class="w-full bg-white flex flex-col gap-8 rounded-2xl p-10 shadow-lg">
@@ -24,16 +24,21 @@
                         <p class="text-base font-bold">{{ profile.store_name }}</p>
                     </div>
                     <div class="flex flex-col">
+                        <h3 class="text-lg font-medium">Username</h3>
+                        <p class="text-base font-bold">{{ profile.user }}</p>
+                    </div>
+                    <div class="flex flex-col">
                         <h3 class="text-lg font-medium">City</h3>
                         <p class="text-base font-bold">{{ profile.city }}</p>
                     </div>
+
+                </div>
+
+                <div class="flex flex-col gap-3">
                     <div class="flex flex-col">
                         <h3 class="text-lg font-medium">Subdistrict</h3>
                         <p class="text-base font-bold">{{ profile.subdistrict }}</p>
                     </div>
-                </div>
-
-                <div class="flex flex-col gap-3">
                     <div class="flex flex-col">
                         <h3 class="text-lg font-medium">Village</h3>
                         <p class="text-base font-bold">{{ profile.village }}</p>
@@ -42,6 +47,8 @@
                         <h3 class="text-lg font-medium">Street Address</h3>
                         <p class="text-base font-bold">{{ profile.address }}</p>
                     </div>
+                </div>
+                <div class="flex flex-col gap-3">
                     <div class="flex flex-col overflow-hidden">
                         <h3 class="text-lg font-medium">Google Maps Link</h3>
                         <a href="{{ profile.maps }}" class="text-base font-bold text-blue-600 hover:underline" target="_blank">{{ profile.maps }}</a>
@@ -57,4 +64,5 @@
         </main>
     </div>
 </div>
+{% include 'footer_seller.html' %}
 {% endblock content %}

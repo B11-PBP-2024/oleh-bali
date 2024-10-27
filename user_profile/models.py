@@ -6,12 +6,9 @@ from django.dispatch import receiver
 
 # Create your models here.
 class BuyerProfile(models.Model):
-    user = models.OneToOneField(Buyer, on_delete=models.CASCADE)
-    profile_picture = models.URLField(max_length=1000, blank=True, null=True)
-    store_name = models.CharField(max_length=100)
-    nationality = models.CharField(max_length=100)
 
     NATIONALITY_CHOICES = [
+        ('Not Set', 'Not Set'),
         ('Afghan', 'Afghan'),
         ('Albanian', 'Albanian'),
         ('Algerian', 'Algerian'),
@@ -211,6 +208,13 @@ class BuyerProfile(models.Model):
         ('Zimbabwean', 'Zimbabwean'),
     ]  
 
+    user = models.OneToOneField(Buyer, on_delete=models.CASCADE)
+    profile_picture = models.URLField(max_length=1000, blank=True, null=True)
+    store_name = models.CharField(max_length=100)
+    nationality = models.CharField(max_length=100, choices=NATIONALITY_CHOICES)
+
+    
+
 
     def __str__(self):
         return self.user.username
@@ -220,7 +224,6 @@ class SellerProfile(models.Model):
     profile_picture = models.URLField(max_length=1000, blank=True, null=True)
     store_name = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
-    price = models.IntegerField(default=10000)
     
     SUBDISTRICT_CHOICES = [
         ('Denpasar Selatan', 'Denpasar Selatan'),
@@ -286,9 +289,8 @@ def create_seller_profile(sender, instance, created, **kwargs):
         profile_seller.profile_picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
         profile_seller.store_name = instance.username
         profile_seller.city = "Not Set"  
-        profile_seller.price = 10000
-        profile_seller.subdistrict = "Not Set"
-        profile_seller.village = "Not Set"
+        profile_seller.subdistrict = "Denpasar Selatan"
+        profile_seller.village = "Panjer"
         profile_seller.address = "Not Set"  
         profile_seller.maps = "https://www.google.com/maps"  
         profile_seller.save()

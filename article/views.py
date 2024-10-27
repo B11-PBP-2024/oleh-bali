@@ -91,4 +91,4 @@ def edit_article(request,id):
     if form.is_valid() and request.method == "POST":
         form.save()
         return HttpResponseRedirect(reverse('article:show_articles'))
-    return render(request,"edit_article.html",{'form':form})
+    return render(request,"edit_article.html",{'form':form,'article':article})

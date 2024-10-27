@@ -1,64 +1,215 @@
 {% extends 'base.html' %}
+{% load humanize static %}  {# Import Django's humanize template tag for intcomma dan static #}
 {% block meta %}
-    <title>Product Seller List</title>
+<title>
+    Product Seller
+</title>
 {% endblock meta %}
-
 {% block content %}
-    <h1 class="text-4xl font-bold">Product Seller List</h1> 
+    {% include 'navbar_seller.html' %}
 
-    <div style="margin-bottom: 20px;">
-        <h2>My Products</h2>
-        <form method="GET" action="">
-            <input type="text" name="search" placeholder="Search products..." value="{{ request.GET.search }}">
+    <div class="bg-white pt-16 min-h-screen pt-28 md:pt-20">
+        <h1 class="text-4xl font-bold text-center justify-center mb-4">The Products You're Selling</h1> 
 
-            <input type="number" name="price_min" placeholder="Min Price" value="{{ request.GET.price_min }}">
-            <input type="number" name="price_max" placeholder="Max Price" value="{{ request.GET.price_max }}">
+        <div style="margin-bottom: 20px;">
+            <div class="flex gap-12 justify-stretch px-6">
+                <div class="border-4 border-red-500 px-10 py-2 rounded-full flex gap-2 flex-1 items-center">
+                    <input class="flex-1" type="text" name="search" id="search" placeholder="Search products..." value="{{ search_query }}" oninput="fetch_product()">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <select onchange="fetch_product()" id="sort-options" class="bg-red-500 text-white font-bold px-6 py-2 rounded-full focus:outline-none flex items-center justify-between shadow-lg border-2 border-red-500">
+                    <option class="px-4 py-2 hover:bg-cyan-600 hover:text-white transition duration-200 cursor-pointer" value="" selected>
+                        Sort by Price
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </option>
+                    <option class="px-4 py-2 hover:bg-cyan-600 hover:text-white transition duration-200 cursor-pointer" value="asc">Lowest to Highest</option>
+                    <option class="px-4 py-2 hover:bg-cyan-600 hover:text-white transition duration-200 cursor-pointer" value="desc">Highest to Lowest</option>
+                </select>
+            </div>
 
-            <input type="text" name="category" placeholder="Category" value="{{ request.GET.category }}">
-
-            <button type="submit" class="btn">Filter</button>
-        </form>
-    </div>
-
-    <div style="margin-bottom: 20px;">
-        <form action="{% url 'seller:add_product' %}">
-            <button type="submit">Add New Product</button>
-        </form>
-        <form action="{% url 'seller:add_product_seller' %}">
-            <button type="submit">Add Existing Product</button>
-        </form>
-    </div>
-
-    <table border="1" cellpadding="10">
-        <thead>
-            <tr>
-                <th>Product Name</th>
-                <th>Price</th>
-                <th>Description</th>
-                <th>Category</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% if products_seller %}
-                {% for product_seller in products_seller %}
-                <tr>
-                    <td>{{ product_seller.product.product_name|default:"No Name" }}</td>
-                    <td>
-                        {% if product_seller.price is not None %}
-                            {{ product_seller.price }}
-                        {% else %}
-                            0
-                        {% endif %}
-                    </td>
-                    <td>{{ product_seller.product.description|default:"No description available" }}</td>
-                    <td>{{ product_seller.product.product_category|default:"No category" }}</td>
-                </tr>
+            <div class="flex overflow-x-auto gap-8 justify-center mt-8">
+                {% for category_key, category_value in categories.items %}
+                <label>
+                    <input type="radio" value="{{category_key}}" name="category" class="hidden">
+                    <span class="category_value">
+                        {{ category_value }}
+                    </span>
+                </label>
                 {% endfor %}
-            {% else %}
-                <tr>
-                    <td colspan="4">No products available.</td>
-                </tr>
-            {% endif %}
-        </tbody>
-    </table>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-6 justify-end px-6">
+            <form action="{% url 'seller:add_product' %}">
+                <button class="bg-red-500 font-bold text-white px-10 py-2 rounded-full" type="submit">+ Add New Product</button>
+            </form>
+            <form action="{% url 'seller:add_product_seller' %}">
+                <button class="bg-red-500 font-bold text-white px-10 py-2 rounded-full" type="submit">+ Add Existing Product</button>
+            </form>
+        </div>
+
+        {% if not products_seller %}
+        <div class="flex flex-col items-center justify-center p-6">
+            <img src="{% static 'image/no-item-found.png' %}" alt="Not Found" class="w-32 h-32 mb-2"/>
+            <p class="text-center text-gray-600 mt-8">You don't have any products in this category yet.</p>
+            <p class="text-center text-gray-600 mt-2">Would you like to
+                <a href="{% url 'seller:add_product_seller' %}" class="text-blue-500 hover:text-blue-700 hover:underline font-bold">add an existing product</a>
+                or
+                <a href="{% url 'seller:add_product' %}" class="text-blue-500 hover:text-blue-700 hover:underline font-bold">add a new product</a>?
+            </p>
+        </div>
+        {% else %}
+        <div class="grid gap-6 p-6" id="product_list">
+            {% for product_seller in products_seller %}
+            <div class="flex gap-8 items-center bg-blue-200 p-4 rounded-2xl shadow-md border border-gray-300">
+                <img src="{{ product_seller.product.product_image }}" alt="gambar produk" class="aspect-square w-64 rounded-2xl">
+                <div class="flex-grow">
+                    <p class="font-bold text-2xl">{{ product_seller.product.product_name }}</p>
+                    <p class="text-xl">Rp{{ product_seller.price|intcomma }}</p>  
+                </div>
+                <div class="flex gap-6 items-center justify-end pr-8">
+                    <button class="p-2 text-3xl" type="button" id="btnedit-{{forloop.counter}}" onclick="open_edit_modal('{{forloop.counter}}')"> 
+                        <i class="fa-regular fa-pen-to-square text-purple-500"></i>
+                    </button>
+                    <!-- edit modal -->
+                    <div id="edit-modal-{{forloop.counter}}" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                        <div class="bg-white rounded-lg p-6 w-1/3">
+                            <h3 class="text-2xl font-bold mb-4 text-center">Edit Price</h3>
+                            <form method="post" action="{% url 'seller:edit_product_seller' product_seller.id %}">
+                                {% csrf_token %}
+                                <label class="text-green-600 font-bold" for="price">Price:</label>
+                                <input class="w-full px-3 py-2 border border-gray-400 rounded-lg focus:outline-none focus:border-blue-500"
+                                       type="text" inputmode="numeric" name="price" id="price" value="{{ product_seller.price }}" required>
+                                <div class="flex justify-end mt-4">
+                                    <button class="bg-gray-500 text-white px-4 py-2 rounded-md mr-2" type="button" onclick="close_edit_modal('{{forloop.counter}}')">Cancel</button>
+                                    <button class="bg-purple-500 text-white px-4 py-2 rounded-md" type="submit">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <form method="POST" action="{% url 'seller:delete_product_seller' product_seller.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn text-3xl">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <footer class="bg-red-800 text-white">
+        <div class="container mx-auto px-6 py-10 flex flex-wrap justify-between w-full">
+            <div class="w-full md:w-1/3 mb-6">
+                <div class="flex items-center space-x-3">
+                    <h1 class="text-white text-2xl font-semibold">OlehBali</h1>
+                </div>
+                <p class="mt-4 text-white">Bringing Indonesia’s Best to Bali’s Beaches.</p>
+            </div>
+        </div>
+
+        <div class="border-t border-white py-6">
+            <div class="container mx-auto flex justify-between items-center px-6">
+                <p class="text-sm text-white">&copy; 2024 OlehBali. PBP Kelompok B11.</p>
+            </div>
+        </div>
+    </footer>
+<template id="product_template">
+    <div class="flex gap-8 items-center bg-blue-200 p-4 rounded-2xl shadow-md border border-gray-300">
+        <img src="" alt="gambar produk" class="aspect-square w-64 rounded-2xl product_image">
+        <div class="flex-grow">
+            <p class="font-bold text-2xl product_name"></p>
+            <p class="text-xl product_price"></p>  
+        </div>
+        <div class="flex gap-6 items-center justify-end pr-8">
+            <button class="p-2 text-3xl btn-edit" type="button"> 
+                <i class="fa-regular fa-pen-to-square text-purple-500"></i>
+            </button>
+            <!-- edit modal -->
+            <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                <div class="bg-white rounded-lg p-6 w-1/3">
+                    <h3 class="text-2xl font-bold mb-4 text-center">Edit Price</h3>
+                    <form class="form-edit" method="post" >
+                        {% csrf_token %}
+                        <label class="text-green-600 font-bold" for="price">Price:</label>
+                        <input class="w-full px-3 py-2 border border-gray-400 rounded-lg focus:outline-none focus:border-blue-500"
+                               type="text" inputmode="numeric" name="price"   required>
+                        <div class="flex justify-end mt-4">
+                            <button class="bg-gray-500 text-white px-4 py-2 rounded-md mr-2 btn-cancel" type="button" >Cancel</button>
+                            <button class="bg-purple-500 text-white px-4 py-2 rounded-md" type="submit">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <form class="form-delete" method="POST" >
+                {% csrf_token %}
+                <button type="submit" class="btn text-3xl">
+                    <i class="fa-regular fa-trash-can"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</template> 
+    <script>
+        function fetch_product(){
+            const search_query=document.getElementById('search')
+            const sort_query=document.getElementById('sort-options')
+            const category=document.querySelector('input[name="category"]:checked')
+            fetch(`/products/search/?search=${search_query?search_query.value:""}&sort_price=${sort_query?sort_query.value:""}&category=${category?category.value:""}`).then(response => response.json()).then(data => {
+                const product_list = document.getElementById('product_list')
+                product_list.innerHTML=''
+                const template = document.getElementById('product_template')
+                if(data.length>0){
+                data.forEach((product, index) => {
+                    const product_item = template.content.cloneNode(true)
+                    const form_edit = product_item.querySelector('.form-edit')
+                    const form_delete = product_item.querySelector('.form-delete')
+                    const product_image = product_item.querySelector('.product_image')
+                    const product_name = product_item.querySelector('.product_name')
+                    const product_price = product_item.querySelector('.product_price')
+                    product_image.setAttribute('src', product.product__product_image)
+                    product_name.textContent=`${product.product__product_name}`
+                    product_price.textContent=`Rp${product.price}`
+                    form_edit.setAttribute('action', `/products/seller/edit/${product.id}`)
+                    form_delete.setAttribute('action', `/products/seller/delete/${product.id}`)
+                    product_item.querySelector('.fixed').setAttribute('id', `edit-modal-${index}`)
+                    product_item.querySelector('.btn-edit').addEventListener("click", function(){open_edit_modal(index)})
+                    product_item.querySelector('.btn-cancel').addEventListener("click", function(){close_edit_modal(index)})
+                    product_item.querySelector('input[name="price"]').value=product.price
+                    product_list.appendChild(product_item)
+                })
+            }
+            else{
+              product_list.innerHTML=`<div class="flex flex-col items-center justify-center p-6">
+            <img src="{% static 'image/no-item-found.png' %}" alt="Not Found" class="w-32 h-32 mb-2"/>
+            <p class="text-center text-gray-600 mt-8">You don't have any products in this category yet.</p>
+            <p class="text-center text-gray-600 mt-2">Would you like to
+                <a href="{% url 'seller:add_product_seller' %}" class="text-blue-500 hover:text-blue-700 hover:underline font-bold">add an existing product</a>
+                or
+                <a href="{% url 'seller:add_product' %}" class="text-blue-500 hover:text-blue-700 hover:underline font-bold">add a new product</a>?
+            </p>
+        </div>`  
+            }
+            })
+        }
+        document.querySelectorAll('input[name="category"]').forEach(radio => {
+            radio.addEventListener("change",function(){
+                fetch_product()
+                document.querySelectorAll('.category_value').forEach(el => el.classList.remove('text-purple-600'))
+                this.nextElementSibling.classList.add('text-purple-600')
+            })
+            
+        })
+        function open_edit_modal(index){
+            document.getElementById(`edit-modal-${index}`).classList.remove('hidden');
+        }
+        function close_edit_modal(index){
+            document.getElementById(`edit-modal-${index}`).classList.add('hidden');
+        }
+        
+    </script>
 {% endblock content %}

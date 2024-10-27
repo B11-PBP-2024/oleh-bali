@@ -1,5 +1,7 @@
 from django.urls import path
 from katalog.views import show_catalog, get_product_by_id, product_details, get_products, filter_by_category,filter_by_keyword, search_and_filter
+from . import views
+
 app_name = 'katalog'
 
 urlpatterns = [
@@ -8,4 +10,5 @@ urlpatterns = [
     path("json/key:<str:keyword>/cat:<str:category>",search_and_filter,name="search_and_filter"),
     path("json",get_products,name="get_products"),
     path("<uuid:id>",product_details,name="product_details"),
+
 ]

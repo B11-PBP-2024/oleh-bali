@@ -4,7 +4,8 @@ from review.models import ReviewEntry
 from seller.models import ProductEntry
 from review.forms import ReviewEntryForm
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+from django.utils.decorators import method_decorator
 
 def show_review(request,id):
     product = ProductEntry.objects.get(pk=id)
@@ -15,17 +16,36 @@ def show_review(request,id):
     }
     return render(request, "review_page.html", context)
 
-def create_review(request,id):
-    form = ReviewEntryForm(request.POST or None)
-    if form.is_valid() and request.method == "POST":
-        review = form.save(commit=False)
-        review.user = request.user
-        product = ProductEntry.objects.get(pk=id)
-        review.product = product
-        review.review_text = review.review_text.replace("/r","/n")
-        review.save()
-        return redirect('review:show_review', id=product.id)
-    
+# @csrf_exempt
+def create_review(request, id):
+    if request.method == "POST":
+        form = ReviewEntryForm(request.POST or None)
+
+        # Debug: Print the POST data
+        print("POST data:", request.POST)
+        
+        # Cek apakah form valid
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.user = request.user
+            product = ProductEntry.objects.get(pk=id)
+            review.product = product
+            review.review_text = review.review_text.replace("\r", "\n")  # Format line break dengan benar
+            review.save()
+
+            # Cek apakah request adalah AJAX
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({"success": True})
+            else:
+                return redirect('review:show_review', id=product.id)
+        else:
+            # Debug untuk error form jika form tidak valid
+            print("Form errors:", form.errors)
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({"success": False, "errors": form.errors})
+
+    # Render form jika GET atau permintaan POST tidak valid
+    form = ReviewEntryForm()
     context = {'form': form}
     return render(request, "create_review.html", context)
 
@@ -49,10 +69,3 @@ def delete_review(request,id):
     review.delete()
 
     return HttpResponseRedirect(reverse('review:show_review', args=[product_id]))
-
-# @csrf_exempt
-# @require_POST
-# def create_review_ajax(request):
-#     review = request.POST.get("review")
-#     user = request.user
-

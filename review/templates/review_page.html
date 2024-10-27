@@ -10,9 +10,9 @@
     <h1 class="text-4xl font-bold text-red-600 text-center mb-10 pt-28 md:pt-20">Review</h1>
 
     <div class="text-center mb-8">
-        <a href="{% url 'review:create_review' product.pk %}" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-500 transition duration-300">
+        <button id="add-review-btn" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-500 transition duration-300">
             Add Review
-        </a>
+        </button>
     </div>
 
     <!-- Container untuk review -->
@@ -22,11 +22,9 @@
         {% else %}
         {% for review in reviews %}
             <div class="border-b border-gray-300 py-6 flex space-x-4">
-                <!-- Bagian kiri untuk avatar -->
                 <div>
                     <img class="w-12 h-12 rounded-full object-cover" src="{{ review.user.buyerprofile.profile_picture }}" alt="{{ review.user.username }}">
                 </div>
-                <!-- Bagian kanan untuk informasi review -->
                 <div class="flex-1">
                     <div class="flex justify-between items-center">
                         <h2 class="text-lg font-semibold text-red-600">{{ review.user.username }}</h2>
@@ -34,7 +32,6 @@
                     </div>
                     <p class="mt-1 text-sm text-gray-600">{{ review.user.buyerprofile.nationality }}</p>
                     <p class="mt-2 text-gray-700">{{ review.review_text }}</p>
-                    <!-- Button edit hanya muncul jika review dibuat oleh user yang sedang login -->
                     {% if review.user == request.user %}
                         <div class="flex gap-2 justify-end">
                             <div class="mt-4 text-right">
@@ -55,5 +52,62 @@
         {% endif %}
     </div>
 </div>
+
+<!-- Modal untuk form review -->
+<div id="review-modal" class="fixed z-10 inset-0 hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
+            <h2 class="text-2xl font-bold text-red-600 mb-4">Add Your Review</h2>
+            <form id="review-form" method="POST" class="space-y-6">
+                {% csrf_token %}
+                <textarea type="text" name="review_text" id="id_review_text" class="custom-input w-full h-40" placeholder="Write your review here..."></textarea>
+                <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-500 transition duration-300">
+                    Submit Review
+                </button>
+            </form>
+            <button id="close-modal" class="text-red-600 mt-4">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('add-review-btn').addEventListener('click', function() {
+        document.getElementById('review-modal').classList.remove('hidden');
+    });
+
+    document.getElementById('close-modal').addEventListener('click', function() {
+        document.getElementById('review-modal').classList.add('hidden');
+    });
+
+    // AJAX untuk submit review tanpa reload
+    document.getElementById('review-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const reviewText = document.getElementById('id_review_text').value;
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        console.log(reviewText)
+
+        fetch("{% url 'review:create_review' product.pk %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrfToken,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ review_text: reviewText })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Tutup modal dan reload daftar ulasan atau tambahkan ulasan baru
+                document.getElementById('review-modal').classList.add('hidden');
+                location.reload(); // atau tambahkan ulasan tanpa reload
+            } else {
+                // Tampilkan pesan error jika ada
+                alert("Failed to add review");
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+</script>
+
 {% include 'footer_buyer.html' %}
 {% endblock content %}

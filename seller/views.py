@@ -58,7 +58,6 @@ def update_product_seller(request, id):
     product = get_object_or_404(ProductSeller, id=id)
     if request.method == 'POST':
         price = request.POST.get('price')
-        # form = ProductSellerForm(request.POST, instance=product)
         if price:
             product.price=price
             product.save()

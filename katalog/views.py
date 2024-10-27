@@ -23,7 +23,7 @@ def show_catalog(request):
 
 def get_product_by_id(request,id):
     product = ProductEntry.objects.get(pk=id)
-    return HttpResponse(serializers.serialize("json", product), content_type="application/json")
+    return HttpResponse(serializers.serialize("json", [product]), content_type="application/json")
 
 def get_products(request):
     products = ProductEntry.objects.all()

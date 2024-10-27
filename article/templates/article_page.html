@@ -2,6 +2,7 @@
 {% load static %}
 {% block meta %}
 <title>Articles</title>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
 {% endblock meta %}
 {% block content %}
 {% include 'navbar_buyer.html' %}
@@ -147,34 +148,42 @@
 
 
         articleEntries.forEach((article) => {
+            const userProfPic = DOMPurify.sanitize(article.user.profilepicture);
+            const userDisplayName = DOMPurify.sanitize(article.user.displayname);
+            const userNationality = DOMPurify.sanitize(article.user.nationality);
+            const articleTime = DOMPurify.sanitize(article.time);
+            const articleID = DOMPurify.sanitize(article.id);
+            const articleTitle = DOMPurify.sanitize(article.title);
+            const articleImage = DOMPurify.sanitize(article.image);
+            const articleText = DOMPurify.sanitize(article.text);
             htmlString += `
             <div class="flex flex-col justify-between p-6 rounded-lg bg-white shadow-md border border-gray-200 hover:shadow-xl transition-shadow duration-300 gap-4 w-5/6">
                 <!-- Header Card dengan Info User -->
                 <div class="flex md:flex-row flex-col items-start md:items-center justify-start gap-5 w-full">
                     
                         <!-- Foto Profil -->
-                        <img src="${article.user.profilepicture}" alt="" class="h-9 w-9 rounded-full object-cover">
+                        <img src="${userProfPic}" alt="" class="h-9 w-9 rounded-full object-cover">
                         
                         <!-- Display Name dan Nationality -->
                         <div class="flex flex-col">
                             <!-- Display Name -->
-                            <p class="text-gray-700 font-semibold"> ${article.user.displayname}</p>
+                            <p class="text-gray-700 font-semibold"> ${userDisplayName}</p>
                             <!-- Nationality -->
-                            <p class="text-sm text-gray-500">${article.user.nationality}</p>
+                            <p class="text-sm text-gray-500">${userNationality}</p>
                         </div>
                         
                         <!-- Waktu Publikasi -->
-                        <p class="text-sm text-gray-500 md:ml-auto">${article.time}</p>
+                        <p class="text-sm text-gray-500 md:ml-auto">${articleTime}</p>
                     
 `
             if(isUser) {
                 htmlString+= `
                 <div class="flex flex-row justify-end gap-3">
-                    <a href="edit/${article.id}"
+                    <a href="edit/${articleID}"
                         class="px-4 py-2 rounded-md bg-blue-500 text-white text-sm font-semibold hover:bg-blue-600 transition-colors duration-200">
                         Edit
                     </a>
-                    <a href="delete/${article.id}"
+                    <a href="delete/${articleID}"
                         class="px-4 py-2 rounded-md bg-red-500 text-white text-sm font-semibold hover:bg-red-600 transition-colors duration-200">
                         Delete
                     </a>
@@ -186,10 +195,10 @@
                 
                 <!-- Konten Artikel -->
                 <div class="flex flex-col gap-3">
-                    <p class="font-bold text-lg text-gray-900 text-center">${article.title}</p>
-                    <img src="${article.img}" alt="">
+                    <p class="font-bold text-lg text-gray-900 text-center">${articleTitle}</p>
+                    <img src="${articleImage}" alt="">
                     <p class="text-gray-800 break-words whitespace-pre-line text-justify">
-                        ${article.text}
+                        ${articleText}
                     </p>
                 </div>
             </div>

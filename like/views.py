@@ -19,10 +19,7 @@ def add_like(request):
         buyer_profile = get_object_or_404(BuyerProfile, user=request.user)
         product = get_object_or_404(ProductEntry, pk=product_id)
 
-        like, created = Like.objects.get_or_create()
-
-        like.product.add(product)
-        like.user.add(buyer_profile)
+        like, created = Like.objects.get_or_create(user=buyer_profile,product=product)
         return JsonResponse({'success': True})
 
     return JsonResponse({'success': False, 'error': 'Invalid request method'})

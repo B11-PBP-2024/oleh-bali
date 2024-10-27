@@ -3,5 +3,5 @@ from user_profile.models import BuyerProfile
 from seller.models import ProductEntry
 
 class Like(models.Model):
-    user = models.ManyToManyField(BuyerProfile)
-    product = models.ManyToManyField(ProductEntry)
+    user = models.ForeignKey(BuyerProfile,on_delete=models.CASCADE)
+    product = models.ForeignKey(ProductEntry,on_delete=models.CASCADE)

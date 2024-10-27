@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.db.models import Q 
 from user_profile.models import BuyerProfile
 from wishlist.models import WishlistItem
+from like.models import Like
 # Create your views here.
 
 def show_catalog(request):
@@ -32,12 +33,19 @@ def product_details(request, id):
     product = ProductEntry.objects.get(pk=id)
     buyer_profile = BuyerProfile.objects.get(user=request.user)
     wishlists = WishlistItem.objects.filter(user=buyer_profile)
+    likes = Like.objects.filter(user=buyer_profile)
+
+    product_names_like = []
+    for like in likes:
+        product_names_like.append(like.product.product_name)
+
     product_names = []
     for wishlist in wishlists:
         product_names.extend(wishlist.products.values_list('product_name', flat=True))
     
     context = {'product':product,
-               'is_wishlist': product.product_name in product_names}
+               'is_wishlist': product.product_name in product_names,
+               'is_like':product.product_name in product_names_like}
     return render(request,"product_details.html",context)
 
 # Function untuk memfilter produk berdasarkan kategori
@@ -66,11 +74,16 @@ def products_dictionary(products,user):
     product_list = []
     buyer_profile = BuyerProfile.objects.get(user=user)
     wishlists = WishlistItem.objects.filter(user=buyer_profile)
+    likes = Like.objects.filter(user=buyer_profile)
+    product_names_like = []
+    for like in likes:
+        product_names_like.append(like.product.product_name)
     product_names = []
     for wishlist in wishlists:
         product_names.extend(wishlist.products.values_list('product_name', flat=True))
     for product in products:
         is_wishlist = product.product_name in product_names
+        is_like = product.product_name in product_names_like
         if product.min_price == 0 and product.max_price == 0 or product.min_price == None:
             price = "Price not available"
         elif product.min_price == product.max_price:
@@ -86,7 +99,8 @@ def products_dictionary(products,user):
                 'product_image' : product.product_image,
                 'product_category' : product.product_category,
                 'price' : price,
-                'is_wishlist' :  is_wishlist
+                'is_wishlist' :  is_wishlist,
+                'is_like' :  is_like,
             }
         }
         product_list.append(product_data)

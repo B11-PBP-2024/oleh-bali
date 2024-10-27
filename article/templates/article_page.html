@@ -154,7 +154,7 @@
             const articleTime = DOMPurify.sanitize(article.time);
             const articleID = DOMPurify.sanitize(article.id);
             const articleTitle = DOMPurify.sanitize(article.title);
-            const articleImage = DOMPurify.sanitize(article.image);
+            const articleImage = DOMPurify.sanitize(article.img);
             const articleText = DOMPurify.sanitize(article.text);
             htmlString += `
             <div class="flex flex-col justify-between p-6 rounded-lg bg-white shadow-md border border-gray-200 hover:shadow-xl transition-shadow duration-300 gap-4 w-5/6">

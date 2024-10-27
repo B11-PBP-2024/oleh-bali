@@ -37,17 +37,17 @@
 
 
 <script>
-    // Function to save the current tab state in Local Storage
+    // Save state tab yang ada
     function saveState(selectedTab) {
         localStorage.setItem('selectedTab', selectedTab);
     }
 
-    // Function to load the saved state from Local Storage
+    // Mengambil state dari localstorage
     function loadState() {
         return localStorage.getItem('selectedTab');
     }
 
-    // Function to display the correct tab based on the selected state
+    // Menampilkan tab yang sesuai
     function displayTab(selectedTab) {
         const exploreBtn = document.getElementById('exploreBtn');
         const myArticleBtn = document.getElementById('myArticleBtn');
@@ -59,21 +59,19 @@
         } else {
             exploreBtn.classList.add('underline');
             myArticleBtn.classList.remove('underline');
-            // Load All Articles
-            refreshArticles();  // You can define this function to load all articles
+            refreshArticles();
         }
     }
 
-    // On page load, set the tab state from Local Storage
     document.addEventListener('DOMContentLoaded', function() {
         const savedState = loadState();
         if (savedState) {
             displayTab(savedState);
         } else {
-            displayTab('explore');  // Default tab
+            displayTab('explore'); 
         }
 
-        // Add event listeners for both buttons
+    
         document.getElementById('exploreBtn').addEventListener('click', function() {
             saveState('explore');
             displayTab('explore');
@@ -86,14 +84,8 @@
     });
 
     document.addEventListener('DOMContentLoaded', function() {
-        // Select the buttons
         const exploreBtn = document.getElementById('exploreBtn');
         const myArticleBtn = document.getElementById('myArticleBtn');
-
-        // Initial state (underline Explore by default)
-    
-
-        // Add event listeners for both buttons
         exploreBtn.addEventListener('click', function() {
             exploreBtn.classList.add('underline');
             myArticleBtn.classList.remove('underline');

@@ -164,11 +164,11 @@
     let currentSlide = 0;
     let totalSlides = slides.length;
     let slideInterval = null;
-    const slideDuration = 3000; // Auto slide every 3 seconds
+    const slideDuration = 3000; 
     
-    // Function to show the current slide and update the active indicator
+
     function showSlide(index) {
-        // Hide all slides
+        
         slides.forEach((slide, idx) => {
             if (idx === index) {
                 slide.classList.remove('hidden');
@@ -177,7 +177,7 @@
             }
         });
 
-        // Update indicators
+        
         indicators.forEach((indicator, idx) => {
             if (idx === index) {
                 indicator.classList.add('bg-red-600');
@@ -193,43 +193,43 @@
         currentSlide = index;
     }
     
-    // Show next slide
+
     function nextSlide() {
         const nextSlide = (currentSlide + 1) % totalSlides;
         showSlide(nextSlide);
     }
     
-    // Show previous slide
+
     function prevSlide() {
         const prevSlide = (currentSlide - 1 + totalSlides) % totalSlides;
         showSlide(prevSlide);
     }
 
-    // Start auto-slide
+
     function startSlideShow() {
         slideInterval = setInterval(nextSlide, slideDuration);
     }
 
-    // Stop auto-slide on manual control (next/previous/indicator click)
+
     function stopSlideShow() {
         clearInterval(slideInterval);
     }
     
-    // Event listener for next button
+
     nextBtn.addEventListener('click', function () {
         stopSlideShow();
         nextSlide();
         startSlideShow();
     });
     
-    // Event listener for previous button
+
     prevBtn.addEventListener('click', function () {
         stopSlideShow();
         prevSlide();
         startSlideShow();
     });
     
-    // Event listener for indicator buttons
+
     indicators.forEach((indicator, index) => {
         indicator.addEventListener('click', function () {
             stopSlideShow();
@@ -238,7 +238,6 @@
         });
     });
     
-    // Initialize carousel
     showSlide(currentSlide);
     startSlideShow();
 });

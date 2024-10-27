@@ -12,14 +12,14 @@ import uuid
 class ArticleAppTests(TestCase):
     
     def setUp(self):
-        # Set up a test client
+        
         self.client = Client()
         
-        # Create a test user
+    
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.buyer = Buyer.objects.get(pk=self.user.pk)
         
-        # Create a test profile for the buyer
+       
         self.profile = BuyerProfile.objects.create(
             user=self.buyer,
             store_name="Test Store",
@@ -27,10 +27,10 @@ class ArticleAppTests(TestCase):
             nationality="Testland"
         )
         
-        # Log the user in
+       
         self.client.login(username='testuser', password='testpassword')
         
-        # Create a test article
+  
         self.article = ArticleEntry.objects.create(
             user=self.buyer,
             title="Test Article",

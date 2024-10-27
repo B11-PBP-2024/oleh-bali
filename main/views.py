@@ -46,7 +46,6 @@ def register_buyer(request):
             user.role = 0
             user.save()
             profile_buyer, created = BuyerProfile.objects.get_or_create(user=user) 
-            # Mengatur nilai default jika profil belum dibuat
             if created:
                 profile_buyer.profile_picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
                 profile_buyer.store_name = user.username 
@@ -82,7 +81,6 @@ def register_seller(request):
             user.role = 1
             user.save()
             profile_seller, created = SellerProfile.objects.get_or_create(user=user) 
-            # Mengatur nilai default jika profil belum dibuat
             if created:
                 profile_seller.profile_picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
                 profile_seller.store_name = user.username 
@@ -106,5 +104,4 @@ def logout_user(request):
         return redirect("main:login_seller")
     
 def show_wishlist(request):
-    # Render the wishlist page (make sure the template exists)
     return render(request, 'wishlist/wishlist.html')

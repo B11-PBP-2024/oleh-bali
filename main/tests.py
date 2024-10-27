@@ -9,11 +9,11 @@ class MainAppTests(TestCase):
     def setUp(self):
         self.client = Client()
         
-        # Create buyer and seller users
+        
         self.buyer_user = User.objects.create_user(username='test_buyer', password='password123', role=0)
         self.seller_user = User.objects.create_user(username='test_seller', password='password123', role=1)
 
-        # Create profiles for buyer and seller
+        
         BuyerProfile.objects.create(user=self.buyer_user, store_name="Test Store")
         SellerProfile.objects.create(user=self.seller_user, store_name="Seller Store")
         

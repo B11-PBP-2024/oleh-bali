@@ -15,13 +15,13 @@ User = get_user_model()
 class KatalogAppTests(TestCase):
 
     def setUp(self):
-        # Setup user and profile for testing
+      
         self.client = Client()
         self.user = User.objects.create_user(username='testuser', password='password')
         self.buyer_profile = BuyerProfile.objects.create(user=self.user)
         self.client.login(username='testuser', password='password')
         
-        # Create sample products for catalog
+        
         self.product1 = ProductEntry.objects.create(
             product_name="Sample Product 1",
             description="This is a sample product description.",
@@ -35,7 +35,7 @@ class KatalogAppTests(TestCase):
             product_image="http://example.com/image2.jpg",
         )
         
-        # Set URLs for views
+        
         self.catalog_url = reverse('katalog:show_catalog')
         self.product_details_url = reverse('katalog:product_details', args=[self.product1.id])
         self.get_product_by_id_url = reverse('katalog:get_product_by_id', args=[self.product1.id])
@@ -76,14 +76,12 @@ class KatalogAppTests(TestCase):
         self.assertNotIn("Sample Product 2", str(response.content))
 
     def test_product_like_status(self):
-        # Like the product
         Like.objects.create(user=self.buyer_profile, product=self.product1)
         response = self.client.get(self.product_details_url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "1")  # Checks if like count is displayed as 1
+        self.assertContains(response, "1") 
         
     def test_product_wishlist_status(self):
-        # Add product to wishlist
         wishlist_item = WishlistItem.objects.create(name="Test Wishlist")
         wishlist_item.user.add(self.buyer_profile)
         wishlist_item.products.add(self.product1)

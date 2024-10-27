@@ -35,6 +35,8 @@ def product_details(request, id):
     wishlists = WishlistItem.objects.filter(user=buyer_profile)
     likes = Like.objects.filter(user=buyer_profile)
 
+    likes_count = len(Like.objects.filter(product=product))
+
     product_names_like = []
     for like in likes:
         product_names_like.append(like.product.product_name)
@@ -45,7 +47,8 @@ def product_details(request, id):
     
     context = {'product':product,
                'is_wishlist': product.product_name in product_names,
-               'is_like':product.product_name in product_names_like}
+               'is_like':product.product_name in product_names_like,
+               'like_count':likes_count,}
     return render(request,"product_details.html",context)
 
 # Function untuk memfilter produk berdasarkan kategori
@@ -90,6 +93,9 @@ def products_dictionary(products,user):
             price = f"Rp{product.min_price}"
         else:
             price = f"Rp{product.min_price} - Rp{product.max_price}"
+
+        likes_count = len(Like.objects.filter(product=product))
+        
         product_data = {
             'pk': product.id,
             'model': "seller.productentry",
@@ -101,6 +107,7 @@ def products_dictionary(products,user):
                 'price' : price,
                 'is_wishlist' :  is_wishlist,
                 'is_like' :  is_like,
+                'like_count' : likes_count
             }
         }
         product_list.append(product_data)

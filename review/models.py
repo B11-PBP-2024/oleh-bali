@@ -9,5 +9,5 @@ class ReviewEntry(models.Model):
     user = models.ForeignKey(Buyer,on_delete=models.CASCADE)
     product = models.ForeignKey(ProductEntry,on_delete=models.CASCADE)
     time = models.DateTimeField(default=timezone.now)
-    review_text = models.TextField()
+    review_text = models.TextField(blank=False)
 

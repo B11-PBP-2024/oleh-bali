@@ -10,50 +10,125 @@
     <h1 class="text-4xl font-bold text-red-600 text-center mb-10 pt-28 md:pt-20">Review</h1>
 
     <div class="text-center mb-8">
-        <a href="{% url 'review:create_review' product.pk %}" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-500 transition duration-300">
+        <button id="add-review-btn" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-500 transition duration-300">
             Add Review
-        </a>
+        </button>
     </div>
 
     <!-- Container untuk review -->
-    <div class="max-w-3xl mx-auto bg-white shadow-lg p-6 rounded-lg">
-        {% if not reviews %}
-            <p class="text-center"> There is no reviews yet.</p>
-        {% else %}
-        {% for review in reviews %}
-            <div class="border-b border-gray-300 py-6 flex space-x-4">
-                <!-- Bagian kiri untuk avatar -->
+    <div  id="review-container" class="max-w-3xl mx-auto bg-white shadow-lg p-6 rounded-lg">
+    </div>
+</div>
+
+<!-- Modal untuk form review -->
+<div id="review-modal" class="fixed z-10 inset-0 hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
+            <h2 class="text-2xl font-bold text-red-600 mb-4">Add Your Review</h2>
+            <form id="review-form" method="POST" class="space-y-6">
+                {% csrf_token %}
+                <textarea type="text" name="review_text" id="id_review_text" class="custom-input w-full h-40" placeholder="Write your review here..."></textarea>
+                <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-500 transition duration-300">
+                    Submit Review
+                </button>
+            </form>
+            <button id="close-modal" class="text-red-600 mt-4">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('add-review-btn').addEventListener('click', function() {
+        document.getElementById('review-modal').classList.remove('hidden');
+    });
+
+    document.getElementById('close-modal').addEventListener('click', function() {
+        document.getElementById('review-modal').classList.add('hidden');
+    });
+
+    // AJAX untuk submit review tanpa reload
+    document.getElementById('review-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const reviewText = document.getElementById('id_review_text').value;
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        fetch("{% url 'review:create_review' product.pk %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrfToken,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ review_text: reviewText })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);  // Cek respons data yang diterima
+            if (data.success) {
+                document.getElementById('review-modal').classList.add('hidden');
+
+                refreshReview()
+                reviewsContainer.insertAdjacentHTML('afterbegin', newReview);
+
+                // Bersihkan form
+                document.getElementById('id_review_text').value = "";
+            } else {
+                alert("Failed to add review");
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+
+async function getReviews() {
+    return fetch("{% url 'review:get_reviews' product.pk  %}").then((res) => res.json())
+}
+
+async function refreshReview() {
+    document.getElementById("review-container").innerHTML = "";
+    const reviews = await getReviews()
+    let htmlString="";
+    console.log(reviews)
+    if (reviews.length === 0) {
+        htmlString += `
+        <p class="text-center"> There is no reviews yet.</p>
+        `
+    } else {
+        reviews.forEach((review)=> {
+            htmlString += `
+                <div class="border-b border-gray-300 py-6 flex space-x-4">
                 <div>
-                    <img class="w-12 h-12 rounded-full object-cover" src="{{ review.user.buyerprofile.profile_picture }}" alt="{{ review.user.username }}">
+                    <img class="w-12 h-12 rounded-full object-cover" src="${review.user.profilepicture}">
                 </div>
-                <!-- Bagian kanan untuk informasi review -->
                 <div class="flex-1">
                     <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold text-red-600">{{ review.user.username }}</h2>
-                        <span class="text-sm text-gray-500">{{ review.time|date:"F j, Y, g:i a" }}</span>
+                        <h2 class="text-lg font-semibold text-red-600">${review.user.displayname}</h2>
+                        <span class="text-sm text-gray-500">${review.time}</span>
                     </div>
-                    <p class="mt-1 text-sm text-gray-600">{{ review.user.buyerprofile.nationality }}</p>
-                    <p class="mt-2 text-gray-700">{{ review.review_text }}</p>
-                    <!-- Button edit hanya muncul jika review dibuat oleh user yang sedang login -->
-                    {% if review.user == request.user %}
-                        <div class="flex gap-2 justify-end">
+                    <p class="mt-1 text-sm text-gray-600">${review.user.nationality}</p>
+                    <p class="mt-2 text-gray-700">${review.review_text }</p>`
+                    if(review.thisUser == review.user.displayname)
+                        htmlString += `<div class="flex gap-2 justify-end">
                             <div class="mt-4 text-right">
-                                <a href="{% url 'review:edit_review' review.id %}" class="text-sm text-blue-600 hover:underline">
+                                <a href="edit-review/${review.id}" class="text-sm text-blue-600 hover:underline">
                                     Edit
                                 </a>
                             </div>
                             <div class="mt-4 text-right">
-                                <a href="{% url 'review:delete_review' review.id %}" class="text-sm text-red-600 hover:underline">
+                                <a href="delete/${review.id}" class="text-sm text-red-600 hover:underline">
                                     Delete
                                 </a>
                             </div>
-                        </div>
-                    {% endif %}
-                </div>
+                        </div>`
+                htmlString+=`</div>
             </div>
-        {% endfor %}
-        {% endif %}
-    </div>
-</div>
+            `
+        })
+
+    }
+    document.getElementById("review-container").innerHTML = htmlString
+}
+refreshReview()
+
+</script>
+
 {% include 'footer_buyer.html' %}
 {% endblock content %}

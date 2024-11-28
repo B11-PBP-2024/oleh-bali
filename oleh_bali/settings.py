@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-*0n71a(2_o2+h)wm)ma+%k%x0%3+bq=2ayrezuko^k0hyr*enr
 PRODUCTION = os.getenv("PRODUCTION", False)
 DEBUG = not PRODUCTION
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1","ezar-akhdan-olehbali.pbp.cs.ui.ac.id"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1","ezar-akhdan-olehbali.pbp.cs.ui.ac.id","10.0.2.2"]
 
 
 # Application definition
@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'store',
     'like',
     'see_stores',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -64,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'main.middleware.AuthenticationAuthorizationMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'oleh_bali.urls'
@@ -145,4 +147,11 @@ else:
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost","http://127.0.0.1","http://ezar-akhdan-olehbali.pbp.cs.ui.ac.id", "https://ezar-akhdan-olehbali.pbp.cs.ui.ac.id"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost","http://127.0.0.1","http://ezar-akhdan-olehbali.pbp.cs.ui.ac.id", "https://ezar-akhdan-olehbali.pbp.cs.ui.ac.id","http://10.0.2.2"]
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'

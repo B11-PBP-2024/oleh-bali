@@ -6,6 +6,9 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.core import serializers
 from django.urls import reverse
 from user_profile.models import BuyerProfile
+from django.views.decorators.csrf import csrf_exempt
+import json
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -92,3 +95,59 @@ def edit_article(request,id):
         form.save()
         return HttpResponseRedirect(reverse('article:show_articles'))
     return render(request,"edit_article.html",{'form':form,'article':article})
+
+@csrf_exempt
+def create_article_flutter(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        new_mood = ArticleEntry.objects.create(
+            user=request.user,
+            img=data["img"],
+            title=data["title"],
+            text=data["text"].replace("/r","/n")
+        )
+
+        new_mood.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+    
+@csrf_exempt
+def delete_mobile(request,id):
+    if request.method == 'GET':
+        article = ArticleEntry.objects.get(pk=id)
+        if request.user != article.user:
+            return JsonResponse({"status": "error"}, status=401)
+        article.delete()
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+    
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import json
+from .models import ArticleEntry
+from .forms import ArticleEntryForm
+
+@csrf_exempt
+def edit_article_mobile(request, id):
+    try:
+        article = ArticleEntry.objects.get(id=id)
+    except ArticleEntry.DoesNotExist:
+        return JsonResponse({"status": "error", "message": "Article not found"}, status=404)
+
+    if request.method == "POST":
+        data = json.loads(request.body)
+        form = ArticleEntryForm(data, instance=article)
+        if form.is_valid():
+            article = form.save(commit=False)
+            article.user = request.user
+            article.text = article.text.replace("/r", "/n")
+            article.save()
+            return JsonResponse({"status": "success"}, status=200)
+        else:
+            return JsonResponse({"status": "error", "message": "Invalid data"}, status=400)
+    else:
+        return JsonResponse({"status": "error", "message": "Invalid request method"}, status=405)

@@ -25,7 +25,7 @@ def add_product(request):
                 seller=request.user,
                 price=price  
             )
-            messages.success(request, "Product and price added successfully.")
+            # messages.success(request, "Product and price added successfully.")
             return redirect('seller:show_product_seller')  
 
     else:
@@ -40,7 +40,7 @@ def add_product_seller(request):
         product_seller = form.save(commit=False)
         product_seller.seller = request.user
         product_seller.save()
-        messages.success(request, "Product seller added successfully.")
+        # messages.success(request, "Product seller added successfully.")
         return redirect('seller:show_product_seller')
 
     return render(request, 'create_product_seller.html', {'form': form})
@@ -64,12 +64,12 @@ def update_product_seller(request, id):
         try:
             price = int(price)  
         except ValueError:
-            messages.error(request, "Price must be a valid integer.")
+            # messages.error(request, "Price must be a valid integer.")
             return redirect('seller:show_product_seller')  
         
         product_seller.price = price
         product_seller.save()
-        messages.success(request, "Product price updated successfully.")
+        # messages.success(request, "Product price updated successfully.")
         return redirect('seller:show_product_seller')
 
     return render(request, 'edit_product_seller.html', {'product_seller': product_seller})
@@ -79,7 +79,7 @@ def delete_product_seller(request, id):
     product = get_object_or_404(ProductSeller, id=id)
     if request.method == 'POST':
         product.delete()
-        messages.success(request, "Product deleted successfully.")
+        # messages.success(request, "Product deleted successfully.")
     return redirect('seller:show_product_seller')
 
 @login_required

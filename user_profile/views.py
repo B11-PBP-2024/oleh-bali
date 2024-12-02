@@ -32,7 +32,6 @@ def profile_buyer(request):
 @user_is_buyer
 def profile_buyer_edit(request):
     profile_buyer = BuyerProfile.objects.get(user=request.user)
-    
     if request.method == 'POST':
         form = BuyerProfileForm(request.POST, instance=profile_buyer)
         print("post")

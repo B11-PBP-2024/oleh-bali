@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Min, Max
 from user_profile.models import BuyerProfile
@@ -36,6 +37,8 @@ def add_to_wishlist(request):
     if request.method == "POST":
         product_id = request.POST.get('product_id')
         if not product_id:
+            product_id = json.loads(request.body).get('product_id')
+        if not product_id:
             return JsonResponse({'success': False, 'error': 'No product ID provided'})
 
         buyer_profile = get_object_or_404(BuyerProfile, user=request.user)
@@ -70,9 +73,12 @@ def add_to_wishlist_from_details(request):
 
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
+@csrf_exempt
 def delete_wishlist_item_from_catalog(request):
     if request.method == "POST":
         product_id = request.POST.get('product_id')
+        if not product_id:
+            product_id = json.loads(request.body).get('product_id')
         if not product_id:
             return JsonResponse({'success': False, 'error': 'No product ID provided'})
         wishlist_item = get_object_or_404(WishlistItem, products=product_id, user=request.user.buyerprofile)

@@ -85,3 +85,51 @@ def delete_wishlist_item_from_catalog(request):
         wishlist_item.delete()
         return JsonResponse({'success': True})
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+@csrf_exempt
+def get_wishlist_json(request):
+    if request.method == "GET":
+        buyer_profile = get_object_or_404(BuyerProfile, user=request.user)
+        wishlist_items = WishlistItem.objects.filter(user=buyer_profile)
+        wishlist_json = []
+        for item in wishlist_items:
+            wishlist_json.append({
+                'name': item.name,
+                'min_price': item.min_price,
+                'max_price': item.max_price,
+                'products': products_dictionary(item.products.all())
+                
+            })
+        
+        json_data = {
+            'total_min' : sum([item.min_price for item in wishlist_items]),
+            'total_max' : sum([item.max_price for item in wishlist_items]),
+            'wishlists' : wishlist_json,
+        }
+        return JsonResponse(json_data, safe=False)
+    return JsonResponse({'error': 'Invalid request method'})
+
+def products_dictionary(products):
+    product_list = []
+    for product in products:
+        if product.min_price == 0 and product.max_price == 0 or product.min_price == None:
+            price = "Price not available"
+        elif product.min_price == product.max_price:
+            price = f"Rp{product.min_price}"
+        else:
+            price = f"Rp{product.min_price} - Rp{product.max_price}"
+
+        
+        product_data = {
+            'pk': product.id,
+            'model': "seller.productentry",
+            'fields': {
+                'description': product.description,
+                'product_name' : product.product_name,
+                'product_image' : product.product_image,
+                'product_category' : product.product_category,
+                'price' : price,
+            }
+        }
+        product_list.append(product_data)
+    return product_list

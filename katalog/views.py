@@ -8,6 +8,7 @@ from django.db.models import Q
 from user_profile.models import BuyerProfile
 from wishlist.models import WishlistItem
 from like.models import Like
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 def show_catalog(request):
@@ -112,3 +113,8 @@ def products_dictionary(products,user):
         }
         product_list.append(product_data)
     return product_list
+
+@csrf_exempt
+def get_categories(request):
+    categories = [choice[1] for choice in ProductEntry._meta.get_field('product_category').choices]
+    return JsonResponse(categories, safe=False)

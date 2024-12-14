@@ -5,6 +5,8 @@ from .models import BuyerProfile, SellerProfile
 from .decorators import user_is_seller, user_is_buyer
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 # Create your views here.
 @login_required
@@ -52,6 +54,7 @@ def profile_buyer_edit(request):
 @login_required
 @user_is_buyer
 @require_http_methods(["GET", "POST"])
+@csrf_exempt
 def api_profile_buyer(request):
     profile_buyer, created = BuyerProfile.objects.get_or_create(user=request.user)
 
@@ -62,18 +65,32 @@ def api_profile_buyer(request):
         profile_buyer.save()
 
     if request.method == 'POST':
-        form = BuyerProfileForm(request.POST, instance=profile_buyer)
-        if form.is_valid():
-            form.save()
-            return JsonResponse({'success': True, 'message': 'Profile updated successfully'})
-        else:
-            errors = form.errors.as_json()
-            return JsonResponse({'success': False, 'errors': errors})
-    else:
-        form = BuyerProfileForm(instance=profile_buyer)
+        data = json.loads(request.body)
+        print(data)
+        updated_profile = {
+            'profile_picture': data.get('profile_picture', profile_buyer.profile_picture),
+            'store_name': data.get('store_name', profile_buyer.store_name),
+            'nationality': data.get('nationality', profile_buyer.nationality),
+            }
+        form = BuyerProfileForm(updated_profile, instance=profile_buyer)
+        form.save()
         return JsonResponse({
+            'statusCode': 200,
+            'profile_type': 'buyer',
             'profile': {
                 'store_name': profile_buyer.store_name,
+                'username': profile_buyer.user.username,
+                'nationality': profile_buyer.nationality,
+                'profile_picture': profile_buyer.profile_picture,
+            }
+        })
+
+    elif request.method == 'GET':
+        return JsonResponse({
+            'profile_type': 'buyer',
+            'profile': {
+                'store_name': profile_buyer.store_name,
+                'username': profile_buyer.user.username,
                 'nationality': profile_buyer.nationality,
                 'profile_picture': profile_buyer.profile_picture,
             }
@@ -121,6 +138,7 @@ def profile_seller_edit(request):
 @login_required
 @user_is_seller
 @require_http_methods(["GET", "POST"])
+@csrf_exempt
 def api_profile_seller(request):
     profile_seller, created = SellerProfile.objects.get_or_create(user=request.user)
 
@@ -145,8 +163,10 @@ def api_profile_seller(request):
     else:
         form = SellerProfileForm(instance=profile_seller)
         return JsonResponse({
+            'profile_type': 'seller',
             'profile': {
                 'store_name': profile_seller.store_name,
+                'username': profile_seller.user.username,
                 'city': profile_seller.city,
                 'subdistrict': profile_seller.subdistrict,
                 'village': profile_seller.village,

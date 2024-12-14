@@ -7,6 +7,8 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 import json
+from django.views.decorators.http import require_GET
+from .models import NATIONALITY_CHOICES, SUBDISTRICT_CHOICES, VILLAGE_CHOICES
 
 # Create your views here.
 @login_required
@@ -179,7 +181,7 @@ def api_profile_seller(request):
                 'profile_picture': profile_seller.profile_picture,
             }
         })
-        
+
     else:
         form = SellerProfileForm(instance=profile_seller)
         return JsonResponse({
@@ -195,3 +197,13 @@ def api_profile_seller(request):
                 'profile_picture': profile_seller.profile_picture,
             }
         })
+
+@login_required
+@require_GET
+def api_get_choices(request):
+    choices = {
+        'nationalities': dict(NATIONALITY_CHOICES),
+        'subdistricts': dict(SUBDISTRICT_CHOICES),
+        'villages': dict(VILLAGE_CHOICES),
+    }
+    return JsonResponse(choices)

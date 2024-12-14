@@ -8,7 +8,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.views.decorators.http import require_GET
-from .models import NATIONALITY_CHOICES, SUBDISTRICT_CHOICES, VILLAGE_CHOICES
+from .models import SellerProfile
 
 # Create your views here.
 @login_required
@@ -202,8 +202,8 @@ def api_profile_seller(request):
 @require_GET
 def api_get_choices(request):
     choices = {
-        'nationalities': dict(NATIONALITY_CHOICES),
-        'subdistricts': dict(SUBDISTRICT_CHOICES),
-        'villages': dict(VILLAGE_CHOICES),
+        'nationalities': dict(BuyerProfile.NATIONALITY_CHOICES),
+        'subdistricts': dict(SellerProfile.SUBDISTRICT_CHOICES),
+        'villages': dict(SellerProfile.VILLAGE_CHOICES),
     }
     return JsonResponse(choices)

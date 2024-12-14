@@ -153,13 +153,33 @@ def api_profile_seller(request):
         profile_seller.save()
 
     if request.method == 'POST':
-        form = SellerProfileForm(request.POST, instance=profile_seller)
-        if form.is_valid():
-            form.save()
-            return JsonResponse({'success': True, 'message': 'Profile updated successfully'})
-        else:
-            errors = form.errors.as_json()
-            return JsonResponse({'success': False, 'errors': errors})
+        data = json.loads(request.body)
+        updated_profile = {
+            'profile_picture': data.get('profile_picture', profile_seller.profile_picture),
+            'store_name': data.get('store_name', profile_seller.store_name),
+            'city': data.get('city', profile_seller.city),
+            'subdistrict': data.get('subdistrict', profile_seller.subdistrict),
+            'village': data.get('village', profile_seller.village),
+            'address': data.get('address', profile_seller.address),
+            'maps': data.get('maps', profile_seller.maps),
+        }
+        form = SellerProfileForm(updated_profile, instance=profile_seller)
+        form.save()
+        return JsonResponse({
+            'statusCode': 200,
+            'profile_type': 'seller',
+            'profile': {
+                'store_name': profile_seller.store_name,
+                'username': profile_seller.user.username,
+                'city': profile_seller.city,
+                'subdistrict': profile_seller.subdistrict,
+                'village': profile_seller.village,
+                'address': profile_seller.address,
+                'maps': profile_seller.maps,
+                'profile_picture': profile_seller.profile_picture,
+            }
+        })
+        
     else:
         form = SellerProfileForm(instance=profile_seller)
         return JsonResponse({

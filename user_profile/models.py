@@ -206,14 +206,14 @@ class BuyerProfile(models.Model):
         ('Yemeni', 'Yemeni'),
         ('Zambian', 'Zambian'),
         ('Zimbabwean', 'Zimbabwean'),
-    ]  
+    ]
 
     user = models.OneToOneField(Buyer, on_delete=models.CASCADE)
     profile_picture = models.URLField(max_length=1000, blank=True, null=True)
     store_name = models.CharField(max_length=100)
     nationality = models.CharField(max_length=100, choices=NATIONALITY_CHOICES)
 
-    
+
 
 
     def __str__(self):
@@ -224,7 +224,7 @@ class SellerProfile(models.Model):
     profile_picture = models.URLField(max_length=1000, blank=True, null=True)
     store_name = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
-    
+
     SUBDISTRICT_CHOICES = [
         ('Denpasar Selatan', 'Denpasar Selatan'),
         ('Denpasar Timur', 'Denpasar Timur'),
@@ -264,7 +264,7 @@ class SellerProfile(models.Model):
     address = models.CharField(max_length=255)
     maps = models.URLField(max_length=1000)
 
-    
+
     def __str__(self):
         return self.user.username
 
@@ -272,25 +272,25 @@ class SellerProfile(models.Model):
 @receiver(post_save, sender=Buyer)
 def create_buyer_profile(sender, instance, created, **kwargs):
     profile_buyer, created = BuyerProfile.objects.get_or_create(user=instance)
-    
+
     # Mengatur nilai default, jika profile blm dibuat
     if created:
         profile_buyer.profile_picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-        profile_buyer.store_name = instance.username 
-        profile_buyer.nationality = "Not Set"  
+        profile_buyer.store_name = instance.username
+        profile_buyer.nationality = "Not Set"
         profile_buyer.save()
 
 @receiver(post_save, sender=Seller)
 def create_seller_profile(sender, instance, created, **kwargs):
     profile_seller, created = SellerProfile.objects.get_or_create(user=instance)
-    
+
     # Mengatur nilai default nya, jika profile blm dibuat
     if created:
         profile_seller.profile_picture = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
         profile_seller.store_name = instance.username
-        profile_seller.city = "Denpasar"  
+        profile_seller.city = "Denpasar"
         profile_seller.subdistrict = "Denpasar Selatan"
         profile_seller.village = "Panjer"
-        profile_seller.address = "Not Set"  
-        profile_seller.maps = "https://www.google.com/maps"  
+        profile_seller.address = "Not Set"
+        profile_seller.maps = "https://www.google.com/maps"
         profile_seller.save()

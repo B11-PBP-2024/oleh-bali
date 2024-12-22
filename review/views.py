@@ -77,6 +77,7 @@ def get_reviews(request,id):
             'id': review.id,
             'time': review.time.strftime("%B %d, %Y %H:%M"),
             'review_text':review.review_text,
+            'product': product.product_name,
             'user': {
                 'displayname':user.store_name,
                 'profilepicture' : user.profile_picture,
@@ -86,4 +87,33 @@ def get_reviews(request,id):
         }
         review_list.append(review_data)
     return JsonResponse(review_list, safe=False)
+
+@csrf_exempt
+def delete_review_mobile(request,id):
+    review = ReviewEntry.objects.get(pk=id)
+    product_id = review.product.id
+    if(review.user != request.user):
+        return JsonResponse({'success': False, 'message': 'You are not authorized to delete this review'}, status=403)
+    print("delete")
+    review.delete()
+
+    return JsonResponse({'success': True}, status=200)
+
+@csrf_exempt
+def edit_review_mobile(request, id):
+    try:
+        review = ReviewEntry.objects.get(id=id)
+    except ReviewEntry.DoesNotExist:
+        return JsonResponse({"status": "error", "message": "Review not found"}, status=404)
+
+    if request.method == "POST":
+        data = json.loads(request.body)
+        form = ReviewEntryForm(data, instance=review)
+        if form.is_valid():
+            review.save()
+            return JsonResponse({"status": "success"}, status=200)
+        else:
+            return JsonResponse({"status": "error", "message": "Invalid data"}, status=400)
+    else:
+        return JsonResponse({"status": "error", "message": "Invalid request method"}, status=405)
 

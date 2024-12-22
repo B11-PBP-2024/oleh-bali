@@ -65,4 +65,4 @@ class ProductSellerForm(forms.ModelForm):
         if not isinstance(cleaned_data.get('price'), int):
             self.add_error('price', "Price must be a valid integer.")
 
-        return cleaned_data
+        return cleaned_data  

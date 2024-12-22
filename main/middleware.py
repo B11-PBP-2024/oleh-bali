@@ -7,6 +7,8 @@ class AuthenticationAuthorizationMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+        if request.method == 'OPTIONS':
+            return self.get_response(request)
         if not request.user.is_authenticated and resolve(request.path_info).app_name in 'article katalog like review see_stores store wishlist seller':
             return redirect("main:login_buyer")
         if request.user.is_authenticated and resolve(request.path_info).app_name in 'article katalog like review see_stores store wishlist' and request.user.role != 0:
